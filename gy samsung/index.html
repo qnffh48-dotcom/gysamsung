@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>가양삼성정형외과</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+            <span class="gayang">가양</span><span class="samsung">삼성</span><span class="ortho">정형외과</span>
+        </div>
+
+        <div class="nav">
+            <button onclick="location.href='schedule.html'">📅 스케줄</button>
+            <button onclick="location.href='stats.html'">📊 통계</button>
+            <button onclick="location.href='radiology.html'">🩻 방사선과</button>
+            <button onclick="location.href='nurse.html'">💉 간호과</button>
+            <button onclick="location.href='desk.html'">💵 원무과</button>
+            <button onclick="location.href='therapy.html'">♿ 물리치료과</button>
+        </div>
+    </div>
+
+    <main class="main">
+      
+            </div>
+        </div>
+
+        <section class="notice-card">
+
+    <div class="notice-header">
+
+        <h1>공지사항</h1>
+
+        <button class="add-notice-btn"
+            onclick="addNotice()">
+
+            + 공지 추가
+
+        </button>
+
+    </div>
+
+    <div class="notice-list" id="noticeList">
+    </div>
+
+</section>
+
+<section class="today-card">
+
+    <h2>오늘 스케줄 </h2>
+
+    <div class="today-list">
+
+        <div>
+    <strong>의사</strong>
+    <span class="today-doctor">미입력</span>
+</div>
+
+<div>
+    <strong>방과</strong>
+    <span class="today-room">미입력</span>
+</div>
+
+<div>
+    <strong>간호</strong>
+    <span class="today-nurse">미입력</span>
+</div>
+
+<div>
+    <strong>원무</strong>
+    <span class="today-desk">미입력</span>
+</div>
+
+<div>
+    <strong>물치</strong>
+    <span class="today-therapy">미입력</span>
+</div>
+
+</section><script>
+let notices = JSON.parse(localStorage.getItem("notices")) || [
+    "",
+    
+];
+
+function renderNotices() {
+    const noticeList = document.getElementById("noticeList");
+    noticeList.innerHTML = "";
+
+    notices.forEach((text, index) => {
+        noticeList.innerHTML += `
+            <div class="notice-item">
+                <span class="dot"></span>
+
+                <textarea class="notice-text"
+                    oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
+
+                <button class="notice-delete" onclick="deleteNotice(${index})">
+                    삭제
+                </button>
+            </div>
+        `;
+    });
+
+    document.querySelectorAll(".notice-text").forEach(autoResize);
+}
+
+function addNotice() {
+    notices.push("");
+    saveNotices();
+    renderNotices();
+}
+
+function deleteNotice(index) {
+    notices.splice(index, 1);
+    saveNotices();
+    renderNotices();
+}
+
+function updateNotice(index, textarea) {
+    notices[index] = textarea.value;
+    saveNotices();
+}
+
+function saveNotices() {
+    localStorage.setItem("notices", JSON.stringify(notices));
+}
+
+function autoResize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
+
+renderNotices();
+</script><script type="module" src="script.js"></script>
