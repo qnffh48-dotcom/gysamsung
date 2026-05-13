@@ -4,54 +4,188 @@
 <head>
     <meta charset="UTF-8">
     <title>방과</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
+<link rel="stylesheet" href="style.css">
 <body>
 
-    <button class="home-btn"
-onclick="location.href='index.html'">
-🏠
-</button>
 
-<style>
+    <div class="sidebar">
+        <div class="logo">
+            <span class="gayang">가양</span><span class="samsung">삼성</span><span class="ortho">정형외과</span>
+        </div>
 
-.home-btn {
+        <div class="nav">
+            <button onclick="location.href='index.html'">🏠 홈</button>
+            <button onclick="location.href='schedule.html'">📅 스케줄</button>
+            <button onclick="location.href='stats.html'">📊 통계</button>
+            
+        </div>
+    </div>
 
-    position: fixed;
+    <main class="radiology-main">
 
-    top: 20px;
+    <div class="radiology-layout">
 
-    left: 20px;
+        <!-- 탭 버튼 -->
+        <div class="tab-buttons">
 
-    z-index: 9999;
+            <button class="tab-btn active"
+                    data-tab="closing">
+                마감일지
+            </button>
 
-    width: 70px;
+            <button class="tab-btn"
+                    data-tab="temp1">
+                임시1
+            </button>
 
-    height: 70px;
+            <button class="tab-btn"
+                    data-tab="temp2">
+                임시2
+            </button>
 
-    border: none;
+            <button class="tab-btn"
+                    data-tab="temp3">
+                임시3
+            </button>
 
-    background: #2f4858;
+        </div>
 
-    color: white;
+        <!-- 큰 흰박스 -->
+        <div class="tab-content">
 
-    font-size: 30px;
+            <!-- 마감일지 -->
+            <div class="tab-page active"
+                 id="closing">
 
-    cursor: pointer;
+                <table class="closing-table">
 
-    border-radius: 22px 22px 12px 12px;
+                    <tr>
+                        <th colspan="2" class="main-title">
+                            5월 13일 영상의학과 마감일지
+                        </th>
+                    </tr>
 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    <tr>
+                        <th colspan="2" class="sub-title">
+                            C-arm
+                        </th>
+                    </tr>
 
-    transition: 0.2s;
-}
+                    <tr>
+                        <th>구분</th>
+                        <th>건수</th>
+                    </tr>
 
-.home-btn:hover {
+                    <tr>
+                        <td>정형외과1(정)</td>
+                        <td>
+                            <input class="report-input carm-count"
+                                   data-key="carm_os1"
+                                   value="0개">
+                        </td>
+                    </tr>
 
-    transform: translateY(-2px);
+                    <tr>
+                        <td>신경과(노)</td>
+                        <td>
+                            <input class="report-input carm-count"
+                                   data-key="carm_neuro"
+                                   value="0개">
+                        </td>
+                    </tr>
 
-    background: #243947;
-}
+                    <tr>
+                        <td>정형외과3(욱)</td>
+                        <td>
+                            <input class="report-input carm-count"
+                                   data-key="carm_os3"
+                                   value="0개">
+                        </td>
+                    </tr>
 
-</style>
-    
+                    <tr>
+                        <td>정형외과4(채)</td>
+                        <td>
+                            <input class="report-input carm-count"
+                                   data-key="carm_os4"
+                                   value="0개">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>정형외과5(남)</td>
+                        <td>
+                            <input class="report-input carm-count"
+                                   data-key="carm_os5"
+                                   value="0개">
+                        </td>
+                    </tr>
+
+                    <tr class="total">
+                        <td>총합</td>
+                        <td>
+                            <input class="report-input total-input"
+                                   data-key="carm_total"
+                                   value="0개"
+                                   readonly>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="2" class="sub-title">
+                            기타(관절조영)
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>구분</th>
+                        <th>건수</th>
+                    </tr>
+
+                    <tr>
+                        <td>관절조영</td>
+                        <td>
+                            <input class="report-input"
+                                   data-key="arthrogram"
+                                   value="0개">
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <!-- 임시1 -->
+            <div class="tab-page"
+                 id="temp1">
+
+                <h1>임시1</h1>
+
+            </div>
+
+            <!-- 임시2 -->
+            <div class="tab-page"
+                 id="temp2">
+
+                <h1>임시2</h1>
+
+            </div>
+
+            <!-- 임시3 -->
+            <div class="tab-page"
+                 id="temp3">
+
+                <h1>임시3</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="radiology-tabs.js"></script>
+<script type="module" src="radiology.js"></script>
