@@ -1,46 +1,21 @@
-<button class="home-btn"
-onclick="location.href='index.html'">
-🏠
-</button>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>원무</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-<style>
+<body>
+<div class="sidebar">
 
-.home-btn {
+    <div class="logo">
+    <img src="logo.png" alt="가양삼성정형외과">
+</div>
 
-    position: fixed;
-
-    top: 20px;
-
-    left: 20px;
-
-    z-index: 9999;
-
-    width: 70px;
-
-    height: 70px;
-
-    border: none;
-
-    background: #2f4858;
-
-    color: white;
-
-    font-size: 30px;
-
-    cursor: pointer;
-
-    border-radius: 22px 22px 12px 12px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-
-    transition: 0.2s;
-}
-
-.home-btn:hover {
-
-    transform: translateY(-2px);
-
-    background: #243947;
-}
-
-</style>
+        <div class="nav">
+            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
+            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
+            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
+            
+        </div>

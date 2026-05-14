@@ -11,14 +11,14 @@
 
 
     <div class="sidebar">
-        <div class="logo">
-            <span class="gayang">가양</span><span class="samsung">삼성</span><span class="ortho">정형외과</span>
-        </div>
 
+    <div class="logo">
+    <img src="logo.png" alt="가양삼성정형외과">
+</div>
         <div class="nav">
-            <button onclick="location.href='index.html'">🏠 홈</button>
-            <button onclick="location.href='schedule.html'">📅 스케줄</button>
-            <button onclick="location.href='stats.html'">📊 통계</button>
+            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
+            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
+            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
             
         </div>
     </div>
@@ -37,7 +37,7 @@
 
             <button class="tab-btn"
                     data-tab="temp1">
-                임시1
+                X-ray스케줄
             </button>
 
             <button class="tab-btn"
@@ -63,7 +63,7 @@
 
                     <tr>
                         <th colspan="2" class="main-title">
-                            5월 13일 영상의학과 마감일지
+                            영상의학과 마감일지
                         </th>
                     </tr>
 
@@ -158,10 +158,134 @@
             </div>
 
             <!-- 임시1 -->
-            <div class="tab-page"
-                 id="temp1">
+<div class="tab-page" id="temp1">
 
-                <h1>임시1</h1>
+    <div class="xray-wrap">
+
+        <div class="xray-month-box">
+            <button type="button" onclick="changeXrayMonth(-1)">◀</button>
+            <span id="xrayTitle"></span>
+            <button type="button" onclick="changeXrayMonth(1)">▶</button>
+        </div>
+
+        <table class="xray-calendar">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>월</th>
+                    <th>화</th>
+                    <th>수</th>
+                    <th>목</th>
+                    <th>금</th>
+                    <th class="sat">토</th>
+                </tr>
+            </thead>
+            <tbody id="xrayBody"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+let xrayCurrentDate = new Date();
+const xrayRowNames = ["OFF", "X-RAY"];
+
+function renderXray() {
+    const title = document.getElementById("xrayTitle");
+    const body = document.getElementById("xrayBody");
+
+    if (!title || !body) {
+        alert("xrayTitle 또는 xrayBody 없음");
+        return;
+    }
+
+    const year = xrayCurrentDate.getFullYear();
+    const month = xrayCurrentDate.getMonth();
+
+    title.textContent = year + "년 " + (month + 1) + "월";
+    body.innerHTML = "";
+
+    const first = new Date(year, month, 1);
+    const start = new Date(first);
+
+    const day = first.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    start.setDate(first.getDate() + diff);
+
+    for (let week = 0; week < 6; week++) {
+        const dateTr = document.createElement("tr");
+
+        const emptyTd = document.createElement("td");
+        dateTr.appendChild(emptyTd);
+
+        for (let d = 0; d < 6; d++) {
+            const now = new Date(start);
+            now.setDate(start.getDate() + week * 7 + d);
+
+            const td = document.createElement("td");
+
+            if (now.getMonth() === month) {
+                td.textContent = now.getDate();
+
+                if (d === 5) {
+                    td.classList.add("sat");
+                }
+            }
+
+            dateTr.appendChild(td);
+        }
+
+        body.appendChild(dateTr);
+
+        xrayRowNames.forEach(function(rowName) {
+            const tr = document.createElement("tr");
+
+            const th = document.createElement("th");
+            th.textContent = rowName;
+
+            if (rowName === "OFF") {
+                th.classList.add("off-label");
+            }
+
+            tr.appendChild(th);
+
+            for (let d = 0; d < 6; d++) {
+                const now = new Date(start);
+                now.setDate(start.getDate() + week * 7 + d);
+
+                const td = document.createElement("td");
+
+                if (now.getMonth() === month) {
+                    const input = document.createElement("input");
+                    input.className = "xray-input";
+
+                    const key = "xray-" + year + "-" + (month + 1) + "-" + now.getDate() + "-" + rowName;
+
+                    input.value = localStorage.getItem(key) || "";
+
+                    input.oninput = function() {
+                        localStorage.setItem(key, input.value);
+                    };
+
+                    td.appendChild(input);
+                }
+
+                tr.appendChild(td);
+            }
+
+            body.appendChild(tr);
+        });
+    }
+}
+
+function changeXrayMonth(num) {
+    xrayCurrentDate.setMonth(xrayCurrentDate.getMonth() + num);
+    renderXray();
+}
+
+setTimeout(renderXray, 100);
+</script>
 
             </div>
 

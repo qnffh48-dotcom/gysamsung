@@ -7,19 +7,19 @@
 </head>
 
 <body>
+      <div class="sidebar">
 
-    <div class="sidebar">
-        <div class="logo">
-            <span class="gayang">가양</span><span class="samsung">삼성</span><span class="ortho">정형외과</span>
-        </div>
+    <div class="logo">
+    <img src="logo.png" alt="가양삼성정형외과">
+</div>
 
         <div class="nav">
-            <button onclick="location.href='schedule.html'">📅 스케줄</button>
-            <button onclick="location.href='stats.html'">📊 통계</button>
-            <button onclick="location.href='radiology.html'">🩻 방사선과</button>
-            <button onclick="location.href='nurse.html'">💉 간호과</button>
-            <button onclick="location.href='desk.html'">💵 원무과</button>
-            <button onclick="location.href='therapy.html'">♿ 물리치료과</button>
+            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
+            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
+            <button onclick="location.href='radiology.html'"><span class="gold-dot"></span> 방사선과</button>
+            <button onclick="location.href='nurse.html'"><span class="gold-dot"></span> 간호과</button>
+            <button onclick="location.href='desk.html'"><span class="gold-dot"></span> 원무과</button>
+            <button onclick="location.href='therapy.html'"><span class="gold-dot"></span> 물리치료과</button>
         </div>
     </div>
 
@@ -32,8 +32,8 @@
 
     <div class="notice-header">
 
-        <h1>공지사항</h1>
-
+        <h1>[필독] 공지사항</h1>
+ 
         <button class="add-notice-btn"
             onclick="addNotice()">
 
@@ -135,3 +135,284 @@ function autoResize(textarea) {
 
 renderNotices();
 </script><script type="module" src="script.js"></script>
+<div class="manual-section">
+
+    <div class="manual-header">
+        📂 업무 매뉴얼
+</div>
+    <div class="manual-grid">
+
+    <!-- 1 -->
+   <div class="manual-card"
+onclick="openModal('manual1', '신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="온보딩"
+            onclick="event.stopPropagation()">
+
+       
+
+        </div>
+
+        <input class="manual-title-input"
+        value="신규 입사자 온보딩"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">병원 시스템 및 기본 업무 안내</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+        
+
+        </div>
+
+    </div>
+
+    <!-- 2 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="원무"
+            onclick="event.stopPropagation()">
+
+          
+
+        </div>
+
+        <input class="manual-title-input"
+        value="환자 접수 프로세스"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">초진 / 재진 접수 절차</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+           
+        </div>
+
+    </div>
+
+    <!-- 3 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="간호"
+            onclick="event.stopPropagation()">
+
+        </div>
+
+        <input class="manual-title-input"
+        value="주사실 업무 메뉴얼"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">처치 및 주사 준비 체크</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+        </div>
+
+    </div>
+
+    <!-- 4 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="방사선"
+            onclick="event.stopPropagation()">
+
+           
+        </div>
+
+        <input class="manual-title-input"
+        value="C-arm 사용법"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">장비 기본 사용 가이드</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+          
+        </div>
+
+    </div>
+
+    <!-- 5 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="물리치료"
+            onclick="event.stopPropagation()">
+
+          
+
+        </div>
+
+        <input class="manual-title-input"
+        value="물리치료 장비 사용"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">장비별 사용 순서 정리</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+       
+        </div>
+
+    </div>
+
+    <!-- 6 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="시설"
+            onclick="event.stopPropagation()">
+
+          
+
+        </div>
+
+        <input class="manual-title-input"
+        value="시설 점검 체크리스트"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">개원 마감 및 점검 사항</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+        
+
+        </div>
+
+    </div>
+
+    <!-- 7 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="행정"
+            onclick="event.stopPropagation()">
+
+            
+
+        </div>
+
+        <input class="manual-title-input"
+        value="근무 규정"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">출퇴근 / 연차 / 휴가 기준</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+         
+
+        </div>
+
+    </div>
+
+    <!-- 8 -->
+    <div class="manual-card"
+onclick="openModal('신규 입사자 온보딩', '병원 시스템 및 기본 업무 안내')">
+
+        <div class="manual-top">
+
+            <input class="manual-tag-input"
+            value="FAQ"
+            onclick="event.stopPropagation()">
+
+        
+
+        </div>
+
+        <input class="manual-title-input"
+        value="자주 묻는 질문"
+        onclick="event.stopPropagation()">
+
+        <textarea class="manual-desc-input"
+        onclick="event.stopPropagation()">직원 공통 문의 정리</textarea>
+
+        <div class="manual-detail"
+        onclick="event.stopPropagation()">
+
+       
+        </div>
+
+    </div>
+
+</div><div class="manual-modal" id="manualModal">
+
+    <div class="manual-modal-box">
+
+        <button class="modal-close"
+        onclick="closeModal()">✕</button>
+
+        <h2 id="modalTitle"></h2>
+
+        <textarea id="modalContent"
+        spellcheck="false"></textarea>
+
+    </div>
+
+</div>
+<script>
+let currentManualKey = "";
+
+function openModal(key, title, basicContent) {
+    currentManualKey = key;
+
+    const modal = document.getElementById("manualModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalContent = document.getElementById("modalContent");
+
+    modal.classList.add("active");
+    modalTitle.textContent = title;
+
+    const saved = localStorage.getItem(currentManualKey);
+
+    modalContent.value = saved !== null ? saved : basicContent;
+
+    modalContent.oninput = function () {
+        localStorage.setItem(currentManualKey, modalContent.value);
+    };
+}
+
+function closeModal() {
+    document.getElementById("manualModal").classList.remove("active");
+}
+</script>
+</body>
+</html>
