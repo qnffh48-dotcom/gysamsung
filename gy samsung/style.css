@@ -1,18 +1,29 @@
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: #f4f6f8;
-    font-family: Arial;
-    display: flex;
-    color: #111;
-}
 
-.sidebar {
-    width: 280px;
+    margin: 0;
+
+    padding: 0;
+
     min-height: 100vh;
-    background: #eceff3;
-    padding: 35px 28px;
+
+    display: flex;
+
+    background: #dfe3e8;
+    
+}
+.sidebar {
+
+    width: 240px;
+
+    min-height: 100vh;
+
+  background: #4f5b66;
+
+    padding: 22px 18px;
+
     box-sizing: border-box;
+
+    overflow: hidden;
 }
 
 .logo {
@@ -1319,21 +1330,28 @@ body {
 
     width: 240px;
 
+    background: #5b6670;
+
+    display: flex;
+
+    flex-direction: column;
+
     min-height: 100vh;
 
-    background: #ddd8cf;
+    height: 100%;
 
-    padding: 22px 18px;
+    margin: 0;
 
-    box-sizing: border-box;
+    padding: 0;
 
-    overflow: hidden;
+    flex-shrink: 0;
 }
-
 /* 로고 */
 .sidebar .logo {
 
     width: 100%;
+
+    height: 220px;
 
     display: flex;
 
@@ -1341,7 +1359,9 @@ body {
 
     align-items: center;
 
-    margin-bottom: 35px;
+    background: #5b6670;
+
+    margin: 0;
 }
 
 .sidebar .logo img {
@@ -1377,7 +1397,7 @@ body {
 
     background: transparent;
 
-    color: #36454f;
+     color: #f5f3ef;
 
     font-size: 18px;
 
@@ -1396,9 +1416,10 @@ body {
 
 .nav button:hover {
 
-    background: rgba(0,0,0,0.06);
+    background: rgba(255,255,255,0.08);
 
-    color: #1f2933;
+    color: white;
+
 }.manual-section {
 
     margin-top: 35px;
@@ -1660,4 +1681,219 @@ body {
     transform: scale(1);
 
     opacity: 1;
+}.sidebar {
+    flex-shrink: 0;
+}
+
+.nav button {
+    white-space: normal;
+    line-height: 1.25;
+}.nav button {
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        color 0.18s ease;
+}
+
+.nav button:hover {
+    transform: translateX(4px);
+}body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.sidebar {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+}
+
+.sidebar .logo {
+    margin: 0 !important;
+    padding: 0 !important;
+}body,
+.main,
+.schedule-main,
+.radiology-main {
+    background: #d6dbe1;
+}/* style.css 맨 아래 추가 */
+
+.stats-main {
+    flex: 1;
+    padding: 36px 46px;
+    background: #dfe3e8;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.stats-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #2f4858;
+}
+
+.stats-header p {
+    margin: 8px 0 0;
+    color: #667085;
+}
+
+.excel-upload {
+    background: #2f4858;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.excel-upload input {
+    display: none;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.summary-card span {
+    color: #667085;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.summary-card strong {
+    display: block;
+    margin-top: 10px;
+    font-size: 30px;
+    color: #111827;
+}
+
+.summary-card.wide strong {
+    font-size: 22px;
+}
+
+.stats-panel {
+    background: white;
+    border-radius: 22px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.stats-panel h2 {
+    margin: 0 0 18px;
+    color: #2f4858;
+    font-size: 23px;
+}
+
+.chart-wrap {
+    height: 330px;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.main-stats-table {
+    min-width: 1650px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.main-stats-table th,
+.main-stats-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 11px 13px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.main-stats-table th {
+    background: #f4f6f8;
+    color: #2f4858;
+    font-weight: 800;
+}
+
+.total-row {
+    background: #edf7ee;
+    font-weight: 800;
+}
+
+.injection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.injection-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.injection-card h3 {
+    margin: 0 0 12px;
+    color: #2f4858;
+    font-size: 16px;
+}
+
+.inject-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.inject-info strong {
+    color: #111827;
+}
+
+.injection-card table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.injection-card th,
+.injection-card td {
+    border: 1px solid #d9dee6;
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.injection-card th {
+    background: #eef2f7;
+    color: #2f4858;
+}
+
+@media (max-width: 1300px) {
+    .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .injection-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

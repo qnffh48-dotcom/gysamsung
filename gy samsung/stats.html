@@ -2,20 +2,69 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>원무</title>
+    <title>통계</title>
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stats.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-<div class="sidebar">
 
+<div class="sidebar">
     <div class="logo">
-    <img src="logo.png" alt="가양삼성정형외과">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
+        <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
+        <button onclick="location.href='radiology.html'"><span class="gold-dot"></span> 방사선과</button>
+    </div>
 </div>
 
-        <div class="nav">
-            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
-            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
-            
+<main class="stats-main">
+
+    <div class="stats-header">
+        <div>
+            <h1>주사 통계 대시보드</h1>
+            <p>엑셀 업로드 후 자동으로 통계가 표시됩니다.</p>
         </div>
+
+        <label class="excel-upload">
+            엑셀 업로드
+            <input type="file" id="excelFile" accept=".xlsx">
+        </label>
+    </div>
+
+    <section class="summary-grid" id="summaryGrid"></section>
+
+    <section class="stats-panel">
+        <h2>진료실별 핵심 지표</h2>
+
+        <div class="chart-wrap">
+            <canvas id="mainChart"></canvas>
+        </div>
+    </section>
+
+    <section class="stats-panel">
+        <h2>진료실별 전체 통계표</h2>
+
+        <div class="table-scroll">
+            <table id="mainStatsTable" class="main-stats-table"></table>
+        </div>
+    </section>
+
+    <section class="stats-panel" id="injectionPanel">
+        <h2>초진 주사 상세 통계</h2>
+        <div class="injection-grid" id="injectionGrid"></div>
+    </section>
+
+</main>
+
+<script src="stats.js"></script>
+
+</body>
+</html>
