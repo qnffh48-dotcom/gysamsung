@@ -4,6 +4,12 @@ import {
 }
 from "./firebase.js";
 
+import {
+    setPersistence,
+    browserSessionPersistence
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const form = document.getElementById("loginForm");
 const emailInput = document.getElementById("loginEmail");
 const passwordInput = document.getElementById("loginPassword");
@@ -27,12 +33,16 @@ form.addEventListener("submit", async (e) => {
     message.textContent = "";
 
     try {
-        await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
+        await setPersistence(
+    auth,
+    browserSessionPersistence
+);
 
+await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+);
         if (rememberId.checked) {
             localStorage.setItem("savedLoginId", email);
         } else {
