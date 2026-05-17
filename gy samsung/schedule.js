@@ -78,4 +78,161 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
   childList: true,
   subtree: true
-});
+});const floatingNav = document.querySelector(".sidebar .nav");
+
+if (floatingNav) {
+    window.addEventListener("scroll", () => {
+        const targetY = window.scrollY;
+
+        requestAnimationFrame(() => {
+            floatingNav.style.transform = `translateY(${targetY}px)`;
+        });
+    });
+}const lunchGroups = [
+    ["권", "진영", "도영", "한솔"],
+    ["윤아", "수현", "다운", "유진", "임시", "임시", "임시", "임시", "임시", "임시", "임시"],
+    ["송희", "빈", "예지", "유빈"]
+];
+
+const lunchTimes = ["", "12", "13", "14"];
+
+function getLunchKey(year, month, name, day) {
+    return `lunch-${year}-${month}-${name}-${day}`;
+}
+
+function getLunchClass(value) {
+    if (value === "12") return "time-12";
+    if (value === "13") return "time-13";
+    if (value === "14") return "time-14";
+    return "";
+}
+
+function renderLunchSchedule() {
+    const table = document.getElementById("monthlyLunchTable");
+    const title = document.getElementById("lunchMonthText");
+
+    if (!table) return;
+
+    const year = lunchCurrentYear;
+const month = lunchCurrentMonth + 1;
+    const lastDay = new Date(year, month, 0).getDate();
+
+    
+    const title2 = document.getElementById("lunchMonthText2");
+
+if (title2) {
+    title2.textContent = `${year}년 ${month}월`;
+}
+
+    const weekNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+    let html = `
+        <thead>
+            <tr>
+                <th rowspan="2" class="name-head">직원</th>
+    `;
+
+    for (let d = 1; d <= lastDay; d++) {
+        const day = new Date(year, month - 1, d).getDay();
+        let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
+
+        html += `<th class="${cls}">${weekNames[day]}</th>`;
+    }
+
+    html += `
+            </tr>
+            <tr>
+    `;
+
+    for (let d = 1; d <= lastDay; d++) {
+        const day = new Date(year, month - 1, d).getDay();
+        let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
+
+        html += `<th class="day-cell ${cls}">${d}</th>`;
+    }
+
+    html += `
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    lunchGroups.forEach((group, groupIndex) => {
+        group.forEach(name => {
+            html += `
+                <tr>
+                    <td class="name-cell" contenteditable="true">${name}</td>
+            `;
+
+            for (let d = 1; d <= lastDay; d++) {
+                const key = getLunchKey(year, month, name, d);
+                const value = localStorage.getItem(key) || "";
+                const cls = getLunchClass(value);
+
+                html += `
+                    <td class="lunch-cell ${cls}"
+                        data-key="${key}"
+                        data-value="${value}">
+                        <div class="lunch-dot"></div>
+                    </td>
+                `;
+            }
+
+            html += `</tr>`;
+        });
+
+        if (groupIndex !== lunchGroups.length - 1) {
+            html += `
+                <tr class="divider">
+                    <td colspan="${lastDay + 1}"></td>
+                </tr>
+            `;
+        }
+    });
+
+    html += `</tbody>`;
+
+    table.innerHTML = html;
+
+    document.querySelectorAll(".lunch-cell").forEach(cell => {
+        cell.onclick = function () {
+            let current = cell.dataset.value || "";
+            let index = lunchTimes.indexOf(current);
+            let next = lunchTimes[(index + 1) % lunchTimes.length];
+
+            cell.dataset.value = next;
+            cell.classList.remove("time-12", "time-13", "time-14");
+
+            if (next) {
+                cell.classList.add(getLunchClass(next));
+                localStorage.setItem(cell.dataset.key, next);
+            } else {
+                localStorage.removeItem(cell.dataset.key);
+            }
+        };
+    });
+}
+
+setTimeout(renderLunchSchedule, 100);
+let lunchCurrentYear = new Date().getFullYear();
+let lunchCurrentMonth = new Date().getMonth();
+
+function changeLunchMonth(diff) {
+
+    lunchCurrentMonth += diff;
+
+    if (lunchCurrentMonth < 0) {
+        lunchCurrentMonth = 11;
+        lunchCurrentYear--;
+    }
+
+    if (lunchCurrentMonth > 11) {
+        lunchCurrentMonth = 0;
+        lunchCurrentYear++;
+    }
+
+    renderLunchSchedule();
+}
+
+window.changeLunchMonth = changeLunchMonth;
+window.renderLunchSchedule = renderLunchSchedule;

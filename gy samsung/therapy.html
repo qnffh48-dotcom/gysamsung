@@ -2,20 +2,172 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>원무</title>
+    <title>물리치료</title>
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="therapy.css">
 </head>
 
 <body>
+
 <div class="sidebar">
 
     <div class="logo">
-    <img src="logo.png" alt="가양삼성정형외과">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+
+    
+    </div>
+
 </div>
 
-        <div class="nav">
-            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
-            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
-            
-        </div>
+<main class="therapy-main">
+
+    <div class="therapy-top-tabs">
+
+        <button class="therapy-top-tab active"
+            data-tab="therapy-main-page">
+            마감일지
+        </button>
+
+        <button class="therapy-top-tab"
+            data-tab="therapy-temp1">
+            임시1
+        </button>
+
+        <button class="therapy-top-tab"
+            data-tab="therapy-temp2">
+            임시2
+        </button>
+
+        <button class="therapy-top-tab"
+            data-tab="therapy-temp3">
+            임시3
+        </button>
+
+    </div>
+
+    <!-- 메인 -->
+    <div class="therapy-top-page active"
+        id="therapy-main-page">
+
+        <section class="therapy-section">
+
+            <div class="therapy-date-bar">
+                <button class="therapy-date-btn" id="prevDay">◀</button>
+
+                <div class="therapy-date-box">
+                    <select id="therapyYear"></select>
+                    <select id="therapyMonth"></select>
+                    <select id="therapyDay"></select>
+                </div>
+
+                <button class="therapy-date-btn" id="nextDay">▶</button>
+            </div>
+
+            <h1 class="therapy-title">
+                물리치료 마감일지
+            </h1>
+
+            <div class="therapy-layout">
+
+                <div class="therapy-tabs">
+                    <button class="therapy-tab active"
+                        onclick="openTherapyRoom(event, 'therapyRoom1')">
+                        1 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom2')">
+                        2 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom3')">
+                        3 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom4')">
+                        4 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom5')">
+                        5 진료실
+                    </button>
+                </div>
+
+                <div class="therapy-card">
+
+                    <div id="therapyRoom1"
+                        class="therapy-page active"></div>
+
+                    <div id="therapyRoom2"
+                        class="therapy-page"></div>
+
+                    <div id="therapyRoom3"
+                        class="therapy-page"></div>
+
+                    <div id="therapyRoom4"
+                        class="therapy-page"></div>
+
+                    <div id="therapyRoom5"
+                        class="therapy-page"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- 임시 -->
+    <div class="therapy-top-page" id="therapy-temp1">
+        <div class="therapy-card"
+            style="min-height:500px;"></div>
+    </div>
+
+    <div class="therapy-top-page" id="therapy-temp2">
+        <div class="therapy-card"
+            style="min-height:500px;"></div>
+    </div>
+
+    <div class="therapy-top-page" id="therapy-temp3">
+        <div class="therapy-card"
+            style="min-height:500px;"></div>
+    </div>
+
+</main>
+
+<script src="therapy.js"></script>
+
+</body>
+</html>
+<script src="therapy.js"></script>
+<script type="module" src="role-check.js"></script>

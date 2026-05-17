@@ -2,36 +2,80 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
+
     <link rel="stylesheet" href="login.css">
 </head>
+
 <body>
 
-    <div class="login-box">
-        <h1>가양삼성정형외과</h1>
-        <p>Internal Login</p>
+    <div class="login-page">
 
-        <input id="id" type="text" placeholder="아이디">
-        <input id="pw" type="password" placeholder="비밀번호">
+        <div class="login-card">
 
-        <button onclick="login()">로그인</button>
+            <div class="login-logo">
+                <img src="logo.png" alt="가양삼성정형외과">
+            </div>
 
-        <div id="msg"></div>
+            <h1>로그인</h1>
+
+            <p class="login-subtitle">
+                아이디와 비밀번호를 입력해주세요.
+            </p>
+
+            <form id="loginForm">
+
+                <div class="login-input-box">
+                    <span></span>
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="아이디"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="login-input-box">
+                    <span></span>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="비밀번호"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-btn">
+                    로그인
+                </button>
+<div class="remember-box">
+
+    <input
+        type="checkbox"
+        id="rememberId"
+    >
+
+    <label for="rememberId">
+        아이디 저장
+    </label>
+
+</div>
+                <p id="loginMessage" class="login-message"></p>
+
+            </form>
+
+            <p class="login-footer">
+                © 2026 가양삼성정형외과. All rights reserved.
+            </p>
+
+        </div>
+
     </div>
 
-    <script>
-        function login() {
-            const id = document.getElementById("id").value;
-            const pw = document.getElementById("pw").value;
-
-            if (id === "admin" && pw === "1234") {
-                localStorage.setItem("login", "yes");
-                location.href = "index.html";
-            } else {
-                document.getElementById("msg").innerText = "아이디 또는 비밀번호가 틀렸습니다.";
-            }
-        }
-    </script>
+    <script type="module" src="login.js"></script>
 
 </body>
 </html>

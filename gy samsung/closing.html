@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마감일지</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="closing.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    
+    </div>
+</div>
+
+<main class="closing-main">
+
+    <div class="closing-date-bar">
+        <button class="closing-date-btn" id="prevDay">◀</button>
+
+        <div class="closing-date-box">
+            <select id="closingYear"></select>
+            <select id="closingMonth"></select>
+            <select id="closingDay"></select>
+        </div>
+
+        <button class="closing-date-btn" id="nextDay">▶</button>
+    </div>
+
+    <h1 class="closing-title">가양삼성정형외과 일일 마감일지</h1>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 수납 내역</h2>
+        <div class="closing-tabs" id="deskClosingTabs"></div>
+        <div class="closing-card">
+            <div id="deskClosingContent"></div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 비급여 건수 · 매출 · 상담</h2>
+        <div class="closing-tabs" id="therapyClosingTabs"></div>
+        <div class="closing-card">
+            <div id="therapyClosingContent"></div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 예약환자 내원 정보</h2>
+        <div class="closing-card">
+            <table class="closing-table" id="reservationClosingTable"></table>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 주사 환자 예약 현황</h2>
+        <div class="closing-card">
+            <table class="closing-table" id="injectionReserveClosingTable"></table>
+        </div>
+    </section>
+
+    <section class="closing-section two-column">
+        <div>
+            <h2><span class="big-dot"></span> 일일 지출</h2>
+            <div class="closing-card">
+                <table class="closing-table" id="expenseClosingTable"></table>
+            </div>
+        </div>
+
+        <div>
+            <h2><span class="big-dot"></span> 추가 수입</h2>
+            <div class="closing-card">
+                <table class="closing-table" id="incomeClosingTable"></table>
+            </div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+    <h2><span class="big-dot"></span> 주사 현황</h2>
+
+    <div class="closing-card">
+
+        <div class="radiology-date-view"
+             id="radiologyDateView">
+        </div>
+
+        <table class="closing-table"
+               id="radiologyClosingTable">
+        </table>
+
+    </div>
+</section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 특이사항</h2>
+        <div class="closing-card">
+            <div class="closing-memo" id="memoClosingBox"></div>
+        </div>
+    </section>
+
+</main>
+
+<script src="closing.js"></script>
+
+</body>
+</html>
+<script src="closing.js"></script>
+<script type="module" src="role-check.js"></script>

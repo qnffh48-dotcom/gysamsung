@@ -1,0 +1,363 @@
+.therapy-section {
+    width: 100%;
+    margin-bottom: 34px;
+}
+
+.therapy-layout {
+    width: 1050px;
+    margin-left: 40px;
+}
+.therapy-section h2 {
+    margin: 0 0 14px;
+    color: #2f4858;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.therapy-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: 34px;
+    margin-bottom: -3px;
+    position: relative;
+    z-index: 10;
+}
+
+.therapy-tab {
+    width: 135px;
+    height: 52px;
+
+    border: none;
+    border-radius: 18px 18px 0 0;
+
+    background: #e5e7eb;
+    color: #2f4858;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    position: relative;
+    transition: 0.2s;
+}
+
+.therapy-tab.active {
+    background: white;
+    color: #111;
+}
+
+.therapy-tab.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -5px;
+
+    width: 100%;
+    height: 8px;
+
+    background: white;
+}
+
+.therapy-card {
+    background: white;
+    border-radius: 24px;
+    padding: 34px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.therapy-page {
+    display: none;
+}
+
+.therapy-page.active {
+    display: block;
+}
+
+.therapy-page h3 {
+    margin: 0 0 24px;
+    color: #2f4858;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.therapy-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.therapy-table th,
+.therapy-table td {
+    border: 1px solid #d8dee6;
+    padding: 10px;
+    text-align: center;
+}
+
+.therapy-table th {
+    background: #f1f5f9;
+    color: #2f4858;
+    font-weight: 900;
+}
+
+.therapy-table td:first-child {
+    background: #f8fafc;
+    font-weight: 800;
+    color: #374151;
+}
+
+.therapy-table input {
+    width: 100%;
+    height: 38px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    padding: 0 10px;
+
+    font-size: 16px;
+
+    outline: none;
+    box-sizing: border-box;
+}.therapy-main {
+    flex: 1;
+    min-height: 100vh;
+
+    padding: 42px 40px;
+
+    background: #d6dbe1;
+
+    box-sizing: border-box;
+}
+
+.therapy-layout {
+    width: 1050px;
+    margin: 0 auto;
+}.therapy-section h2 {
+    text-align: center;
+}.big-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #c9a46a;
+
+    display: inline-block;
+}.big-dot {
+    margin-right: 10px;
+}.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.9;
+
+    margin-left: 2px;
+}.therapy-title {
+    text-align: center;
+
+    color: #2f4858; 
+
+    margin-bottom: 28px;
+
+    font-size: 40px !important;
+
+    font-weight: 650 !important;
+}/* =========================
+   물리치료 전체 흰 박스
+========================= */
+
+.therapy-main {
+    flex: 1 !important;
+    min-height: 100vh !important;
+
+    padding: 42px 40px !important;
+
+    background: #d6dbe1 !important;
+
+    box-sizing: border-box !important;
+}
+
+.therapy-section {
+    width: 100% !important;
+
+    margin: 0 !important;
+
+    background: transparent !important;
+
+    padding: 0 !important;
+
+    box-shadow: none !important;
+}
+.therapy-layout {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* =========================
+   날짜 바
+========================= */
+
+.therapy-date-bar {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    gap: 18px !important;
+
+    margin: 0 0 24px 0 !important;
+}
+
+.therapy-date-box {
+    display: flex !important;
+    gap: 14px !important;
+
+    background: #f5f5f5 !important;
+
+    padding: 14px 18px !important;
+
+    border-radius: 24px !important;
+}
+
+.therapy-date-box select {
+    width: 120px !important;
+    height: 54px !important;
+
+    border: none !important;
+
+    border-radius: 14px !important;
+
+    background: #e9ecef !important;
+
+    color: #2f4858 !important;
+
+    font-size: 18px !important;
+    font-weight: 800 !important;
+
+    text-align: center !important;
+
+    outline: none !important;
+}
+
+.therapy-date-btn {
+    width: 58px !important;
+    height: 58px !important;
+
+    border: none !important;
+
+    border-radius: 18px !important;
+
+    background: #2f4858 !important;
+
+    color: white !important;
+
+    font-size: 28px !important;
+    font-weight: 900 !important;
+
+    cursor: pointer !important;
+}
+
+/* =========================
+   안쪽 카드
+========================= */
+
+.therapy-card {
+    background: white !important;
+
+    border-radius: 24px !important;
+
+    padding: 34px !important;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+
+    box-sizing: border-box !important;
+}/* =========================
+   상단 탭
+========================= */
+
+.therapy-top-tabs {
+    width: 1100px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    gap: 8px;
+}
+
+.therapy-top-tab {
+    width: 170px;
+    height: 58px;
+
+    border: none;
+
+    border-radius: 18px 18px 0 0;
+
+    background: #dfe4ea;
+
+    color: #2f4858;
+
+    font-size: 20px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.therapy-top-tab.active {
+    background: white;
+
+    color: #111;
+}
+
+.therapy-top-page {
+    display: none;
+}
+
+.therapy-top-page.active {
+    display: block;
+}.therapy-top-tabs {
+    position: relative;
+    z-index: 20;
+
+    margin-bottom: -2px;
+}
+
+.therapy-top-page {
+    background: white;
+
+    border-radius: 0 28px 28px 28px;
+
+    position: relative;
+    z-index: 10;
+}.therapy-top-page {
+    width: 1100px;
+
+    margin: 0 auto;
+
+    background: white;
+
+    border-radius: 0 28px 28px 28px;
+
+    padding: 34px 45px 50px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+
+    box-sizing: border-box;
+}

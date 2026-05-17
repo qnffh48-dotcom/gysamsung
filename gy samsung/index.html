@@ -14,72 +14,134 @@
 </div>
 
         <div class="nav">
-            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
-            <button onclick="location.href='radiology.html'"><span class="gold-dot"></span> 방사선과</button>
-            <button onclick="location.href='nurse.html'"><span class="gold-dot"></span> 간호과</button>
-            <button onclick="location.href='desk.html'"><span class="gold-dot"></span> 원무과</button>
-            <button onclick="location.href='therapy.html'"><span class="gold-dot"></span> 물리치료과</button>
-        </div>
+
+    <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='radiology.html'">
+        <span class="gold-dot"></span>
+        방사선과
+        <img src="radiation.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='nurse.html'">
+        <span class="gold-dot"></span>
+        간호과
+        <img src="syringe.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='desk.html'">
+        <span class="gold-dot"></span>
+        원무과
+        <img src="banknote.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='therapy.html'">
+        <span class="gold-dot"></span>
+        물리치료과
+        <img src="biceps-flexed.png" class="nav-img-icon">
+    </button>
+
+    <button class="logout-btn" id="logoutBtn">
+   </span> 로그아웃
+</button>
+
+    <div class="sidebar-clock">
+
+    <div id="clockDate"></div>
+
+    <div id="clockTime"></div>
+
+</div>
+
+</div>
     </div>
 
-    <main class="main">
-      
-            </div>
-        </div>
+   <main class="main">
+
+    <div class="notice-url-row">
 
         <section class="notice-card">
 
-    <div class="notice-header">
+            <div class="notice-header">
+                <h1>[필독] 공지사항</h1>
 
-        <h1>[필독] 공지사항</h1>
- 
-        <button class="add-notice-btn"
-            onclick="addNotice()">
+               <button class="notice-add-btn" id="noticeEditBtn" onclick="addNotice()">공지 추가</button>
+            </div>
 
-            + 공지 추가
+            <div class="notice-list" id="noticeList"></div>
 
-        </button>
+        </section>
+
+        <section class="url-board">
+
+            <h3>📌 URL 모음</h3>
+
+            <div class="url-input-box">
+                <input type="text" id="urlName" placeholder="사이트 이름">
+                <input type="text" id="urlLink" placeholder="주소 입력">
+                <button type="button" onclick="addUrl()">추가</button>
+            </div>
+
+            <div id="urlList"></div>
+
+        </section>
 
     </div>
 
-    <div class="notice-list" id="noticeList">
-    </div>
+    <section class="today-card">
 
-</section>
+        <h2>오늘 스케줄</h2>
 
-<section class="today-card">
+        <div class="today-list">
 
-    <h2>오늘 스케줄 </h2>
+            <div>
+                <strong>의사</strong>
+                <span class="today-doctor"> </span>
+            </div>
 
-    <div class="today-list">
+            <div>
+                <strong>방과</strong>
+                <span class="today-room"> </span>
+            </div>
 
-        <div>
-    <strong>의사</strong>
-    <span class="today-doctor">미입력</span>
+            <div>
+                <strong>간호</strong>
+                <span class="today-nurse"> </span>
+            </div>
+
+            <div>
+                <strong>원무</strong>
+                <span class="today-desk"> </span>
+            </div>
+
+            <div>
+                <strong>물치</strong>
+                <span class="today-therapy"> </span>
+            </div>
+
+        </div>
+
+    </section>
+
 </div>
 
-<div>
-    <strong>방과</strong>
-    <span class="today-room">미입력</span>
-</div>
-
-<div>
-    <strong>간호</strong>
-    <span class="today-nurse">미입력</span>
-</div>
-
-<div>
-    <strong>원무</strong>
-    <span class="today-desk">미입력</span>
-</div>
-
-<div>
-    <strong>물치</strong>
-    <span class="today-therapy">미입력</span>
-</div>
-
-</section><script>
+<script>
 let notices = JSON.parse(localStorage.getItem("notices")) || [
     "",
     
@@ -97,9 +159,8 @@ function renderNotices() {
                 <textarea class="notice-text"
                     oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
 
-                <button class="notice-delete" onclick="deleteNotice(${index})">
-                    삭제
-                </button>
+               <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
+               
             </div>
         `;
     });
@@ -391,7 +452,13 @@ onclick="event.stopPropagation()">
 <textarea class="manual-desc-input"
 onclick="event.stopPropagation()"></textarea>
 </div>
+
+</div>
+</div>
+
+</main>
 <script>
+
 let currentManualKey = "";
 
 function openModal(key, title, basicContent) {
@@ -463,5 +530,83 @@ document.addEventListener("keydown", function (e) {
     }
 });
 </script>
+<script>
+let savedUrls = JSON.parse(localStorage.getItem("savedUrls")) || [];
+
+function renderUrls() {
+    const urlList = document.getElementById("urlList");
+    if (!urlList) return;
+
+    urlList.innerHTML = "";
+
+    savedUrls.forEach((url, index) => {
+        urlList.innerHTML += `
+            <div class="url-link-item">
+                <a href="${url.link}" target="_blank">${url.name}</a>
+                <button type="button" onclick="deleteUrl(${index})">삭제</button>
+            </div>
+        `;
+    });
+}
+
+function addUrl() {
+    const nameInput = document.getElementById("urlName");
+    const linkInput = document.getElementById("urlLink");
+
+    const name = nameInput.value.trim();
+    let link = linkInput.value.trim();
+
+    if (!name || !link) {
+        alert("사이트 이름이랑 주소 둘 다 입력해주세용");
+        return;
+    }
+
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+        link = "https://" + link;
+    }
+
+    savedUrls.push({ name, link });
+    localStorage.setItem("savedUrls", JSON.stringify(savedUrls));
+
+    nameInput.value = "";
+    linkInput.value = "";
+
+    renderUrls();
+}
+
+function deleteUrl(index) {
+    savedUrls.splice(index, 1);
+    localStorage.setItem("savedUrls", JSON.stringify(savedUrls));
+    renderUrls();
+}
+
+renderUrls();
+</script>
+<script>
+function updateSidebarClock() {
+    const now = new Date();
+
+    const dateText = now.getFullYear() + "." +
+        String(now.getMonth() + 1).padStart(2, "0") + "." +
+        String(now.getDate()).padStart(2, "0");
+
+    const timeText =
+        String(now.getHours()).padStart(2, "0") + ":" +
+        String(now.getMinutes()).padStart(2, "0") + ":" +
+        String(now.getSeconds()).padStart(2, "0");
+
+    const dateEl = document.getElementById("clockDate");
+    const timeEl = document.getElementById("clockTime");
+
+    if (dateEl) dateEl.textContent = dateText;
+    if (timeEl) timeEl.textContent = timeText;
+}
+
+updateSidebarClock();
+setInterval(updateSidebarClock, 1000);
+</script>
 </body>
 </html>
+<script src="script.js"></script>
+<script type="module" src="role-check.js"></script>
+<script type="module" src="logout.js"></script>

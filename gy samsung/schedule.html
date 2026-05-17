@@ -19,40 +19,106 @@
 </div>
 
     <div class="nav">
-        <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            
 
-        <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+
+    
     </div>
 
 </div>
 
 <div class="schedule-main">
 
-    <div class="schedule-card">
+    <div class="schedule-wrap">
 
-        <!-- 상단 -->
-        <div class="top-bar">
+        <!-- 달력 -->
+        <div class="schedule-card">
 
-            <button onclick="prevMonth()">◀</button>
+            <div class="top-bar">
 
-            <div class="month-title">
+                <button onclick="prevMonth(); renderLunchSchedule();">
+                    ◀
+                </button>
 
-    <span id="monthText"></span>
+                <div class="month-title">
 
-    <select id="yearSelect" onchange="changeDate()">
-    </select>
+                    <span id="monthText"></span>
 
-    <select id="monthSelect" onchange="changeDate()">
-    </select>
+                    <select id="yearSelect"
+                        onchange="changeDate(); renderLunchSchedule();">
+                    </select>
 
-</div>
+                    <select id="monthSelect"
+                        onchange="changeDate(); renderLunchSchedule();">
+                    </select>
 
-            <button onclick="nextMonth()">▶</button>
+                </div>
+
+                <button onclick="nextMonth(); renderLunchSchedule();">
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="calendar" id="calendar"></div>
 
         </div>
 
-        <!-- 달력 -->
-        <div class="calendar" id="calendar">
+        <!-- 직원 점심시간 -->
+        <div class="lunch-box">
+
+            <div class="lunch-header">
+
+    <h2 class="lunch-title">
+        직원 점심시간
+        <span id="lunchMonthText"></span>
+    </h2>
+
+    <div class="lunch-control">
+        <button type="button" onclick="changeLunchMonth(-1)">
+    ◀
+</button>
+
+<div class="lunch-month-box">
+    <span id="lunchMonthText2"></span>
+</div>
+
+<button type="button" onclick="changeLunchMonth(1)">
+    ▶
+</button>
+    </div>
+
+    <div class="lunch-legend">
+        <span><i class="slot slot-12"></i>12:00 ~ 13:00</span>
+        <span><i class="slot slot-13"></i>13:00 ~ 14:00</span>
+        <span><i class="slot slot-14"></i>14:00 ~ 15:00</span>
+    </div>
+
+</div>
+
+            <div class="lunch-table-wrap">
+
+                <table class="monthly-lunch-table"
+                    id="monthlyLunchTable">
+                </table>
+
+            </div>
 
         </div>
 
@@ -294,3 +360,6 @@ function getDateColor(date) {
 </script>
 
 <script type="module" src="schedule.js"></script>
+
+<script src="schedule.js"></script>
+<script type="module" src="role-check.js"></script>

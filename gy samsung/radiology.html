@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>방과</title>
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="radiology.css">
 </head>
-<link rel="stylesheet" href="style.css">
+
 <body>
 
 
@@ -16,9 +18,28 @@
     <img src="logo.png" alt="가양삼성정형외과">
 </div>
         <div class="nav">
-            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
-            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
+            <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
             
         </div>
     </div>
@@ -58,9 +79,19 @@
             <!-- 마감일지 -->
             <div class="tab-page active"
                  id="closing">
+                 <div class="radiology-date-bar">
+    <button class="date-move-btn" id="prevDayBtn">◀</button>
 
-                <table class="closing-table">
+    <div class="date-select-box">
+        <select id="yearSelect"></select>
+        <select id="monthSelect"></select>
+        <select id="daySelect"></select>
+    </div>
 
+    <button class="date-move-btn" id="nextDayBtn">▶</button>
+</div>
+
+                <table class="closing-table radiology-table">
                     <tr>
                         <th colspan="2" class="main-title">
                             영상의학과 마감일지
@@ -83,7 +114,7 @@
                         <td>
                             <input class="report-input carm-count"
                                    data-key="carm_os1"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -92,7 +123,7 @@
                         <td>
                             <input class="report-input carm-count"
                                    data-key="carm_neuro"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -101,7 +132,7 @@
                         <td>
                             <input class="report-input carm-count"
                                    data-key="carm_os3"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -110,7 +141,7 @@
                         <td>
                             <input class="report-input carm-count"
                                    data-key="carm_os4"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -119,7 +150,7 @@
                         <td>
                             <input class="report-input carm-count"
                                    data-key="carm_os5"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -149,7 +180,7 @@
                         <td>
                             <input class="report-input"
                                    data-key="arthrogram"
-                                   value="0개">
+                                   value="">
                         </td>
                     </tr>
 
@@ -287,8 +318,6 @@ function changeXrayMonth(num) {
 setTimeout(renderXray, 100);
 </script>
 
-            </div>
-
             <!-- 임시2 -->
             <div class="tab-page"
                  id="temp2">
@@ -305,11 +334,15 @@ setTimeout(renderXray, 100);
 
             </div>
 
-        </div>
-
+               </div>
     </div>
-
 </main>
 
 <script src="radiology-tabs.js"></script>
 <script type="module" src="radiology.js"></script>
+
+</body>
+</html>
+
+<script src="radiology.js"></script>
+<script type="module" src="role-check.js"></script>

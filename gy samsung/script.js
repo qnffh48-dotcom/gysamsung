@@ -162,3 +162,14 @@ renderCalendar();
 /* 매뉴얼 팝업 + 자동저장 */
 window.currentManualKey = "";
 
+const floatingNav = document.querySelector(".sidebar .nav");
+
+if (floatingNav) {
+    window.addEventListener("scroll", () => {
+        const targetY = window.scrollY;
+
+        requestAnimationFrame(() => {
+            floatingNav.style.transform = `translateY(${targetY}px)`;
+        });
+    });
+}

@@ -4,128 +4,255 @@
     <meta charset="UTF-8">
     <title>원무</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="desk.css">
 </head>
 
 <body>
-<div class="sidebar">
 
+<div class="sidebar">
     <div class="logo">
-    <img src="logo.png" alt="가양삼성정형외과">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+
+    
+    </div>
+    
 </div>
 
-        <div class="nav">
-            <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
-            <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-            <button onclick="location.href='stats.html'"><span class="gold-dot"></span> 통계</button>
+<main class="desk-main">
+
+    
+
+    <div class="desk-top-tabs">
+        
+    <button class="desk-top-tab active" data-tab="desk-main-page">마감일지</button>
+    <button class="desk-top-tab" data-tab="desk-temp1">임시1</button>
+    <button class="desk-top-tab" data-tab="desk-temp2">임시2</button>
+    <button class="desk-top-tab" data-tab="desk-temp3">임시3</button>
+</div>
+
+
+<div class="desk-top-page active" id="desk-main-page">
+
+    <div class="desk-date-bar">
+        <button class="desk-date-btn" id="prevDay">◀</button>
+
+        <div class="desk-date-box">
+            <select id="deskYear"></select>
+            <select id="deskMonth"></select>
+            <select id="deskDay"></select>
+        </div>
+
+        <button class="desk-date-btn" id="nextDay">▶</button>
+    </div>
+
+    <h1 class="desk-title">원무과 마감일지</h1>
+
+    <section class="desk-section">
+        <h2><span class="big-dot"></span>진료실별 수납 정보 입력</h2>
+
+        <div class="room-tabs">
+            <button class="room-tab active" onclick="openRoom(event, 'room1')">1 진료</button>
+            <button class="room-tab" onclick="openRoom(event, 'room2')">2 진료</button>
+            <button class="room-tab" onclick="openRoom(event, 'room3')">3 진료</button>
+            <button class="room-tab" onclick="openRoom(event, 'room4')">4 진료</button>
+            <button class="room-tab" onclick="openRoom(event, 'room5')">5 진료</button>
+        </div>
+
+        <div class="desk-card">
+            <div id="room1" class="room-page active"></div>
+            <div id="room2" class="room-page"></div>
+            <div id="room3" class="room-page"></div>
+            <div id="room4" class="room-page"></div>
+            <div id="room5" class="room-page"></div>
+        </div>
+    </section>
+
+    <section class="desk-section">
+        <h2><span class="big-dot"></span>예약환자 내원 정보 입력</h2>
+
+        <div class="desk-card">
+            <table class="desk-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>예약</th>
+                        <th>변경</th>
+                        <th>취소</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>주사</td>
+                        <td><input></td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>경과</td>
+                        <td><input></td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>도수</td>
+                        <td><input></td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>ESWT</td>
+                        <td><input></td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>실예약환자수</td>
+                        <td colspan="3"><input></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="desk-section">
+        <h2><span class="big-dot"></span>주사 환자 예약 현황</h2>
+
+        <div class="desk-card">
+            <table class="desk-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>초진 X block</th>
+                        <th>재진 X block</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>X</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>주사경과만</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>주사만</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>주사경과+주사</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>이외예약O</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                    <tr>
+                        <td>권장</td>
+                        <td><input></td>
+                        <td><input></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="desk-section two-column">
+        <div>
+            <h2><span class="big-dot"></span>일일 지출 내역 입력</h2>
+            <div class="desk-card">
+                <div class="input-row">
+                    <label>현금</label>
+                    <input>
+                </div>
+                <div class="input-row">
+                    <label>카드</label>
+                    <input>
+                </div>
+                <div class="input-row">
+                    <label>FREE</label>
+                    <input>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2><span class="big-dot"></span>추가 수입 내역 입력</h2>
+            <div class="desk-card">
+                <div class="input-row">
+                    <label>현금</label>
+                    <input>
+                </div>
+                <div class="input-row">
+                    <label>카드</label>
+                    <input>
+                </div>
+                <div class="input-row">
+                    <label>계좌</label>
+                    <input>
+                </div>
             
         </div>
-<div class="room-box">
+    </section>
 
-    <div class="room-tabs">
-        <button class="room-tab active" onclick="openRoom(event, 'room1')">1 진료</button>
-        <button class="room-tab" onclick="openRoom(event, 'room2')">2 진료</button>
-        <button class="room-tab" onclick="openRoom(event, 'room3')">3 진료</button>
-        <button class="room-tab" onclick="openRoom(event, 'room4')">4 진료</button>
-        <button class="room-tab" onclick="openRoom(event, 'room5')">5 진료</button>
-    </div>
+    <section class="desk-section">
+        <h2><span class="big-dot"></span>특이사항 입력</h2>
 
-    <div id="room1" class="room-page active">
-        <h3>ㆍ1 진료 수납 정보 입력</h3>
-
-        <div class="input-row">
-            <label>급여</label>
-            <input type="number" value="0">
+        <div class="desk-card">
+            <textarea class="memo-box"></textarea>
         </div>
-
-        <div class="input-row">
-            <label>비급여</label>
-            <input type="number" value="0">
-        </div>
-
-        <div class="input-row">
-            <label>조합청구액</label>
-            <input type="number" value="0">
-        </div>
-
-        <div class="input-row">
-            <label>100/100미만 총액</label>
-            <input type="number" value="0">
-        </div>
-
-        <div class="input-row">
-            <label>장애인기금/전액본인</label>
-            <input type="number" value="0">
-        </div>
-
-        <div class="input-row">
-            <label>현금</label>
-            <input type="number" value="0">
-        </div>
-
-        <div class="input-row">
-            <label>카드</label>
-            <input type="number" value="0">
-        </div>
-    </div>
-
-    <div id="room2" class="room-page">
-    <h3>ㆍ2 진료 수납 정보 입력</h3>
-
-    <div class="input-row">
-        <label>급여</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>비급여</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>조합청구액</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>100/100미만 총액</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>장애인기금/전액본인</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>현금</label>
-        <input type="number" value="0">
-    </div>
-
-    <div class="input-row">
-        <label>카드</label>
-        <input type="number" value="0">
-    </div>
+    </section>
 </div>
-    </div>
 
-    <div id="room3" class="room-page">
-        <h3>ㆍ3 진료 수납 정보 입력</h3>
-    </div>
+<div class="desk-top-page" id="desk-temp1">
+    <div class="desk-card" style="min-height:500px;"></div>
+</div>
 
-    <div id="room4" class="room-page">
-        <h3>ㆍ4 진료 수납 정보 입력</h3>
-    </div>
+<div class="desk-top-page" id="desk-temp2">
+    <div class="desk-card" style="min-height:500px;"></div>
+</div>
 
-    <div id="room5" class="room-page">
-        <h3>ㆍ5 진료 수납 정보 입력</h3>
-    </div>
-
+<div class="desk-top-page" id="desk-temp3">
+    <div class="desk-card" style="min-height:500px;"></div>
 </div>
 
 
 
-<script src="script.js"></script>
+</main>
+
+<script src="desk.js"></script>
 
 </body>
-
 </html>
+<script src="desk.js"></script>
+<script type="module" src="role-check.js"></script>

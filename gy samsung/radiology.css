@@ -1,0 +1,363 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: #d6dbe1;
+}
+
+/* 메인 */
+.radiology-main {
+    flex: 1;
+    min-height: 100vh;
+    padding: 35px 40px 40px;
+    background: #d6dbe1;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+/* 전체 래퍼 */
+.radiology-layout {
+    width: 1050px;
+    margin: 0 auto;
+}
+
+/* 탭 버튼 */
+.tab-buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: 55px;
+    margin-bottom: -3px;
+    position: relative;
+    z-index: 100;
+}
+
+/* 버튼 */
+.tab-btn {
+    width: 160px;
+    height: 54px;
+
+    border: none;
+    border-radius: 18px 18px 0 0;
+
+    background: #e5e7eb;
+    color: #2f4858;
+
+    font-size: 19px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.22s ease,
+        transform 0.22s ease,
+        color 0.22s ease;
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* 활성 */
+.tab-btn.active {
+    background: white;
+    color: #111;
+    z-index: 200;
+}
+
+/* 메인 흰박스 */
+.tab-content {
+    width: 1050px;
+    min-height: 820px;
+
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 45px;
+
+    box-sizing: border-box;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* before 제거 */
+.tab-content::before {
+    display: none;
+}
+
+/* 탭 페이지 */
+.tab-page {
+    display: none;
+}
+
+.tab-page.active {
+    display: block;
+}
+
+/* 마감일지 표 */
+.closing-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 22px;
+}
+
+.closing-table th,
+.closing-table td {
+    border: 2px solid #333;
+    padding: 18px;
+}
+
+.main-title {
+    font-size: 34px;
+    background: #f5f5f5;
+}
+
+.sub-title {
+    font-size: 28px;
+    background: #fafafa;
+}
+
+/* 입력 */
+.report-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    text-align: center;
+    font-size: 22px;
+}
+
+.total-input {
+    font-weight: bold;
+}
+
+/* X-ray 스케줄 */
+.xray-wrap {
+    width: 860px;
+    margin: 40px auto 0;
+}
+
+.xray-month-box {
+    width: 860px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 22px;
+}
+
+.xray-month-box button {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: #2f4858;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#xrayTitle {
+    min-width: 180px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    color: #2f4858;
+}
+
+/* 달력 */
+.xray-calendar {
+    width: 860px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    text-align: center;
+    background: white;
+    border: 2px solid #2f4858;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.xray-calendar th,
+.xray-calendar td {
+    border-right: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+    height: 40px;
+    padding: 0;
+    position: relative;
+}
+
+.xray-calendar th:last-child,
+.xray-calendar td:last-child {
+    border-right: none;
+}
+
+.xray-calendar tr:last-child td,
+.xray-calendar tr:last-child th {
+    border-bottom: none;
+}
+
+.xray-calendar thead th {
+    background: #2f4858;
+    color: white;
+    font-size: 17px;
+    height: 42px;
+}
+
+.xray-calendar thead .sat {
+    color: #8fd3ff;
+}
+
+.xray-calendar th:first-child,
+.xray-calendar td:first-child {
+    width: 95px;
+    font-weight: bold;
+    background: #f4f7f9;
+}
+
+.xray-calendar tbody tr:nth-child(3n + 1) td {
+    background: #f8fafb;
+    font-weight: 600;
+}
+
+.off-label {
+    color: #ff3b3b !important;
+    background: #fff2f2 !important;
+}
+
+.sat {
+    color: #0066ff;
+    font-weight: bold;
+}
+
+.xray-input {
+    width: 100%;
+    height: 40px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    text-align: center;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.xray-input:focus {
+    background: #eaf4ff;
+    outline: 2px solid #2f4858;
+}.radiology-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #f8fafc;
+}
+
+.radiology-table th {
+    background: #dfe5eb;
+    color: #243b53;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 18px;
+    border: 1px solid #cfd8e3;
+}
+
+.radiology-table td {
+    border: 1px solid #d7dee7;
+    padding: 14px;
+    text-align: center;
+    background: white;
+}
+
+.radiology-table input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #c7d2df;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 17px;
+    box-sizing: border-box;
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+.radiology-table input:focus {
+    outline: none;
+    border-color: #7aa7d9;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(122,167,217,0.15);
+}.radiology-date-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.date-select-box {
+    display: flex;
+    gap: 12px;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.date-select-box select {
+    height: 44px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 12px;
+    background: #eef2f6;
+    font-size: 17px;
+    font-weight: 800;
+    color: #243b53;
+    cursor: pointer;
+}
+
+.date-move-btn {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: #2f4c64;
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.18s;
+}
+
+.date-move-btn:hover {
+    transform: translateY(-2px);
+    background: #3d6484;
+}.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.9;
+
+    margin-left: 2px;
+}

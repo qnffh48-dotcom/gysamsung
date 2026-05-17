@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>통계</title>
 
+    
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="stats.css">
 
@@ -19,13 +21,42 @@
     </div>
 
     <div class="nav">
-        <button onclick="location.href='index.html'"><span class="gold-dot"></span> 홈</button>
-        <button onclick="location.href='schedule.html'"><span class="gold-dot"></span> 스케줄</button>
-        <button onclick="location.href='radiology.html'"><span class="gold-dot"></span> 방사선과</button>
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            <button onclick="location.href='schedule.html'">
+        <span class="gold-dot"></span>
+        스케줄
+           <img src="calendar-check.png" class="nav-img-icon">
+    </button>
+
+
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+       
     </div>
 </div>
 
 <main class="stats-main">
+
+    <div class="stats-date-bar">
+    <button class="stats-date-btn" id="prevMonth">◀</button>
+
+    <div class="stats-date-box">
+        <select id="statsYear"></select>
+        <select id="statsMonth"></select>
+    </div>
+
+    <button class="stats-date-btn" id="nextMonth">▶</button>
+</div>
+
+</div>
 
     <div class="stats-header">
         <div>
@@ -68,3 +99,5 @@
 
 </body>
 </html>
+<script src="stats.js"></script>
+<script type="module" src="role-check.js"></script>
