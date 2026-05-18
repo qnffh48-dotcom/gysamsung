@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>가양삼성정형외과</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -79,7 +80,7 @@
         <section class="notice-card">
 
             <div class="notice-header">
-                <h1>[필독] 공지사항</h1>
+                <h1>[필독] 공지사항 📢</h1>
 
                <button class="notice-add-btn" id="noticeEditBtn" onclick="addNotice()">공지 추가</button>
             </div>
@@ -106,7 +107,7 @@
 
     <section class="today-card">
 
-        <h2>오늘 스케줄</h2>
+        <h2>TODAY OFF💤</h2>
 
         <div class="today-list">
 
@@ -142,10 +143,7 @@
 </div>
 
 <script>
-let notices = JSON.parse(localStorage.getItem("notices")) || [
-    "",
-    
-];
+let notices = JSON.parse(localStorage.getItem("notices")) || [""];
 
 function renderNotices() {
     const noticeList = document.getElementById("noticeList");
@@ -159,8 +157,7 @@ function renderNotices() {
                 <textarea class="notice-text"
                     oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
 
-               <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
-               
+                <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
             </div>
         `;
     });
@@ -199,7 +196,7 @@ renderNotices();
 <div class="manual-section">
 
     <div class="manual-header">
-        📂 업무 매뉴얼
+         업무 매뉴얼 📂
 </div>
     <div class="manual-grid">
 <div class="manual-modal" id="manualModal">
@@ -561,7 +558,7 @@ function addUrl() {
         return;
     }
 
-    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+    if (!link.startsWith("https://") && !link.startsWith("https://")) {
         link = "https://" + link;
     }
 
@@ -610,4 +607,3 @@ setInterval(updateSidebarClock, 1000);
 <script src="script.js"></script>
 <script type="module" src="role-check.js"></script>
 <script type="module" src="logout.js"></script>
-<script type="module" src="logout-on-close.js"></script>

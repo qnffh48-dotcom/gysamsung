@@ -63,7 +63,7 @@ await signInWithEmailAndPassword(
 
         if (error.code === "auth/invalid-credential") {
             message.textContent =
-                "아이디 또는 비밀번호가 올바르지 않습니다.";
+                "틀렸어용!";
         } else {
             message.textContent =
                 "로그인에 실패했습니다.";

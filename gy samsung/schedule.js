@@ -236,3 +236,17 @@ function changeLunchMonth(diff) {
 
 window.changeLunchMonth = changeLunchMonth;
 window.renderLunchSchedule = renderLunchSchedule;
+function printScheduleOnly() {
+
+    document
+        .querySelectorAll("textarea")
+        .forEach(t => {
+
+            t.innerHTML = t.value;
+
+        });
+
+    window.print();
+}
+
+window.printScheduleOnly = printScheduleOnly;

@@ -17,13 +17,10 @@ excelFile.addEventListener("change", async function (e) {
     const rows = XLSX.utils.sheet_to_json(sheet, {
         header: 1,
         defval: ""
+        
     });
 
-    localStorage.setItem(
-    `stats_rows_${statsYear.value}_${statsMonth.value}`,
-    JSON.stringify(rows)
-);
-
+    saveCurrentStatsRows(rows);
 renderStats(rows);
 });
 
@@ -403,11 +400,10 @@ function renderInjectionStats(rows) {
     });
 }
 
-const savedRows = localStorage.getItem("stats_rows");
-
-if (savedRows) {
-    renderStats(JSON.parse(savedRows));
-}const floatingNav = document.querySelector(".sidebar .nav");
+window.addEventListener("DOMContentLoaded", () => {
+    loadCurrentStatsRows();
+});
+const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
     window.addEventListener("scroll", () => {
@@ -417,12 +413,17 @@ if (floatingNav) {
             floatingNav.style.transform = `translateY(${targetY}px)`;
         });
     });
-}/* =========================
+}
+
+
+/* =========================
    통계 년 / 월 선택 + 월별 저장
 ========================= */
 
 const statsYear = document.getElementById("statsYear");
 const statsMonth = document.getElementById("statsMonth");
+const prevMonthBtn = document.getElementById("prevMonth");
+const nextMonthBtn = document.getElementById("nextMonth");
 
 const today = new Date();
 
@@ -434,8 +435,8 @@ for (let m = 1; m <= 12; m++) {
     statsMonth.innerHTML += `<option value="${m}">${m}월</option>`;
 }
 
-statsYear.value = today.getFullYear();
-statsMonth.value = today.getMonth() + 1;
+statsYear.value = String(today.getFullYear());
+statsMonth.value = String(today.getMonth() + 1);
 
 function statsKey() {
     return `stats_rows_${statsYear.value}_${statsMonth.value}`;
@@ -445,24 +446,29 @@ function saveCurrentStatsRows(rows) {
     localStorage.setItem(statsKey(), JSON.stringify(rows));
 }
 
-function loadCurrentStatsRows() {
-    const saved = localStorage.getItem(statsKey());
+function clearStatsScreen() {
+    document.getElementById("summaryGrid").innerHTML = "";
+    document.getElementById("mainStatsTable").innerHTML = "";
+    document.getElementById("injectionGrid").innerHTML = "";
 
-    if (saved) {
-        renderStats(JSON.parse(saved));
-    } else {
-        document.getElementById("summaryGrid").innerHTML = "";
-        document.getElementById("mainStatsTable").innerHTML = "";
-        document.getElementById("injectionGrid").innerHTML = "";
-
-        if (mainChart) {
-            mainChart.destroy();
-            mainChart = null;
-        }
+    if (mainChart) {
+        mainChart.destroy();
+        mainChart = null;
     }
 }
 
-document.getElementById("prevMonth").onclick = function () {
+function loadCurrentStatsRows() {
+    const saved = localStorage.getItem(statsKey());
+
+    if (!saved) {
+        clearStatsScreen();
+        return;
+    }
+
+    renderStats(JSON.parse(saved));
+}
+
+prevMonthBtn.onclick = function () {
     const date = new Date(
         Number(statsYear.value),
         Number(statsMonth.value) - 1,
@@ -471,13 +477,13 @@ document.getElementById("prevMonth").onclick = function () {
 
     date.setMonth(date.getMonth() - 1);
 
-    statsYear.value = date.getFullYear();
-    statsMonth.value = date.getMonth() + 1;
+    statsYear.value = String(date.getFullYear());
+    statsMonth.value = String(date.getMonth() + 1);
 
     loadCurrentStatsRows();
 };
 
-document.getElementById("nextMonth").onclick = function () {
+nextMonthBtn.onclick = function () {
     const date = new Date(
         Number(statsYear.value),
         Number(statsMonth.value) - 1,
@@ -486,11 +492,14 @@ document.getElementById("nextMonth").onclick = function () {
 
     date.setMonth(date.getMonth() + 1);
 
-    statsYear.value = date.getFullYear();
-    statsMonth.value = date.getMonth() + 1;
+    statsYear.value = String(date.getFullYear());
+    statsMonth.value = String(date.getMonth() + 1);
 
     loadCurrentStatsRows();
 };
 
 statsYear.onchange = loadCurrentStatsRows;
 statsMonth.onchange = loadCurrentStatsRows;
+
+// 첫 접속 때 현재 년/월 통계 바로 표시
+loadCurrentStatsRows();

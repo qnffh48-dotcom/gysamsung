@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스케줄</title>
     <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="schedule.css">
 </head>
 
 <body>
@@ -44,12 +45,17 @@
 </div>
 
 <div class="schedule-main">
+    
 
     <div class="schedule-wrap">
+        
 
         <!-- 달력 -->
         <div class="schedule-card">
-
+            <button onclick="printScheduleOnly()" id="schedulePrintBtn">
+    🖨️ 스케줄 인쇄
+</button>
+            
             <div class="top-bar">
 
                 <button onclick="prevMonth(); renderLunchSchedule();">
@@ -357,10 +363,10 @@ function getDateColor(date) {
 
     return "black";
 }
+
 </script>
 
 <script type="module" src="schedule.js"></script>
 
 <script src="schedule.js"></script>
 <script type="module" src="role-check.js"></script>
-<script type="module" src="logout-on-close.js"></script>

@@ -1,3 +1,11 @@
+const supabaseUrl = "https://kofxcdtynzgchlxohqyz.supabase.co";
+
+const supabaseKey = "sb_publishable_pFbtDbG8UJa9OI3mFvHf_w_Jy-x4VyS";
+
+const supabaseClient = supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
 import { db, doc, getDoc } from "./firebase.js";
 
 async function loadTodaySchedule() {
