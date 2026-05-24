@@ -1,174 +1,272 @@
-const supabaseUrl = "https://kofxcdtynzgchlxohqyz.supabase.co";
+import { db, doc, getDoc, setDoc } from "./firebase.js";
 
-const supabaseKey = "sb_publishable_pFbtDbG8UJa9OI3mFvHf_w_Jy-x4VyS";
-
-const supabaseClient = supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
-import { db, doc, getDoc } from "./firebase.js";
+/* =========================
+   오늘 스케줄
+========================= */
 
 async function loadTodaySchedule() {
+    const today = new Date();
 
-  const today = new Date();
+    const date =
+        today.getFullYear() +
+        "-" +
+        (today.getMonth() + 1) +
+        "-" +
+        today.getDate();
 
-  const date =
-    today.getFullYear() +
-    "-" +
-    (today.getMonth() + 1) +
-    "-" +
-    today.getDate();
+    const snap = await getDoc(doc(db, "schedules", date));
 
-  const snap = await getDoc(doc(db, "schedules", date));
+    const data = snap.exists() ? snap.data() : {};
 
-  if (!snap.exists()) {
-    console.log("오늘 스케줄 없음");
-    return;
-  }
-
-  const data = snap.data();
-
-  document.querySelector(".today-doctor").textContent =
-    data.doctor || "미입력";
-
-  document.querySelector(".today-room").textContent =
-    data.room || "미입력";
-
-  document.querySelector(".today-nurse").textContent =
-    data.nurse || "미입력";
-
-  document.querySelector(".today-desk").textContent =
-    data.desk || "미입력";
-
-  document.querySelector(".today-therapy").textContent =
-    data.therapy || "미입력";
+    document.querySelector(".today-doctor").textContent = data.doctor || "미입력";
+    document.querySelector(".today-room").textContent = data.room || "미입력";
+    document.querySelector(".today-nurse").textContent = data.nurse || "미입력";
+    document.querySelector(".today-desk").textContent = data.desk || "미입력";
+    document.querySelector(".today-therapy").textContent = data.therapy || "미입력";
 }
 
-window.addEventListener("load", loadTodaySchedule);
+/* =========================
+   공지사항 Firebase
+========================= */
 
-function openRoom(event, roomId) {
+let notices = [];
 
-    const pages =
-        document.querySelectorAll(".room-page");
+async function loadNotices() {
+    const snap = await getDoc(doc(db, "mainData", "notices"));
 
-    const tabs =
-        document.querySelectorAll(".room-tab");
-
-    pages.forEach(page =>
-        page.classList.remove("active")
-    );
-
-    tabs.forEach(tab =>
-        tab.classList.remove("active")
-    );
-
-    document.getElementById(roomId)
-        .classList.add("active");
-
-    event.currentTarget
-        .classList.add("active");
+    notices = snap.exists() ? (snap.data().items || [""]) : [""];
+    renderNotices();
 }
-/* X-RAY 달력 */
-let currentDate = new Date();
 
-const rowNames = ["OFF", "X-RAY"];
+async function saveNotices() {
+    await setDoc(
+        doc(db, "mainData", "notices"),
+        { items: notices },
+        { merge: true }
+    );
+}
 
-function renderCalendar() {
-    const title = document.getElementById("calendarTitle");
-    const body = document.getElementById("calendarBody");
+function renderNotices() {
+    const noticeList = document.getElementById("noticeList");
+    if (!noticeList) return;
 
-    if (!title || !body) return;
+    noticeList.innerHTML = "";
 
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    notices.forEach((text, index) => {
+        noticeList.innerHTML += `
+            <div class="notice-item">
+                <span class="dot"></span>
 
-    title.textContent = `${year}년 ${month + 1}월`;
-    body.innerHTML = "";
+                <textarea class="notice-text"
+                    oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
 
-    const firstDay = new Date(year, month, 1);
-    let startDate = new Date(firstDay);
+                <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
+            </div>
+        `;
+    });
 
-    const day = firstDay.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
+    document.querySelectorAll(".notice-text").forEach(autoResize);
+}
 
-    startDate.setDate(firstDay.getDate() + diff);
+async function addNotice() {
+    notices.push("");
+    await saveNotices();
+    renderNotices();
+}
 
-    for (let week = 0; week < 6; week++) {
-        const dateRow = document.createElement("tr");
-        dateRow.appendChild(document.createElement("td"));
+async function deleteNotice(index) {
+    notices.splice(index, 1);
+    await saveNotices();
+    renderNotices();
+}
 
-        for (let d = 0; d < 6; d++) {
-            const current = new Date(startDate);
-            current.setDate(startDate.getDate() + week * 7 + d);
+async function updateNotice(index, textarea) {
+    notices[index] = textarea.value;
+    await saveNotices();
+}
 
-            const td = document.createElement("td");
-            td.className = "date-cell";
+function autoResize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
 
-            if (current.getMonth() === month) {
-                td.textContent = current.getDate();
+window.addNotice = addNotice;
+window.deleteNotice = deleteNotice;
+window.updateNotice = updateNotice;
+window.autoResize = autoResize;
 
-                if (d === 5) {
-                    td.classList.add("sat");
-                }
-            }
+/* =========================
+   URL 모음 Firebase
+========================= */
 
-            dateRow.appendChild(td);
-        }
+let savedUrls = [];
 
-        body.appendChild(dateRow);
+async function loadUrls() {
+    const snap = await getDoc(doc(db, "mainData", "urls"));
 
-        rowNames.forEach(rowName => {
-            const tr = document.createElement("tr");
+    savedUrls = snap.exists() ? (snap.data().items || []) : [];
+    renderUrls();
+}
 
-            const label = document.createElement("th");
-            label.textContent = rowName;
+async function saveUrls() {
+    await setDoc(
+        doc(db, "mainData", "urls"),
+        { items: savedUrls },
+        { merge: true }
+    );
+}
 
-            if (rowName === "OFF") {
-                label.classList.add("off-label");
-            }
+function renderUrls() {
+    const urlList = document.getElementById("urlList");
+    if (!urlList) return;
 
-            tr.appendChild(label);
+    urlList.innerHTML = "";
 
-            for (let d = 0; d < 6; d++) {
-                const current = new Date(startDate);
-                current.setDate(startDate.getDate() + week * 7 + d);
+    savedUrls.forEach((url, index) => {
+        urlList.innerHTML += `
+            <div class="url-link-item">
+                <a href="${url.link}" target="_blank">${url.name}</a>
+                <button type="button" onclick="deleteUrl(${index})">삭제</button>
+            </div>
+        `;
+    });
+}
 
-                const td = document.createElement("td");
+async function addUrl() {
+    const nameInput = document.getElementById("urlName");
+    const linkInput = document.getElementById("urlLink");
 
-                if (current.getMonth() === month) {
-                    const input = document.createElement("input");
-                    input.className = "memo-input";
+    const name = nameInput.value.trim();
+    let link = linkInput.value.trim();
 
-                    const key =
-                        `${year}-${month + 1}-${current.getDate()}-${rowName}`;
-
-                    input.value = localStorage.getItem(key) || "";
-
-                    input.addEventListener("input", () => {
-                        localStorage.setItem(key, input.value);
-                    });
-
-                    td.appendChild(input);
-                }
-
-                tr.appendChild(td);
-            }
-
-            body.appendChild(tr);
-        });
+    if (!name || !link) {
+        alert("사이트 이름이랑 주소 둘 다 입력해주세용");
+        return;
     }
+
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+        link = "https://" + link;
+    }
+
+    savedUrls.push({ name, link });
+    await saveUrls();
+
+    nameInput.value = "";
+    linkInput.value = "";
+
+    renderUrls();
 }
 
-window.changeMonth = function(num) {
-    currentDate.setMonth(currentDate.getMonth() + num);
-    renderCalendar();
-};
+async function deleteUrl(index) {
+    savedUrls.splice(index, 1);
+    await saveUrls();
+    renderUrls();
+}
 
-renderCalendar();
+window.addUrl = addUrl;
+window.deleteUrl = deleteUrl;
 
+/* =========================
+   업무 매뉴얼 Firebase
+========================= */
 
-/* 매뉴얼 팝업 + 자동저장 */
-window.currentManualKey = "";
+let currentManualKey = "";
+
+async function openModal(key, title, basicContent) {
+    currentManualKey = key;
+
+    const modal = document.getElementById("manualModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalContent = document.getElementById("modalContent");
+
+    modal.classList.add("active");
+    modalTitle.textContent = title;
+
+    const snap = await getDoc(doc(db, "manualContents", key));
+
+    modalContent.value = snap.exists()
+        ? (snap.data().content || "")
+        : basicContent;
+
+    modalContent.oninput = async function () {
+        await setDoc(
+            doc(db, "manualContents", currentManualKey),
+            { content: modalContent.value },
+            { merge: true }
+        );
+    };
+}
+
+function closeModal() {
+    document.getElementById("manualModal").classList.remove("active");
+}
+
+async function saveManualCards() {
+    const cards = document.querySelectorAll(".manual-card");
+    const items = [];
+
+    cards.forEach(card => {
+        items.push({
+            tag: card.querySelector(".manual-tag-input")?.value || "",
+            title: card.querySelector(".manual-title-input")?.value || "",
+            desc: card.querySelector(".manual-desc-input")?.value || ""
+        });
+    });
+
+    await setDoc(
+        doc(db, "mainData", "manualCards"),
+        { items },
+        { merge: true }
+    );
+}
+
+async function loadManualCards() {
+    const snap = await getDoc(doc(db, "mainData", "manualCards"));
+    if (!snap.exists()) return;
+
+    const items = snap.data().items || [];
+    const cards = document.querySelectorAll(".manual-card");
+
+    cards.forEach((card, index) => {
+        const data = items[index];
+        if (!data) return;
+
+        card.querySelector(".manual-tag-input").value = data.tag || "";
+        card.querySelector(".manual-title-input").value = data.title || "";
+        card.querySelector(".manual-desc-input").value = data.desc || "";
+    });
+}
+
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+/* =========================
+   사이드바 시계
+========================= */
+
+function updateSidebarClock() {
+    const now = new Date();
+
+    const dateText =
+        now.getFullYear() + "." +
+        String(now.getMonth() + 1).padStart(2, "0") + "." +
+        String(now.getDate()).padStart(2, "0");
+
+    const timeText =
+        String(now.getHours()).padStart(2, "0") + ":" +
+        String(now.getMinutes()).padStart(2, "0") + ":" +
+        String(now.getSeconds()).padStart(2, "0");
+
+    const dateEl = document.getElementById("clockDate");
+    const timeEl = document.getElementById("clockTime");
+
+    if (dateEl) dateEl.textContent = dateText;
+    if (timeEl) timeEl.textContent = timeText;
+}
+
+/* =========================
+   사이드바 스크롤
+========================= */
 
 const floatingNav = document.querySelector(".sidebar .nav");
 
@@ -181,3 +279,29 @@ if (floatingNav) {
         });
     });
 }
+
+/* =========================
+   시작
+========================= */
+
+window.addEventListener("load", async () => {
+    await loadTodaySchedule();
+    await loadNotices();
+    await loadUrls();
+    await loadManualCards();
+
+    document.querySelectorAll(
+        ".manual-tag-input, .manual-title-input, .manual-desc-input"
+    ).forEach(input => {
+        input.addEventListener("input", saveManualCards);
+    });
+
+    updateSidebarClock();
+    setInterval(updateSidebarClock, 1000);
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeModal();
+    }
+});

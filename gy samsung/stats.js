@@ -1,3 +1,4 @@
+import { db, doc, setDoc, getDoc } from "./firebase.js";
 const excelFile = document.getElementById("excelFile");
 let mainChart = null;
 
@@ -20,8 +21,14 @@ excelFile.addEventListener("change", async function (e) {
         
     });
 
-    saveCurrentStatsRows(rows);
-renderStats(rows);
+   try {
+    renderStats(rows);
+    await saveCurrentStatsRows(rows);
+    console.log("통계 Firebase 저장 완료");
+} catch (err) {
+    console.error("통계 저장 오류:", err);
+    alert("화면 표시는 됐는데 Firebase 저장 실패. 콘솔 확인 필요");
+}
 });
 
 function num(value) {
@@ -400,9 +407,7 @@ function renderInjectionStats(rows) {
     });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    loadCurrentStatsRows();
-});
+
 const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
@@ -438,12 +443,18 @@ for (let m = 1; m <= 12; m++) {
 statsYear.value = String(today.getFullYear());
 statsMonth.value = String(today.getMonth() + 1);
 
-function statsKey() {
-    return `stats_rows_${statsYear.value}_${statsMonth.value}`;
-}
 
-function saveCurrentStatsRows(rows) {
-    localStorage.setItem(statsKey(), JSON.stringify(rows));
+
+async function saveCurrentStatsRows(rows) {
+    const wrappedRows = rows.map(row => ({
+        cells: Array.isArray(row) ? row : []
+    }));
+
+    await setDoc(
+        doc(db, "statsRows", `${statsYear.value}-${statsMonth.value}`),
+        { rows: wrappedRows },
+        { merge: true }
+    );
 }
 
 function clearStatsScreen() {
@@ -457,17 +468,25 @@ function clearStatsScreen() {
     }
 }
 
-function loadCurrentStatsRows() {
-    const saved = localStorage.getItem(statsKey());
+async function loadCurrentStatsRows() {
+    const snap = await getDoc(
+        doc(db, "statsRows", `${statsYear.value}-${statsMonth.value}`)
+    );
 
-    if (!saved) {
+    if (!snap.exists()) {
         clearStatsScreen();
         return;
     }
 
-    renderStats(JSON.parse(saved));
-}
+    const saved = snap.data().rows || [];
 
+    const rows = saved.map(item => {
+        if (Array.isArray(item)) return item;
+        return item.cells || [];
+    });
+
+    renderStats(rows);
+}
 prevMonthBtn.onclick = function () {
     const date = new Date(
         Number(statsYear.value),

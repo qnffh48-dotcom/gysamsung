@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>가양삼성정형외과</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 </head>
 
 <body>
@@ -142,57 +142,6 @@
 
 </div>
 
-<script>
-let notices = JSON.parse(localStorage.getItem("notices")) || [""];
-
-function renderNotices() {
-    const noticeList = document.getElementById("noticeList");
-    noticeList.innerHTML = "";
-
-    notices.forEach((text, index) => {
-        noticeList.innerHTML += `
-            <div class="notice-item">
-                <span class="dot"></span>
-
-                <textarea class="notice-text"
-                    oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
-
-                <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
-            </div>
-        `;
-    });
-
-    document.querySelectorAll(".notice-text").forEach(autoResize);
-}
-
-function addNotice() {
-    notices.push("");
-    saveNotices();
-    renderNotices();
-}
-
-function deleteNotice(index) {
-    notices.splice(index, 1);
-    saveNotices();
-    renderNotices();
-}
-
-function updateNotice(index, textarea) {
-    notices[index] = textarea.value;
-    saveNotices();
-}
-
-function saveNotices() {
-    localStorage.setItem("notices", JSON.stringify(notices));
-}
-
-function autoResize(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
-}
-
-renderNotices();
-</script><script type="module" src="script.js"></script>
 <div class="manual-section">
 
     <div class="manual-header">
@@ -454,156 +403,9 @@ onclick="event.stopPropagation()"></textarea>
 </div>
 
 </main>
-<script>
 
-let currentManualKey = "";
-
-function openModal(key, title, basicContent) {
-    currentManualKey = key;
-
-    const modal = document.getElementById("manualModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalContent = document.getElementById("modalContent");
-
-    modal.classList.add("active");
-    modalTitle.textContent = title;
-
-    const saved = localStorage.getItem(currentManualKey);
-
-    modalContent.value = saved !== null ? saved : basicContent;
-
-    modalContent.oninput = function () {
-        localStorage.setItem(currentManualKey, modalContent.value);
-    };
-}
-
-function closeModal() {
-    document.getElementById("manualModal").classList.remove("active");
-}function saveManualCards() {
-    const cards = document.querySelectorAll(".manual-card");
-
-    cards.forEach((card, index) => {
-        const tag = card.querySelector(".manual-tag-input");
-        const title = card.querySelector(".manual-title-input");
-        const desc = card.querySelector(".manual-desc-input");
-
-        const key = "manual-card-" + index;
-
-        localStorage.setItem(key, JSON.stringify({
-            tag: tag.value,
-            title: title.value,
-            desc: desc.value
-        }));
-    });
-}
-
-function loadManualCards() {
-    const cards = document.querySelectorAll(".manual-card");
-
-    cards.forEach((card, index) => {
-        const saved = localStorage.getItem("manual-card-" + index);
-        if (!saved) return;
-
-        const data = JSON.parse(saved);
-
-        card.querySelector(".manual-tag-input").value = data.tag || "";
-        card.querySelector(".manual-title-input").value = data.title || "";
-        card.querySelector(".manual-desc-input").value = data.desc || "";
-    });
-}
-
-document.querySelectorAll(
-    ".manual-tag-input, .manual-title-input, .manual-desc-input"
-).forEach(input => {
-    input.addEventListener("input", saveManualCards);
-});
-
-loadManualCards();
-document.addEventListener("keydown", function (e) {
-
-    if (e.key === "Escape") {
-
-        closeModal();
-    }
-});
-</script>
-<script>
-let savedUrls = JSON.parse(localStorage.getItem("savedUrls")) || [];
-
-function renderUrls() {
-    const urlList = document.getElementById("urlList");
-    if (!urlList) return;
-
-    urlList.innerHTML = "";
-
-    savedUrls.forEach((url, index) => {
-        urlList.innerHTML += `
-            <div class="url-link-item">
-                <a href="${url.link}" target="_blank">${url.name}</a>
-                <button type="button" onclick="deleteUrl(${index})">삭제</button>
-            </div>
-        `;
-    });
-}
-
-function addUrl() {
-    const nameInput = document.getElementById("urlName");
-    const linkInput = document.getElementById("urlLink");
-
-    const name = nameInput.value.trim();
-    let link = linkInput.value.trim();
-
-    if (!name || !link) {
-        alert("사이트 이름이랑 주소 둘 다 입력해주세용");
-        return;
-    }
-
-    if (!link.startsWith("https://") && !link.startsWith("https://")) {
-        link = "https://" + link;
-    }
-
-    savedUrls.push({ name, link });
-    localStorage.setItem("savedUrls", JSON.stringify(savedUrls));
-
-    nameInput.value = "";
-    linkInput.value = "";
-
-    renderUrls();
-}
-
-function deleteUrl(index) {
-    savedUrls.splice(index, 1);
-    localStorage.setItem("savedUrls", JSON.stringify(savedUrls));
-    renderUrls();
-}
-
-renderUrls();
-</script>
-<script>
-function updateSidebarClock() {
-    const now = new Date();
-
-    const dateText = now.getFullYear() + "." +
-        String(now.getMonth() + 1).padStart(2, "0") + "." +
-        String(now.getDate()).padStart(2, "0");
-
-    const timeText =
-        String(now.getHours()).padStart(2, "0") + ":" +
-        String(now.getMinutes()).padStart(2, "0") + ":" +
-        String(now.getSeconds()).padStart(2, "0");
-
-    const dateEl = document.getElementById("clockDate");
-    const timeEl = document.getElementById("clockTime");
-
-    if (dateEl) dateEl.textContent = dateText;
-    if (timeEl) timeEl.textContent = timeText;
-}
-
-updateSidebarClock();
-setInterval(updateSidebarClock, 1000);
-</script>
-</body>
-</html>
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 <script type="module" src="role-check.js"></script>
 <script type="module" src="logout.js"></script>
+</body>
+</html>

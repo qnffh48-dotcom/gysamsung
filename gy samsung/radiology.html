@@ -218,105 +218,6 @@
 
 </div>
 
-<script>
-let xrayCurrentDate = new Date();
-const xrayRowNames = ["OFF", "X-RAY"];
-
-function renderXray() {
-    const title = document.getElementById("xrayTitle");
-    const body = document.getElementById("xrayBody");
-
-    if (!title || !body) {
-        alert("xrayTitle 또는 xrayBody 없음");
-        return;
-    }
-
-    const year = xrayCurrentDate.getFullYear();
-    const month = xrayCurrentDate.getMonth();
-
-    title.textContent = year + "년 " + (month + 1) + "월";
-    body.innerHTML = "";
-
-    const first = new Date(year, month, 1);
-    const start = new Date(first);
-
-    const day = first.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    start.setDate(first.getDate() + diff);
-
-    for (let week = 0; week < 6; week++) {
-        const dateTr = document.createElement("tr");
-
-        const emptyTd = document.createElement("td");
-        dateTr.appendChild(emptyTd);
-
-        for (let d = 0; d < 6; d++) {
-            const now = new Date(start);
-            now.setDate(start.getDate() + week * 7 + d);
-
-            const td = document.createElement("td");
-
-            if (now.getMonth() === month) {
-                td.textContent = now.getDate();
-
-                if (d === 5) {
-                    td.classList.add("sat");
-                }
-            }
-
-            dateTr.appendChild(td);
-        }
-
-        body.appendChild(dateTr);
-
-        xrayRowNames.forEach(function(rowName) {
-            const tr = document.createElement("tr");
-
-            const th = document.createElement("th");
-            th.textContent = rowName;
-
-            if (rowName === "OFF") {
-                th.classList.add("off-label");
-            }
-
-            tr.appendChild(th);
-
-            for (let d = 0; d < 6; d++) {
-                const now = new Date(start);
-                now.setDate(start.getDate() + week * 7 + d);
-
-                const td = document.createElement("td");
-
-                if (now.getMonth() === month) {
-                    const input = document.createElement("input");
-                    input.className = "xray-input";
-
-                    const key = "xray-" + year + "-" + (month + 1) + "-" + now.getDate() + "-" + rowName;
-
-                    input.value = localStorage.getItem(key) || "";
-
-                    input.oninput = function() {
-                        localStorage.setItem(key, input.value);
-                    };
-
-                    td.appendChild(input);
-                }
-
-                tr.appendChild(td);
-            }
-
-            body.appendChild(tr);
-        });
-    }
-}
-
-function changeXrayMonth(num) {
-    xrayCurrentDate.setMonth(xrayCurrentDate.getMonth() + num);
-    renderXray();
-}
-
-setTimeout(renderXray, 100);
-</script>
 
             <!-- 임시2 -->
             <div class="tab-page"
@@ -340,10 +241,7 @@ setTimeout(renderXray, 100);
 
 <script src="radiology-tabs.js"></script>
 <script type="module" src="radiology.js"></script>
-
-</body>
-</html>
-
-<script src="radiology.js"></script>
 <script type="module" src="role-check.js"></script>
 <script type="module" src="logout-on-close.js"></script>
+</body>
+</html>

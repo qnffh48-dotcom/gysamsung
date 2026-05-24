@@ -46,7 +46,35 @@
 <main class="desk-main">
 
     
+<div class="excel-upload-buttons">
 
+    <button class="excel-btn"
+            onclick="document.getElementById('dailyExcelInput').click()">
+        일일 환자 집계
+    </button>
+
+    <button class="excel-btn"
+            onclick="document.getElementById('routeExcelInput').click()">
+        내원경로
+    </button>
+
+    <input
+        type="file"
+        id="dailyExcelInput"
+        accept=".xlsx,.xls"
+        hidden
+    >
+
+    <input
+        type="file"
+        id="routeExcelInput"
+        accept=".xlsx,.xls"
+        hidden
+    >
+
+</div>
+
+</section>
     <div class="desk-top-tabs">
         
     <button class="desk-top-tab active" data-tab="desk-main-page">마감일지</button>
@@ -73,15 +101,9 @@
     <h1 class="desk-title">원무과 마감일지</h1>
 
     <section class="desk-section">
-        <h2><span class="big-dot"></span>진료실별 수납 정보 입력</h2>
+        <h2><span class="big-dot"></span>수납 정보 입력</h2>
 
-        <div class="room-tabs">
-            <button class="room-tab active" onclick="openRoom(event, 'room1')">1 진료</button>
-            <button class="room-tab" onclick="openRoom(event, 'room2')">2 진료</button>
-            <button class="room-tab" onclick="openRoom(event, 'room3')">3 진료</button>
-            <button class="room-tab" onclick="openRoom(event, 'room4')">4 진료</button>
-            <button class="room-tab" onclick="openRoom(event, 'room5')">5 진료</button>
-        </div>
+        
 
         <div class="desk-card">
             <div id="room1" class="room-page active"></div>
@@ -187,43 +209,7 @@
         </div>
     </section>
 
-    <section class="desk-section two-column">
-        <div>
-            <h2><span class="big-dot"></span>일일 지출 내역 입력</h2>
-            <div class="desk-card">
-                <div class="input-row">
-                    <label>현금</label>
-                    <input>
-                </div>
-                <div class="input-row">
-                    <label>카드</label>
-                    <input>
-                </div>
-                <div class="input-row">
-                    <label>FREE</label>
-                    <input>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <h2><span class="big-dot"></span>추가 수입 내역 입력</h2>
-            <div class="desk-card">
-                <div class="input-row">
-                    <label>현금</label>
-                    <input>
-                </div>
-                <div class="input-row">
-                    <label>카드</label>
-                    <input>
-                </div>
-                <div class="input-row">
-                    <label>계좌</label>
-                    <input>
-                </div>
-            
-        </div>
-    </section>
+    
 
     <section class="desk-section">
         <h2><span class="big-dot"></span>특이사항 입력</h2>
@@ -250,9 +236,7 @@
 
 </main>
 
-<script src="desk.js"></script>
-
+<script type="module" src="desk.js"></script>
+<script type="module" src="role-check.js"></script>
 </body>
 </html>
-<script src="desk.js"></script>
-<script type="module" src="role-check.js"></script>

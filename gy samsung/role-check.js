@@ -14,7 +14,8 @@ const limitedUsers = [
     "radiology@gysamsung.med",
     "physical@gysamsung.med",
     "nurse@gysamsung.med",
-    "doctor@gysamsung.med"
+    "doctor@gysamsung.med",
+    "wonmu@gysamsung.med"
 ];
 
 onAuthStateChanged(auth, (user) => {

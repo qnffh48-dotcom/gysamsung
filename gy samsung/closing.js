@@ -1,3 +1,4 @@
+import { db, doc, getDoc } from "./firebase.js";
 let deskData = {};
 let therapyData = {};
 let deskExtraData = {};
@@ -78,13 +79,21 @@ function count(value, unit = "") {
 
 function makeTabs(targetId, type) {
     const box = document.getElementById(targetId);
+    if (!box) return;
 
-    box.innerHTML = "";
+    box.innerHTML = `
+        <button 
+            class="closing-tab active"
+            onclick="openClosingTab(event, '${type}', 'all')"
+        >
+            전체
+        </button>
+    `;
 
     for (let i = 1; i <= 5; i++) {
         box.innerHTML += `
             <button 
-                class="closing-tab ${i === 1 ? "active" : ""}"
+                class="closing-tab"
                 onclick="openClosingTab(event, '${type}', ${i})"
             >
                 ${i} 진료
@@ -108,13 +117,13 @@ function openClosingTab(event, type, roomNum) {
         renderTherapyRoom(roomNum);
     }
 }
-
+window.openClosingTab = openClosingTab;
 function renderDeskRoom(roomNum) {
     const target = document.getElementById("deskClosingContent");
     const room = deskData[`room${roomNum}`] || {};
 
     target.innerHTML = `
-        <h3>ㆍ${roomNum} 진료 수납 내역</h3>
+       
 
         <table class="closing-table">
             <thead>
@@ -157,8 +166,37 @@ function renderDeskRoom(roomNum) {
 }
 
 function renderTherapyRoom(roomNum) {
+
     const target = document.getElementById("therapyClosingContent");
-    const room = therapyData[`room${roomNum}`] || {};
+
+    let roomData = {};
+
+    if (roomNum === "all") {
+
+        therapyItems.forEach(item => {
+
+            roomData[item] = {
+                신환: 0,
+                재진: 0,
+                매출: 0,
+                상담: 0,
+                예약: 0
+            };
+
+            for (let i = 1; i <= 5; i++) {
+
+                const room = therapyData[`room${i}`] || {};
+                const row = room[item] || {};
+
+                therapyCols.forEach(col => {
+                    roomData[item][col] += Number(row[col] || 0);
+                });
+            }
+        });
+
+    } else {
+        roomData = therapyData[`room${roomNum}`] || {};
+    }
 
     const totals = {
         신환: 0,
@@ -169,7 +207,10 @@ function renderTherapyRoom(roomNum) {
     };
 
     target.innerHTML = `
-        <h3>ㆍ${roomNum} 진료실 비급여 건수 · 매출 · 상담</h3>
+        <h3>
+            ㆍ${roomNum === "all" ? "전체 진료실" : `${roomNum} 진료실`}
+            비급여 건수 · 매출 · 상담
+        </h3>
 
         <table class="closing-table">
             <thead>
@@ -185,7 +226,38 @@ function renderTherapyRoom(roomNum) {
 
             <tbody>
                 ${therapyItems.map(item => {
-                    const row = room[item] || {};
+
+                    const row = roomData[item] || {};
+
+                    if (item === "수액") {
+
+                        const nurseData = window.nurseClosingData || {};
+
+                        if (roomNum === "all") {
+
+                            row["신환"] =
+                                Number(nurseData.room1?.fluidNew || 0) +
+                                Number(nurseData.room2?.fluidNew || 0) +
+                                Number(nurseData.room3?.fluidNew || 0) +
+                                Number(nurseData.room4?.fluidNew || 0) +
+                                Number(nurseData.room5?.fluidNew || 0);
+
+                            row["재진"] =
+                                Number(nurseData.room1?.fluidRevisit || 0) +
+                                Number(nurseData.room2?.fluidRevisit || 0) +
+                                Number(nurseData.room3?.fluidRevisit || 0) +
+                                Number(nurseData.room4?.fluidRevisit || 0) +
+                                Number(nurseData.room5?.fluidRevisit || 0);
+
+                        } else {
+
+                            row["신환"] =
+                                Number(nurseData[`room${roomNum}`]?.fluidNew || 0);
+
+                            row["재진"] =
+                                Number(nurseData[`room${roomNum}`]?.fluidRevisit || 0);
+                        }
+                    }
 
                     therapyCols.forEach(col => {
                         totals[col] += Number(row[col] || 0);
@@ -216,37 +288,39 @@ function renderTherapyRoom(roomNum) {
     `;
 }
 
-makeTabs("deskClosingTabs", "desk");
+
 makeTabs("therapyClosingTabs", "therapy");
 
 renderDeskRoom(1);
-renderTherapyRoom(1);
+renderTherapyRoom("all");
 
 function getDateKey() {
     return `${closingYear.value}-${closingMonth.value}-${closingDay.value}`;
 }
 
-function reloadClosingData() {
-
+async function reloadClosingData() {
     const key = getDateKey();
 
-    deskData =
-        JSON.parse(localStorage.getItem("deskData-" + key)) || {};
+    const snap = await getDoc(doc(db, "closings", key));
 
-    therapyData =
-        JSON.parse(localStorage.getItem("therapyData-" + key)) || {};
+    const data = snap.exists() ? snap.data() : {};
 
-    deskExtraData =
-        JSON.parse(localStorage.getItem("deskExtraData-" + key)) || {
-            reservation: {},
-            injectionReserve: {},
-            expense: {},
-            income: {},
-            memo: ""
-        };
+    deskData = data.deskData || {};
+    therapyData = data.therapyData || {};
+    deskExtraData = data.deskExtraData || {
+        reservation: {},
+        injectionReserve: {},
+        expense: {},
+        income: {},
+        memo: ""
+    };
+
+    window.radiologyClosingData = data.radiologyData || {};
+    window.nurseClosingData = data.nurseData || {};
+    
 
     renderDeskRoom(1);
-    renderTherapyRoom(1);
+    renderTherapyRoom("all");
 
     renderReservationClosing();
     renderInjectionReserveClosing();
@@ -370,7 +444,7 @@ function renderMemoClosing() {
 
     memo.textContent = deskExtraData.memo || "";
     
-}renderRadiologyClosing();
+}
 
 function renderRadiologyClosing() {
 
@@ -380,54 +454,56 @@ function renderRadiologyClosing() {
     if (!table || !dateView) return;
 
     const y = closingYear.value;
-const m = closingMonth.value;
-const d = closingDay.value;
+    const m = closingMonth.value;
+    const d = closingDay.value;
 
-const key = `radiology-${y}-${m}-${d}`;
+    const radiologyData = window.radiologyClosingData || {};
+    const nurseData = window.nurseClosingData || {};
 
-const data = JSON.parse(localStorage.getItem(key)) || {};
-
-dateView.textContent =
-    `${y}년 ${m}월 ${d}일`;
+    dateView.textContent = `${y}년 ${m}월 ${d}일`;
 
     const total =
-        Number(data.carm_os1 || 0) +
-        Number(data.carm_neuro || 0) +
-        Number(data.carm_os3 || 0) +
-        Number(data.carm_os4 || 0) +
-        Number(data.carm_os5 || 0);
+        Number(radiologyData.carm_os1 || 0) +
+        Number(radiologyData.carm_neuro || 0) +
+        Number(radiologyData.carm_os3 || 0) +
+        Number(radiologyData.carm_os4 || 0) +
+        Number(radiologyData.carm_os5 || 0);
 
     const arthrogram =
-        Number(data.arthrogram || 0);
+        Number(radiologyData.arthrogram || 0);
+
+    const ultrasound =
+        Number(nurseData.room1?.ultrasound || 0) +
+        Number(nurseData.room2?.ultrasound || 0) +
+        Number(nurseData.room3?.ultrasound || 0) +
+        Number(nurseData.room4?.ultrasound || 0) +
+        Number(nurseData.room5?.ultrasound || 0);
 
     table.innerHTML = `
         <thead>
-
             <tr>
-                <th colspan="3">
-                    주사 현황
-                </th>
+                <th colspan="4">주사 현황</th>
             </tr>
-
             <tr>
                 <th>C-ARM</th>
                 <th>관절조영</th>
+                <th>초음파</th>
                 <th>합계</th>
             </tr>
-
         </thead>
 
         <tbody>
-
             <tr>
                 <td>${total}건</td>
                 <td>${arthrogram}건</td>
-                <td>${total + arthrogram}건</td>
+                <td>${ultrasound}건</td>
+                <td>${total + arthrogram + ultrasound}건</td>
             </tr>
-
         </tbody>
     `;
-}const floatingNav = document.querySelector(".sidebar .nav");
+}
+
+const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
     window.addEventListener("scroll", () => {
@@ -437,7 +513,9 @@ if (floatingNav) {
             floatingNav.style.transform = `translateY(${targetY}px)`;
         });
     });
-}function changeClosingDate(diff) {
+}
+
+function changeClosingDate(diff) {
 
     const date = new Date(
         Number(closingYear.value),
@@ -469,7 +547,9 @@ document
     .getElementById("nextDay")
     .addEventListener("click", () => {
         changeClosingDate(1);
-    });function startClosingPage() {
+    });
+
+function startClosingPage() {
     reloadClosingData();
 }
 

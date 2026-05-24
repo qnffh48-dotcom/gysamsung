@@ -1,10 +1,9 @@
+import { db, doc, getDoc, setDoc } from "./firebase.js";
 const therapyItems = [
     "도수",
     "충격파",
     "신장분사",
     "페인 스크램블러",
-    "수액",
-    "근전도(신경전도)",
     "리푸스"
 ];
 
@@ -65,16 +64,17 @@ function getDateKey() {
    저장 / 불러오기
 ========================= */
 
-function loadTherapyData() {
-    therapyData =
-        JSON.parse(
-            localStorage.getItem(
-                "therapyData-" + getDateKey()
-            )
-        ) || {};
+async function loadTherapyData() {
+    const snap = await getDoc(
+        doc(db, "closings", getDateKey())
+    );
+
+    const data = snap.exists() ? snap.data() : {};
+
+    therapyData = data.therapyData || {};
 }
 
-function saveTherapyData(roomNum, item, col, value) {
+async function saveTherapyData(roomNum, item, col, value) {
     if (!therapyData[`room${roomNum}`]) {
         therapyData[`room${roomNum}`] = {};
     }
@@ -86,9 +86,12 @@ function saveTherapyData(roomNum, item, col, value) {
     therapyData[`room${roomNum}`][item][col] =
         Number(value) || 0;
 
-    localStorage.setItem(
-        "therapyData-" + getDateKey(),
-        JSON.stringify(therapyData)
+    await setDoc(
+        doc(db, "closings", getDateKey()),
+        {
+            therapyData: therapyData
+        },
+        { merge: true }
     );
 }
 
@@ -149,8 +152,8 @@ function renderTherapyRooms() {
    날짜 변경
 ========================= */
 
-function reloadTherapyPage() {
-    loadTherapyData();
+async function reloadTherapyPage() {
+    await loadTherapyData();
     renderTherapyRooms();
 }
 
@@ -213,6 +216,9 @@ function openTherapyRoom(event, roomId) {
     event.currentTarget.classList.add("active");
     document.getElementById(roomId).classList.add("active");
 }
+
+window.openTherapyRoom = openTherapyRoom;
+window.saveTherapyData = saveTherapyData;
 
 /* =========================
    상단 탭

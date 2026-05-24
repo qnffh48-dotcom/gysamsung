@@ -1,3 +1,5 @@
+import { db, doc, getDoc, setDoc } from "./firebase.js";
+
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabPages = document.querySelectorAll(".tab-page");
 
@@ -85,15 +87,15 @@ function moveDay(amount) {
     loadRadiologyData();
 }
 
-function getRadiologyDateKey() {
+function getDateKey() {
     const y = selectedDate.getFullYear();
     const m = selectedDate.getMonth() + 1;
     const d = selectedDate.getDate();
 
-    return `radiology-${y}-${m}-${d}`;
+    return `${y}-${m}-${d}`;
 }
 
-function saveRadiologyData() {
+async function saveRadiologyData() {
     const data = {};
 
     document.querySelectorAll(".report-input").forEach(input => {
@@ -103,14 +105,20 @@ function saveRadiologyData() {
         data[key] = input.value;
     });
 
-    localStorage.setItem(getRadiologyDateKey(), JSON.stringify(data));
+    await setDoc(
+        doc(db, "closings", getDateKey()),
+        {
+            radiologyData: data
+        },
+        { merge: true }
+    );
 
     updateCarmTotal();
 }
 
-function loadRadiologyData() {
-    const saved =
-        JSON.parse(localStorage.getItem(getRadiologyDateKey())) || {};
+async function loadRadiologyData() {
+    const snap = await getDoc(doc(db, "closings", getDateKey()));
+    const saved = snap.exists() ? (snap.data().radiologyData || {}) : {};
 
     document.querySelectorAll(".report-input").forEach(input => {
         const key = input.dataset.key;
@@ -150,6 +158,143 @@ prevDayBtn?.addEventListener("click", () => moveDay(-1));
 nextDayBtn?.addEventListener("click", () => moveDay(1));
 
 loadRadiologyData();
+
+/* =========================
+   X-ray 스케줄 Firebase 저장
+========================= */
+
+let xrayCurrentDate = new Date();
+const xrayRowNames = ["OFF", "X-RAY"];
+
+function getXrayMonthKey() {
+    const year = xrayCurrentDate.getFullYear();
+    const month = xrayCurrentDate.getMonth() + 1;
+
+    return `${year}-${month}`;
+}
+
+async function saveXrayData(key, value) {
+    await setDoc(
+        doc(db, "xraySchedules", getXrayMonthKey()),
+        {
+            [key]: value
+        },
+        { merge: true }
+    );
+}
+
+async function loadXrayMonthData() {
+    const snap = await getDoc(
+        doc(db, "xraySchedules", getXrayMonthKey())
+    );
+
+    return snap.exists() ? snap.data() : {};
+}
+
+async function renderXray() {
+    const title = document.getElementById("xrayTitle");
+    const body = document.getElementById("xrayBody");
+
+    if (!title || !body) return;
+
+    const saved = await loadXrayMonthData();
+
+    const year = xrayCurrentDate.getFullYear();
+    const month = xrayCurrentDate.getMonth();
+
+    title.textContent = year + "년 " + (month + 1) + "월";
+    body.innerHTML = "";
+
+    const first = new Date(year, month, 1);
+    const start = new Date(first);
+
+    const day = first.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    start.setDate(first.getDate() + diff);
+
+    for (let week = 0; week < 6; week++) {
+        const dateTr = document.createElement("tr");
+
+        const emptyTd = document.createElement("td");
+        dateTr.appendChild(emptyTd);
+
+        for (let d = 0; d < 6; d++) {
+            const now = new Date(start);
+            now.setDate(start.getDate() + week * 7 + d);
+
+            const td = document.createElement("td");
+
+            if (now.getMonth() === month) {
+                td.textContent = now.getDate();
+
+                if (d === 5) {
+                    td.classList.add("sat");
+                }
+            }
+
+            dateTr.appendChild(td);
+        }
+
+        body.appendChild(dateTr);
+
+        xrayRowNames.forEach(rowName => {
+            const tr = document.createElement("tr");
+
+            const th = document.createElement("th");
+            th.textContent = rowName;
+
+            if (rowName === "OFF") {
+                th.classList.add("off-label");
+            }
+
+            tr.appendChild(th);
+
+            for (let d = 0; d < 6; d++) {
+                const now = new Date(start);
+                now.setDate(start.getDate() + week * 7 + d);
+
+                const td = document.createElement("td");
+
+                if (now.getMonth() === month) {
+                    const input = document.createElement("input");
+                    input.className = "xray-input";
+
+                    const key =
+                        year + "-" +
+                        (month + 1) + "-" +
+                        now.getDate() + "-" +
+                        rowName;
+
+                    input.value = saved[key] || "";
+
+                    input.oninput = function () {
+                        saveXrayData(key, input.value);
+                    };
+
+                    td.appendChild(input);
+                }
+
+                tr.appendChild(td);
+            }
+
+            body.appendChild(tr);
+        });
+    }
+}
+
+function changeXrayMonth(num) {
+    xrayCurrentDate.setMonth(xrayCurrentDate.getMonth() + num);
+    renderXray();
+}
+
+window.changeXrayMonth = changeXrayMonth;
+
+setTimeout(renderXray, 100);
+
+/* =========================
+   사이드바 스크롤
+========================= */
+
 const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
@@ -160,124 +305,4 @@ if (floatingNav) {
             floatingNav.style.transform = `translateY(${targetY}px)`;
         });
     });
-}const lunchGroups = [
-    ["권", "진영", "도영", "한솔"],
-    ["윤아", "수현", "다운", "유진", "임시", "임시", "임시", "임시", "임시", "임시", "임시"],
-    ["송희", "빈", "예지", "유빈"]
-];
-
-const lunchTimes = ["", "12", "13", "14"];
-
-function getLunchKey(year, month, name, day) {
-    return `lunch-${year}-${month}-${name}-${day}`;
 }
-
-function getLunchClass(value) {
-    if (value === "12") return "time-12";
-    if (value === "13") return "time-13";
-    if (value === "14") return "time-14";
-    return "";
-}
-
-function renderLunchSchedule() {
-    const table = document.getElementById("monthlyLunchTable");
-    const title = document.getElementById("lunchMonthText");
-
-    if (!table) return;
-
-    const year = currentYear;
-    const month = currentMonth + 1;
-    const lastDay = new Date(year, month, 0).getDate();
-
-    title.textContent = `(${year}년 ${month}월)`;
-
-    const weekNames = ["일", "월", "화", "수", "목", "금", "토"];
-
-    let html = `
-        <thead>
-            <tr>
-                <th rowspan="2" class="name-head">직원</th>
-    `;
-
-    for (let d = 1; d <= lastDay; d++) {
-        const day = new Date(year, month - 1, d).getDay();
-        let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
-
-        html += `<th class="${cls}">${weekNames[day]}</th>`;
-    }
-
-    html += `
-            </tr>
-            <tr>
-    `;
-
-    for (let d = 1; d <= lastDay; d++) {
-        const day = new Date(year, month - 1, d).getDay();
-        let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
-
-        html += `<th class="day-cell ${cls}">${d}</th>`;
-    }
-
-    html += `
-            </tr>
-        </thead>
-        <tbody>
-    `;
-
-    lunchGroups.forEach((group, groupIndex) => {
-        group.forEach(name => {
-            html += `
-                <tr>
-                    <td class="name-cell" contenteditable="true">${name}</td>
-            `;
-
-            for (let d = 1; d <= lastDay; d++) {
-                const key = getLunchKey(year, month, name, d);
-                const value = localStorage.getItem(key) || "";
-                const cls = getLunchClass(value);
-
-                html += `
-                    <td class="lunch-cell ${cls}"
-                        data-key="${key}"
-                        data-value="${value}">
-                        <div class="lunch-dot"></div>
-                    </td>
-                `;
-            }
-
-            html += `</tr>`;
-        });
-
-        if (groupIndex !== lunchGroups.length - 1) {
-            html += `
-                <tr class="divider">
-                    <td colspan="${lastDay + 1}"></td>
-                </tr>
-            `;
-        }
-    });
-
-    html += `</tbody>`;
-
-    table.innerHTML = html;
-
-    document.querySelectorAll(".lunch-cell").forEach(cell => {
-        cell.onclick = function () {
-            let current = cell.dataset.value || "";
-            let index = lunchTimes.indexOf(current);
-            let next = lunchTimes[(index + 1) % lunchTimes.length];
-
-            cell.dataset.value = next;
-            cell.classList.remove("time-12", "time-13", "time-14");
-
-            if (next) {
-                cell.classList.add(getLunchClass(next));
-                localStorage.setItem(cell.dataset.key, next);
-            } else {
-                localStorage.removeItem(cell.dataset.key);
-            }
-        };
-    });
-}
-
-setTimeout(renderLunchSchedule, 100);

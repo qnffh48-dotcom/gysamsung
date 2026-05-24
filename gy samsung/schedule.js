@@ -78,7 +78,9 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
   childList: true,
   subtree: true
-});const floatingNav = document.querySelector(".sidebar .nav");
+});
+
+const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
     window.addEventListener("scroll", () => {
@@ -88,9 +90,14 @@ if (floatingNav) {
             floatingNav.style.transform = `translateY(${targetY}px)`;
         });
     });
-}const lunchGroups = [
+}
+
+let lunchCurrentYear = new Date().getFullYear();
+let lunchCurrentMonth = new Date().getMonth();
+
+const lunchGroups = [
     ["권", "진영", "도영", "한솔"],
-    ["윤아", "수현", "다운", "유진", "임시", "임시", "임시", "임시", "임시", "임시", "임시"],
+    ["윤아", "수현", "다은", "유진", "임시", "임시", "임시", "임시", "임시", "임시", "임시"],
     ["송희", "빈", "예지", "유빈"]
 ];
 
@@ -107,22 +114,20 @@ function getLunchClass(value) {
     return "";
 }
 
-function renderLunchSchedule() {
+async function renderLunchSchedule() {
     const table = document.getElementById("monthlyLunchTable");
-    const title = document.getElementById("lunchMonthText");
-
     if (!table) return;
 
     const year = lunchCurrentYear;
-const month = lunchCurrentMonth + 1;
+    const month = lunchCurrentMonth + 1;
     const lastDay = new Date(year, month, 0).getDate();
 
-    
-    const title2 = document.getElementById("lunchMonthText2");
+    const saved = await loadLunchData();
 
-if (title2) {
-    title2.textContent = `${year}년 ${month}월`;
-}
+    const title2 = document.getElementById("lunchMonthText2");
+    if (title2) {
+        title2.textContent = `${year}년 ${month}월`;
+    }
 
     const weekNames = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -135,38 +140,26 @@ if (title2) {
     for (let d = 1; d <= lastDay; d++) {
         const day = new Date(year, month - 1, d).getDay();
         let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
-
         html += `<th class="${cls}">${weekNames[day]}</th>`;
     }
 
-    html += `
-            </tr>
-            <tr>
-    `;
+    html += `</tr><tr>`;
 
     for (let d = 1; d <= lastDay; d++) {
         const day = new Date(year, month - 1, d).getDay();
         let cls = day === 6 ? "sat" : day === 0 ? "sun" : "";
-
         html += `<th class="day-cell ${cls}">${d}</th>`;
     }
 
-    html += `
-            </tr>
-        </thead>
-        <tbody>
-    `;
+    html += `</tr></thead><tbody>`;
 
     lunchGroups.forEach((group, groupIndex) => {
         group.forEach(name => {
-            html += `
-                <tr>
-                    <td class="name-cell" contenteditable="true">${name}</td>
-            `;
+            html += `<tr><td class="name-cell" contenteditable="true">${name}</td>`;
 
             for (let d = 1; d <= lastDay; d++) {
                 const key = getLunchKey(year, month, name, d);
-                const value = localStorage.getItem(key) || "";
+                const value = saved[key] || "";
                 const cls = getLunchClass(value);
 
                 html += `
@@ -182,20 +175,15 @@ if (title2) {
         });
 
         if (groupIndex !== lunchGroups.length - 1) {
-            html += `
-                <tr class="divider">
-                    <td colspan="${lastDay + 1}"></td>
-                </tr>
-            `;
+            html += `<tr class="divider"><td colspan="${lastDay + 1}"></td></tr>`;
         }
     });
 
     html += `</tbody>`;
-
     table.innerHTML = html;
 
     document.querySelectorAll(".lunch-cell").forEach(cell => {
-        cell.onclick = function () {
+        cell.onclick = async function () {
             let current = cell.dataset.value || "";
             let index = lunchTimes.indexOf(current);
             let next = lunchTimes[(index + 1) % lunchTimes.length];
@@ -205,17 +193,14 @@ if (title2) {
 
             if (next) {
                 cell.classList.add(getLunchClass(next));
-                localStorage.setItem(cell.dataset.key, next);
-            } else {
-                localStorage.removeItem(cell.dataset.key);
             }
+
+            await saveLunchData(cell.dataset.key, next);
         };
     });
 }
 
 setTimeout(renderLunchSchedule, 100);
-let lunchCurrentYear = new Date().getFullYear();
-let lunchCurrentMonth = new Date().getMonth();
 
 function changeLunchMonth(diff) {
 
@@ -250,3 +235,31 @@ function printScheduleOnly() {
 }
 
 window.printScheduleOnly = printScheduleOnly;
+
+function getLunchMonthKey() {
+    return `${lunchCurrentYear}-${lunchCurrentMonth + 1}`;
+}
+
+async function loadLunchData() {
+    const snap = await getDoc(
+        doc(db, "lunchSchedules", getLunchMonthKey())
+    );
+
+    return snap.exists() ? snap.data() : {};
+}
+
+async function saveLunchData(key, value) {
+    if (value) {
+        await setDoc(
+            doc(db, "lunchSchedules", getLunchMonthKey()),
+            { [key]: value },
+            { merge: true }
+        );
+    } else {
+        await setDoc(
+            doc(db, "lunchSchedules", getLunchMonthKey()),
+            { [key]: "" },
+            { merge: true }
+        );
+    }
+}

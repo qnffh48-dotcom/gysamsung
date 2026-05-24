@@ -1,3 +1,4 @@
+import { db, doc, getDoc, setDoc } from "./firebase.js";
 const roomFields = [
     "급여",
     "비급여",
@@ -70,56 +71,48 @@ function getDateKey() {
    저장 / 불러오기
 ========================= */
 
-function loadDeskStorage() {
+async function loadDeskStorage() {
+    const key = getDateKey();
 
-    deskData =
-        JSON.parse(
-            localStorage.getItem(
-                "deskData-" + getDateKey()
-            )
-        ) || {};
+    const snap = await getDoc(doc(db, "closings", key));
+    const data = snap.exists() ? snap.data() : {};
 
-    deskExtraData =
-        JSON.parse(
-            localStorage.getItem(
-                "deskExtraData-" + getDateKey()
-            )
-        ) || {
-            reservation: {},
-            injectionReserve: {},
-            expense: {},
-            income: {},
-            memo: ""
-        };
+    deskData = data.deskData || {};
+
+    deskExtraData = data.deskExtraData || {
+        reservation: {},
+        injectionReserve: {},
+        expense: {},
+        income: {},
+        memo: ""
+    };
 }
 
-function saveDeskData(roomNum, field, value) {
+async function saveDeskData(roomNum, field, value) {
     if (!deskData[`room${roomNum}`]) {
         deskData[`room${roomNum}`] = {};
     }
 
     deskData[`room${roomNum}`][field] = Number(value) || 0;
 
-    localStorage.setItem(
-        "deskData-" + getDateKey(),
-        JSON.stringify(deskData)
-    );
-
-    
-}
-
-function saveDeskExtra() {
-    localStorage.setItem(
-        "deskExtraData-" + getDateKey(),
-        JSON.stringify(deskExtraData)
-    );
-
-    localStorage.setItem(
-        "deskExtraData",
-        JSON.stringify(deskExtraData)
+    await setDoc(
+        doc(db, "closings", getDateKey()),
+        {
+            deskData: deskData
+        },
+        { merge: true }
     );
 }
 
+async function saveDeskExtra() {
+    await setDoc(
+        doc(db, "closings", getDateKey()),
+        {
+            deskExtraData: deskExtraData
+        },
+        { merge: true }
+    );
+}
 /* =========================
    진료실 입력 생성
 ========================= */
@@ -134,7 +127,7 @@ function renderRooms() {
         if (!page) continue;
 
         page.innerHTML = `
-            <h3>ㆍ${i} 진료 수납 정보 입력</h3>
+            
 
             ${roomFields.map(field => `
                 <div class="input-row">
@@ -240,55 +233,6 @@ function setupInjectionReserve() {
     });
 }
 
-function setupExpense() {
-    const box = document.querySelector(
-        ".desk-section.two-column > div:nth-child(1)"
-    );
-
-    if (!box) return;
-
-    box.querySelectorAll(".input-row").forEach(row => {
-        const label = row.querySelector("label")?.textContent.trim();
-        const input = row.querySelector("input");
-
-        if (!label || !input) return;
-
-        input.type = "number";
-        input.value = deskExtraData.expense[label] ?? 0;
-
-        input.oninput = function () {
-            deskExtraData.expense[label] =
-                Number(this.value) || 0;
-
-            saveDeskExtra();
-        };
-    });
-}
-
-function setupIncome() {
-    const box = document.querySelector(
-        ".desk-section.two-column > div:nth-child(2)"
-    );
-
-    if (!box) return;
-
-    box.querySelectorAll(".input-row").forEach(row => {
-        const label = row.querySelector("label")?.textContent.trim();
-        const input = row.querySelector("input");
-
-        if (!label || !input) return;
-
-        input.type = "number";
-        input.value = deskExtraData.income[label] ?? 0;
-
-        input.oninput = function () {
-            deskExtraData.income[label] =
-                Number(this.value) || 0;
-
-            saveDeskExtra();
-        };
-    });
-}
 
 function setupMemo() {
     const memo = document.querySelector(".memo-box");
@@ -307,8 +251,8 @@ function setupMemo() {
    날짜 변경 시 전체 갱신
 ========================= */
 
-function reloadDeskPage() {
-    loadDeskStorage();
+async function reloadDeskPage() {
+    await loadDeskStorage();
     renderRooms();
     setupExtraInputs();
 }
@@ -372,7 +316,11 @@ function openRoom(event, roomId) {
     event.currentTarget.classList.add("active");
 
     document.getElementById(roomId).classList.add("active");
+    
 }
+
+window.openRoom = openRoom;
+window.saveDeskData = saveDeskData;
 
 document.querySelectorAll(".desk-top-tab").forEach(button => {
     button.addEventListener("click", () => {
