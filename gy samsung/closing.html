@@ -6,6 +6,8 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="closing.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -17,23 +19,22 @@
 
     <div class="nav">
         <button onclick="location.href='index.html'">
-    <span class="gold-dot"></span>
-    홈
-    <img src="house.png" class="nav-img-icon">
-</button>
-            <button onclick="location.href='schedule.html'">
-        <span class="gold-dot"></span>
-        스케줄
-           <img src="calendar-check.png" class="nav-img-icon">
-    </button>
+            <span class="gold-dot"></span>
+            홈
+            <img src="house.png" class="nav-img-icon">
+        </button>
 
-    <button onclick="location.href='stats.html'">
-        <span class="gold-dot"></span>
-        통계
-        <img src="chart-column-increasing.png" class="nav-img-icon">
-    </button>
+        <button onclick="location.href='schedule.html'">
+            <span class="gold-dot"></span>
+            스케줄
+            <img src="calendar-check.png" class="nav-img-icon">
+        </button>
 
-    
+        <button onclick="location.href='stats.html'">
+            <span class="gold-dot"></span>
+            통계
+            <img src="chart-column-increasing.png" class="nav-img-icon">
+        </button>
     </div>
 </div>
 
@@ -55,7 +56,7 @@
 
     <section class="closing-section">
         <h2><span class="big-dot"></span> 수납 내역</h2>
-       
+
         <div class="closing-card">
             <div id="deskClosingContent"></div>
         </div>
@@ -63,7 +64,9 @@
 
     <section class="closing-section">
         <h2><span class="big-dot"></span> 비급여 건수 · 매출 · 상담</h2>
+
         <div class="closing-tabs" id="therapyClosingTabs"></div>
+
         <div class="closing-card">
             <div id="therapyClosingContent"></div>
         </div>
@@ -71,6 +74,7 @@
 
     <section class="closing-section">
         <h2><span class="big-dot"></span> 예약환자 내원 정보</h2>
+
         <div class="closing-card">
             <table class="closing-table" id="reservationClosingTable"></table>
         </div>
@@ -78,29 +82,48 @@
 
     <section class="closing-section">
         <h2><span class="big-dot"></span> 주사 환자 예약 현황</h2>
+
         <div class="closing-card">
             <table class="closing-table" id="injectionReserveClosingTable"></table>
         </div>
     </section>
 
     <section class="closing-section">
-    <h2><span class="big-dot"></span> 주사 현황</h2>
+        <h2><span class="big-dot"></span> 주사 현황</h2>
 
-    <div class="closing-card">
+        <div class="closing-card">
+            <div class="radiology-date-view" id="radiologyDateView"></div>
 
-        <div class="radiology-date-view"
-             id="radiologyDateView">
+            <table class="closing-table" id="radiologyClosingTable"></table>
         </div>
-
-        <table class="closing-table"
-               id="radiologyClosingTable">
-        </table>
-
-    </div>
-</section>
+    </section>
 
     <section class="closing-section">
+        <h2><span class="big-dot"></span> 시간대별 연령 분포</h2>
+
+        <div class="closing-card">
+            <canvas id="closingTimeChart"></canvas>
+        </div>
+    </section>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 내원 경로·매출</h2>
+
+    <div class="closing-card">
+        <table class="closing-table" id="closingRouteSalesTable">
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>당일</th>
+                    <th>매출</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</section>
+    <section class="closing-section">
         <h2><span class="big-dot"></span> 특이사항</h2>
+
         <div class="closing-card">
             <div class="closing-memo" id="memoClosingBox"></div>
         </div>
@@ -110,5 +133,6 @@
 
 <script type="module" src="closing.js"></script>
 <script type="module" src="role-check.js"></script>
+
 </body>
 </html>

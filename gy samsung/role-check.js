@@ -5,17 +5,16 @@ import {
 from "./firebase.js";
 
 const fullAccessUsers = [
-    "cjy@gysamsung.med",
-    "kyh@gysamsung.med",
-    "os1@gysamsung.med"
+    "master@gy.med",
+    "os1@gy.med"
 ];
 
 const limitedUsers = [
-    "radiology@gysamsung.med",
-    "physical@gysamsung.med",
-    "nurse@gysamsung.med",
-    "doctor@gysamsung.med",
-    "wonmu@gysamsung.med"
+    "desk@gy.med",
+    "doc@gy.med",
+    "pt@gy.med",
+    "nurse@gy.med",
+    "rad@gy.med"
 ];
 
 onAuthStateChanged(auth, (user) => {

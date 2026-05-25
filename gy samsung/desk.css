@@ -521,4 +521,23 @@
 
 .excel-btn:hover {
     background: #2d4a6d;
+}.time-summary-box {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.time-summary-box div {
+    flex: 1;
+    padding: 18px;
+    border-radius: 18px;
+    background: #f7f7f7;
+    text-align: center;
+    font-size: 15px;
+}
+
+.time-summary-box strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 26px;
 }

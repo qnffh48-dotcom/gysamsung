@@ -2,6 +2,7 @@ import { db, doc, getDoc } from "./firebase.js";
 let deskData = {};
 let therapyData = {};
 let deskExtraData = {};
+let closingTimeChart = null;
 const closingYear = document.getElementById("closingYear");
 const closingMonth = document.getElementById("closingMonth");
 const closingDay = document.getElementById("closingDay");
@@ -329,6 +330,8 @@ async function reloadClosingData() {
     renderMemoClosing();
 
     renderRadiologyClosing();
+    renderTimeChartClosing();
+    renderClosingRouteSales();
 }
 renderReservationClosing();
 renderInjectionReserveClosing();
@@ -354,9 +357,35 @@ function renderReservationClosing() {
             ${rows.map(row => `
                 <tr>
                     <td>${row}</td>
-                    ${cols.map(col => `
-                        <td>${deskExtraData.reservation?.[row]?.[col] || "0"}</td>
-                    `).join("")}
+                    ${cols.map(col => {
+
+    const reserve =
+        Number(deskExtraData.reservation?.[row]?.["예약"] || 0);
+
+    const cancel =
+        Number(deskExtraData.reservation?.[row]?.["취소"] || 0);
+
+    const visit = reserve - cancel;
+
+    const visitRate =
+        reserve
+            ? ((visit / reserve) * 100).toFixed(1) + "%"
+            : "0%";
+
+    let value =
+        deskExtraData.reservation?.[row]?.[col] || "0";
+
+    if (col === "내원") {
+        value = visit;
+    }
+
+    if (col === "내원율") {
+        value = visitRate;
+    }
+
+    return `<td>${value}</td>`;
+
+}).join("")}
                 </tr>
             `).join("")}
         </tbody>
@@ -364,28 +393,100 @@ function renderReservationClosing() {
 }
 
 function renderInjectionReserveClosing() {
+
     const table = document.getElementById("injectionReserveClosingTable");
     if (!table) return;
 
-    const rows = ["X", "주사경과만", "주사만", "주사경과+주사", "이외예약O", "권장"];
-    const cols = ["초진 X block", "재진 X block"];
+    const data = deskExtraData.injectionReserve || {};
+
+    function num(v) {
+        return Number(v || 0);
+    }
+
+    function percent(v) {
+        return `${v.toFixed(1)}%`;
+    }
+
+    // 초진
+    const newX = num(data["X"]?.["초진 X block"]);
+    const newFollow = num(data["주사경과만"]?.["초진 X block"]);
+    const newInjection = num(data["주사만"]?.["초진 X block"]);
+    const newBoth = num(data["주사경과+주사"]?.["초진 X block"]);
+    const newEtc = num(data["이외예약O"]?.["초진 X block"]);
+
+    const newTotal =
+        newX +
+        newFollow +
+        newInjection +
+        newBoth +
+        newEtc;
+
+    // 재진
+    const revisitX = num(data["X"]?.["재진 X block"]);
+    const revisitFollow = num(data["주사경과만"]?.["재진 X block"]);
+    const revisitInjection = num(data["주사만"]?.["재진 X block"]);
+    const revisitBoth = num(data["주사경과+주사"]?.["재진 X block"]);
+    const revisitEtc = num(data["이외예약O"]?.["재진 X block"]);
+
+    const revisitTotal =
+        revisitX +
+        revisitFollow +
+        revisitInjection +
+        revisitBoth +
+        revisitEtc;
+
+    // 퍼센트 계산
+const newFollowRate =
+    newTotal
+        ? ((newBoth + newFollow) / newTotal) * 100
+        : 0;
+
+const newInjectionRate =
+    newTotal
+        ? ((newBoth + newInjection) / newTotal) * 100
+        : 0;
+
+const revisitFollowRate =
+    revisitTotal
+        ? ((revisitBoth + revisitFollow) / revisitTotal) * 100
+        : 0;
+
+const revisitInjectionRate =
+    revisitTotal
+        ? ((revisitBoth + revisitInjection) / revisitTotal) * 100
+        : 0;
 
     table.innerHTML = `
         <thead>
             <tr>
-                <th>구분</th>
-                ${cols.map(col => `<th>${col}</th>`).join("")}
+                <th></th>
+                <th>주사 경과</th>
+                <th>주사</th>
             </tr>
         </thead>
+
         <tbody>
-            ${rows.map(row => `
-                <tr>
-                    <td>${row}</td>
-                    ${cols.map(col => `
-                        <td>${deskExtraData.injectionReserve?.[row]?.[col] || "0"}</td>
-                    `).join("")}
-                </tr>
-            `).join("")}
+
+            <tr>
+                <th style="color:#ff4d4f;">초진</th>
+                <td style="color:#ff4d4f;">
+                    ${percent(newFollowRate)}
+                </td>
+                <td style="color:#ff4d4f;">
+                    ${percent(newInjectionRate)}
+                </td>
+            </tr>
+
+            <tr>
+                <th style="color:#2563eb;">재진</th>
+                <td style="color:#2563eb;">
+                    ${percent(revisitFollowRate)}
+                </td>
+                <td style="color:#2563eb;">
+                    ${percent(revisitInjectionRate)}
+                </td>
+            </tr>
+
         </tbody>
     `;
 }
@@ -572,4 +673,95 @@ closingMonth.onchange = function () {
 closingDay.onchange = function () {
     currentDay = Number(closingDay.value);
     reloadClosingData();
-};
+};function renderTimeChartClosing() {
+    const canvas = document.getElementById("closingTimeChart");
+    if (!canvas) return;
+
+    if (closingTimeChart) {
+        closingTimeChart.destroy();
+        closingTimeChart = null;
+    }
+
+    const chartData = deskExtraData.timeChart;
+
+    if (!chartData) return;
+
+    const ageGroups = [
+        "0~19", "20~29", "30~39",
+        "40~49", "50~59", "60~69",
+        "70~79", "80~89", "90~100"
+    ];
+
+    const colors = [
+        "#ef4444", "#f97316", "#eab308",
+        "#22c55e", "#14b8a6", "#3b82f6",
+        "#6366f1", "#a855f7", "#ec4899"
+    ];
+
+    closingTimeChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: [
+                "오전(09~12)",
+                "오후(12~17)",
+                "저녁(17~19:30)"
+            ],
+            datasets: ageGroups.map((group, index) => ({
+                label: group,
+                data: [
+                    chartData[group]?.오전 || 0,
+                    chartData[group]?.오후 || 0,
+                    chartData[group]?.저녁 || 0
+                ],
+                backgroundColor: colors[index]
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 10
+                    }
+                }
+            }
+        }
+    });
+}function renderClosingRouteSales() {
+    const tbody = document.querySelector("#closingRouteSalesTable tbody");
+    if (!tbody) return;
+
+    const result = deskExtraData.routeSales;
+
+    if (!result) {
+        tbody.innerHTML = "";
+        return;
+    }
+
+    const rows = Object.entries(result);
+
+    const totalCount = rows.reduce((sum, [, row]) => sum + Number(row.count || 0), 0);
+    const totalSales = rows.reduce((sum, [, row]) => sum + Number(row.sales || 0), 0);
+
+    tbody.innerHTML = `
+        ${rows.map(([route, row]) => `
+            <tr>
+                <td>${route}</td>
+                <td>${Number(row.count || 0)}명</td>
+                <td>${Number(row.sales || 0).toLocaleString("ko-KR")}원</td>
+            </tr>
+        `).join("")}
+
+        <tr class="total-row">
+            <td>합계</td>
+            <td>${totalCount}명</td>
+            <td>${totalSales.toLocaleString("ko-KR")}원</td>
+        </tr>
+    `;
+}

@@ -1,4 +1,6 @@
 import { db, doc, getDoc, setDoc } from "./firebase.js";
+let dailyRowsForRoute = null;
+let routeRowsForSales = null;
 const roomFields = [
     "급여",
     "비급여",
@@ -150,11 +152,8 @@ function renderRooms() {
 function setupExtraInputs() {
     setupReservation();
     setupInjectionReserve();
-    setupExpense();
-    setupIncome();
     setupMemo();
 }
-
 function setupReservation() {
     const rows = document.querySelectorAll(".desk-section:nth-of-type(2) tbody tr");
 
@@ -255,8 +254,23 @@ async function reloadDeskPage() {
     await loadDeskStorage();
     renderRooms();
     setupExtraInputs();
-}
 
+    if (deskExtraData.timeChart) {
+        drawTimePeriodChart(deskExtraData.timeChart);
+    } else {
+        clearTimePeriodChart();
+    }
+
+    if (deskExtraData.routeSales) {
+        renderRouteSalesTable(deskExtraData.routeSales);
+    } else {
+        clearRouteSalesTable();
+    }
+}if (deskExtraData.routeSales) {
+    renderRouteSalesTable(deskExtraData.routeSales);
+} else {
+    clearRouteSalesTable();
+}
 yearSelect.addEventListener("change", () => {
     currentDay = 1;
     updateDays();
@@ -358,3 +372,408 @@ if (floatingNav) {
 }
 
 reloadDeskPage();
+let timePeriodChart = null;
+
+document.getElementById("dailyExcelInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        const rows = XLSX.utils.sheet_to_json(sheet, {
+            range: 6,
+            defval: ""
+        });
+
+        makeTimePeriodChart(rows);
+        dailyRowsForRoute = rows;
+makeRouteSalesTable();
+
+        dailyRowsForRoute = rows;
+        makeRouteSalesTable();
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+async function makeTimePeriodChart(rows) {
+
+    const ageGroups = [
+        "0~19",
+        "20~29",
+        "30~39",
+        "40~49",
+        "50~59",
+        "60~69",
+        "70~79",
+        "80~89",
+        "90~100"
+    ];
+
+    const result = {};
+
+    ageGroups.forEach(group => {
+        result[group] = {
+            오전: 0,
+            오후: 0,
+            저녁: 0
+        };
+    });
+
+    function getAgeFromJumin(jumin) {
+        const value = String(jumin || "").replace(/[^0-9]/g, "");
+
+        if (value.length < 7) return null;
+
+        const yy = Number(value.slice(0, 2));
+        const code = Number(value.slice(6, 7));
+
+        let birthYear = 0;
+
+        if (code === 1 || code === 2 || code === 5 || code === 6) {
+            birthYear = 1900 + yy;
+        } else if (code === 3 || code === 4 || code === 7 || code === 8) {
+            birthYear = 2000 + yy;
+        } else {
+            return null;
+        }
+
+        return new Date().getFullYear() - birthYear + 1;
+    }
+
+    function getAgeGroup(age) {
+        if (age <= 19) return "0~19";
+        if (age <= 29) return "20~29";
+        if (age <= 39) return "30~39";
+        if (age <= 49) return "40~49";
+        if (age <= 59) return "50~59";
+        if (age <= 69) return "60~69";
+        if (age <= 79) return "70~79";
+        if (age <= 89) return "80~89";
+        return "90~100";
+    }
+
+    rows.forEach(row => {
+
+        const timeValue = String(row["진료시작시간"] || "").trim();
+        const jumin = row["주민번호"];
+
+        if (timeValue.length < 12) return;
+
+        const age = getAgeFromJumin(jumin);
+        if (age === null) return;
+
+        const ageGroup = getAgeGroup(age);
+
+        const hour = Number(timeValue.slice(8, 10));
+        const minute = Number(timeValue.slice(10, 12));
+
+        let period = "";
+
+        if (hour >= 9 && hour < 12) {
+            period = "오전";
+        } else if (hour >= 12 && hour < 17) {
+            period = "오후";
+        } else if (
+            hour === 17 ||
+            hour === 18 ||
+            (hour === 19 && minute <= 30)
+        ) {
+            period = "저녁";
+        }
+
+        if (!period) return;
+
+        result[ageGroup][period]++;
+    });
+
+    const morningTotal = ageGroups.reduce((sum, group) => sum + result[group].오전, 0);
+    const afternoonTotal = ageGroups.reduce((sum, group) => sum + result[group].오후, 0);
+    const eveningTotal = ageGroups.reduce((sum, group) => sum + result[group].저녁, 0);
+
+    deskExtraData.timeChart = result;
+await saveDeskExtra();
+    
+
+    document.getElementById("morningCount").textContent = morningTotal + "명";
+    document.getElementById("afternoonCount").textContent = afternoonTotal + "명";
+    document.getElementById("eveningCount").textContent = eveningTotal + "명";
+
+    const ctx = document.getElementById("timePeriodChart");
+
+    if (timePeriodChart) {
+        timePeriodChart.destroy();
+    }
+
+   timePeriodChart = new Chart(ctx, {
+    type: "bar",
+
+    data: {
+        labels: [
+            "오전(09~12)",
+            "오후(12~17)",
+            "저녁(17~19:30)"
+        ],
+
+        datasets: ageGroups.map((group, index) => {
+
+            const colors = [
+                "#ef4444",
+                "#f97316",
+                "#eab308",
+                "#22c55e",
+                "#14b8a6",
+                "#3b82f6",
+                "#6366f1",
+                "#a855f7",
+                "#ec4899"
+            ];
+
+            return {
+                label: group,
+
+                data: [
+                    result[group].오전,
+                    result[group].오후,
+                    result[group].저녁
+                ],
+
+                backgroundColor: colors[index]
+            };
+        })
+    },
+
+    options: {
+
+       
+
+        responsive: true,
+
+        plugins: {
+            legend: {
+                position: "bottom"
+            }
+        },
+
+        scales: {
+
+            x: {
+                
+                beginAtZero: true,
+
+                ticks: {
+                    stepSize: 10
+                }
+            },
+
+            y: {
+    beginAtZero: true,
+    ticks: {
+        stepSize: 10
+    }
+}
+        }
+    }
+});
+}function clearTimePeriodChart() {
+    document.getElementById("morningCount").textContent = "0명";
+    document.getElementById("afternoonCount").textContent = "0명";
+    document.getElementById("eveningCount").textContent = "0명";
+
+    if (timePeriodChart) {
+        timePeriodChart.destroy();
+        timePeriodChart = null;
+    }
+}function drawTimePeriodChart(result) {
+    const ageGroups = [
+        "0~19", "20~29", "30~39",
+        "40~49", "50~59", "60~69",
+        "70~79", "80~89", "90~100"
+    ];
+
+    const colors = [
+        "#ef4444", "#f97316", "#eab308",
+        "#22c55e", "#14b8a6", "#3b82f6",
+        "#6366f1", "#a855f7", "#ec4899"
+    ];
+
+    const morningTotal = ageGroups.reduce((sum, group) => sum + (result[group]?.오전 || 0), 0);
+    const afternoonTotal = ageGroups.reduce((sum, group) => sum + (result[group]?.오후 || 0), 0);
+    const eveningTotal = ageGroups.reduce((sum, group) => sum + (result[group]?.저녁 || 0), 0);
+
+    document.getElementById("morningCount").textContent = morningTotal + "명";
+    document.getElementById("afternoonCount").textContent = afternoonTotal + "명";
+    document.getElementById("eveningCount").textContent = eveningTotal + "명";
+
+    const ctx = document.getElementById("timePeriodChart");
+
+    if (timePeriodChart) {
+        timePeriodChart.destroy();
+    }
+
+    timePeriodChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: [
+                "오전(09~12)",
+                "오후(12~17)",
+                "저녁(17~19:30)"
+            ],
+            datasets: ageGroups.map((group, index) => ({
+                label: group,
+                data: [
+                    result[group]?.오전 || 0,
+                    result[group]?.오후 || 0,
+                    result[group]?.저녁 || 0
+                ],
+                backgroundColor: colors[index]
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 10
+                    }
+                }
+            }
+        }
+    });
+}document.getElementById("routeExcelInput").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        routeRowsForSales = XLSX.utils.sheet_to_json(sheet, {
+    defval: ""
+}).filter(row => {
+
+    const route =
+        String(row["내원경로"] || "")
+        .replace(/[\s\[\]]/g, "");
+
+    return route !== "총계";
+});
+        makeRouteSalesTable();
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+async function makeRouteSalesTable() {
+    if (!dailyRowsForRoute || !routeRowsForSales) return;
+
+    function cleanText(v) {
+        return String(v || "")
+            .replace(/\s/g, "")
+            .replace(/\[/g, "")
+            .replace(/\]/g, "")
+            .trim();
+    }
+
+    function isTotalRow(row) {
+        const allText = Object.values(row)
+            .map(v => cleanText(v))
+            .join("");
+
+        return allText.includes("소계") || allText.includes("총계");
+    }
+
+    const salesMap = {};
+
+    dailyRowsForRoute.forEach(row => {
+        const chartNo = cleanText(row["챠트번호"]);
+
+        const amount = Number(
+            String(row["수납액"] || 0).replace(/,/g, "")
+        );
+
+        if (!chartNo) return;
+
+        salesMap[chartNo] = (salesMap[chartNo] || 0) + amount;
+    });
+
+    const result = {};
+
+    routeRowsForSales.forEach(row => {
+        if (isTotalRow(row)) return;
+
+        const chartNo = cleanText(row["차트번호"]);
+        const route = String(row["내원경로"] || "").trim();
+
+        if (!chartNo) return;
+        if (!route || route === "-") return;
+
+        if (!result[route]) {
+            result[route] = {
+                count: 0,
+                sales: 0
+            };
+        }
+
+        result[route].count++;
+        result[route].sales += salesMap[chartNo] || 0;
+    });
+
+    deskExtraData.routeSales = result;
+    await saveDeskExtra();
+
+    renderRouteSalesTable(result);
+}
+
+function renderRouteSalesTable(result) {
+    const tbody = document.querySelector("#routeSalesTable tbody");
+    if (!tbody) return;
+
+    const rows = Object.entries(result);
+
+    const totalCount = rows.reduce((sum, [, row]) => sum + row.count, 0);
+    const totalSales = rows.reduce((sum, [, row]) => sum + row.sales, 0);
+
+    tbody.innerHTML = `
+        ${rows
+.filter(([route]) =>
+    route.replace(/\s/g, "") !== "[총계]"
+)
+.map(([route, row]) => `
+            <tr>
+                <td>${route}</td>
+                <td>${row.count}명</td>
+                <td>${Number(row.sales || 0).toLocaleString("ko-KR")}원</td>
+            </tr>
+        `).join("")}
+
+        <tr class="total-row">
+            <td>합계</td>
+            <td>${totalCount}명</td>
+            <td>${totalSales.toLocaleString("ko-KR")}원</td>
+        </tr>
+    `;
+}function clearRouteSalesTable() {
+    const tbody =
+        document.querySelector("#routeSalesTable tbody");
+
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+}
