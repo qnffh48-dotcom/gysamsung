@@ -410,16 +410,20 @@ function renderSummaryVisitChart(report) {
     summaryVisitChart = new Chart(canvas, {
         type: "bar",
         data: {
-            labels: ["초진", "재진", "90일초진", "산정X"],
+            labels: ["초진", "재진", "90일초진"],
             datasets: [{
-                label: "내원 인원",
-                data: [
-                    s.new,
-                    s.revisit,
-                    s.new90,
-                    s.noCalc
-                ]
-            }]
+    label: "내원 인원",
+
+    data: [
+        s.new,
+        s.revisit,
+        s.new90,
+        s.noCalc
+    ],
+
+    barPercentage: 0.45,
+    categoryPercentage: 0.5
+}]
         },
         options: {
             responsive: true,
