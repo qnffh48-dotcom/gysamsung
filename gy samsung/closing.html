@@ -40,6 +40,10 @@
 
 <main class="closing-main">
 
+</button>
+<button onclick="location.href='closing-report.html'">
+    마감 리포트 보기
+</button>
     <div class="closing-date-bar">
         <button class="closing-date-btn" id="prevDay">◀</button>
 
@@ -53,7 +57,43 @@
     </div>
 
     <h1 class="closing-title">가양삼성정형외과 일일 마감일지</h1>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 내원 · 매출 요약</h2>
 
+    <div class="closing-card">
+        <table
+            class="closing-table"
+            id="closingSummaryTable">
+
+            <thead>
+                <tr>
+                    <th>초진</th>
+                    <th>재진</th>
+                    <th>90일초진</th>
+                    <th>산정X</th>
+                    <th>합계</th>
+                    <th>총매출</th>
+                    <th>건당진료비</th>
+                    <th>입금액</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0원</td>
+                    <td>0원</td>
+                    <td>0원</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</section>
     <section class="closing-section">
         <h2><span class="big-dot"></span> 수납 내역</h2>
 
@@ -97,7 +137,39 @@
             <table class="closing-table" id="radiologyClosingTable"></table>
         </div>
     </section>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 유형별 내원</h2>
 
+    <div class="closing-card">
+        <table
+            class="closing-table insurance-table"
+            id="closingInsuranceTypeTable">
+
+            <thead>
+                <tr>
+                    <th>국민건강보험</th>
+                    <th>보호1·2종</th>
+                    <th>자보-청구분</th>
+                    <th>일반</th>
+                    <th>국민건강보험(차상위1종)</th>
+                    <th>국민건강보험(차상위2종)</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</section>
     <section class="closing-section">
         <h2><span class="big-dot"></span> 시간대별 연령 분포</h2>
 

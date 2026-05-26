@@ -243,4 +243,122 @@
     font-weight: 900;
 
     cursor: pointer;
+}#closingInsuranceTypeTable tbody td {
+    background: #fff !important;
+    font-weight: 400 !important;
+}#radiologyClosingTable td {
+    background: #fff !important;
+    font-weight: 400 !important;
+}
+
+#radiologyClosingTable td:first-child {
+    background: #fff !important;
+    font-weight: 400 !important;
+}#deskClosingContent td {
+    background: #fff !important;
+    font-weight: 400 !important;
+}
+
+#deskClosingContent td:first-child {
+    background: #fff !important;
+    font-weight: 400 !important;
+}#radiologyClosingTable tbody td:last-child {
+    background: #edf7ee !important;
+    color: #111 !important;
+    font-weight: 900 !important;
+}#closingSummaryTable tbody td {
+    background: #fff !important;
+    font-weight: 400 !important;
+}
+
+#closingSummaryTable tbody td:nth-child(5) {
+    background: #edf7ee !important;
+    font-weight: 900 !important;
+    color: #111 !important;
+}.closing-print-btn {
+    width: 140px;
+    height: 54px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: #2f4858;
+    color: white;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.closing-print-btn:hover {
+    transform: translateY(-2px);
+}@media print {
+
+    body {
+        background: white !important;
+    }
+
+    .sidebar,
+    .closing-date-bar,
+    .closing-print-btn {
+        display: none !important;
+    }
+
+    .closing-main {
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    .closing-section {
+        width: 100% !important;
+        margin-bottom: 24px !important;
+        page-break-inside: avoid;
+    }
+
+    .closing-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+
+    .closing-table {
+        font-size: 12px;
+    }
+
+    .closing-title {
+        margin-bottom: 28px;
+    }
+}@page {
+    size: A4 landscape;
+    margin: 8mm;
+}
+
+@media print {
+
+    .closing-card {
+        padding: 10px !important;
+    }
+
+    .closing-section {
+        margin-bottom: 12px !important;
+    }
+
+    .closing-title {
+        margin-bottom: 16px !important;
+    }
+
+    .closing-section h2 {
+        margin-bottom: 4px !important;
+    }
+
+    .closing-tabs {
+        display: none !important;
+    }
+
+    .closing-table th,
+    .closing-table td {
+        padding: 6px !important;
+    }
 }

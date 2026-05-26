@@ -1,4 +1,5 @@
 import { db, doc, getDoc, setDoc } from "./firebase.js";
+
 const therapyItems = [
     "도수",
     "충격파",
@@ -9,11 +10,15 @@ const therapyItems = [
 
 const therapyCols = ["신환", "재진", "매출", "상담", "예약"];
 
-let therapyData = {};
+const reservationRows = ["주사", "경과", "도수", "충격파"];
+const reservationCols = ["예약", "변경", "취소"];
 
-/* =========================
-   날짜
-========================= */
+let therapyData = {};
+let deskExtraData = {
+    reservation: {}
+};
+
+/* 날짜 */
 
 const yearSelect = document.getElementById("therapyYear");
 const monthSelect = document.getElementById("therapyMonth");
@@ -60,9 +65,7 @@ function getDateKey() {
     return `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
 }
 
-/* =========================
-   저장 / 불러오기
-========================= */
+/* 불러오기 */
 
 async function loadTherapyData() {
     const snap = await getDoc(
@@ -72,7 +75,17 @@ async function loadTherapyData() {
     const data = snap.exists() ? snap.data() : {};
 
     therapyData = data.therapyData || {};
+
+    deskExtraData = data.deskExtraData || {
+        reservation: {}
+    };
+
+    if (!deskExtraData.reservation) {
+        deskExtraData.reservation = {};
+    }
 }
+
+/* 저장 */
 
 async function saveTherapyData(roomNum, item, col, value) {
     if (!therapyData[`room${roomNum}`]) {
@@ -88,16 +101,34 @@ async function saveTherapyData(roomNum, item, col, value) {
 
     await setDoc(
         doc(db, "closings", getDateKey()),
+        { therapyData },
+        { merge: true }
+    );
+}
+
+async function saveReservationInput(row, col, value) {
+    if (!deskExtraData.reservation) {
+        deskExtraData.reservation = {};
+    }
+
+    if (!deskExtraData.reservation[row]) {
+        deskExtraData.reservation[row] = {};
+    }
+
+    deskExtraData.reservation[row][col] = Number(value) || 0;
+
+    await setDoc(
+        doc(db, "closings", getDateKey()),
         {
-            therapyData: therapyData
+            deskExtraData: {
+                reservation: deskExtraData.reservation
+            }
         },
         { merge: true }
     );
 }
 
-/* =========================
-   진료실 표 생성
-========================= */
+/* 진료실 표 */
 
 function renderTherapyRooms() {
     for (let i = 1; i <= 5; i++) {
@@ -105,13 +136,15 @@ function renderTherapyRooms() {
             therapyData[`room${i}`] = {};
         }
 
-        const page =
-            document.getElementById(`therapyRoom${i}`);
+        const page = document.getElementById(`therapyRoom${i}`);
 
         if (!page) continue;
 
         page.innerHTML = `
-            <h3><span class="big-dot"></span>진료실 비급여 건수 / 매출 / 상담 정보 입력</h3>
+            <h3>
+                <span class="big-dot"></span>
+                진료실 비급여 건수 / 매출 / 상담 정보 입력
+            </h3>
 
             <table class="therapy-table">
                 <thead>
@@ -130,6 +163,7 @@ function renderTherapyRooms() {
                         return `
                             <tr>
                                 <td>${item}</td>
+
                                 ${therapyCols.map(col => `
                                     <td>
                                         <input
@@ -148,14 +182,19 @@ function renderTherapyRooms() {
     }
 }
 
-/* =========================
-   날짜 변경
-========================= */
+/* 예약환자 내원 정보 표 */
+
+
+
+/* 새로고침 */
 
 async function reloadTherapyPage() {
     await loadTherapyData();
     renderTherapyRooms();
+    await loadReservationInputs();
 }
+
+/* 날짜 변경 */
 
 yearSelect.addEventListener("change", () => {
     currentDay = 1;
@@ -200,9 +239,7 @@ document
     .getElementById("nextDay")
     .addEventListener("click", () => changeDate(1));
 
-/* =========================
-   진료실 탭
-========================= */
+/* 진료실 탭 */
 
 function openTherapyRoom(event, roomId) {
     document.querySelectorAll(".therapy-tab").forEach(tab => {
@@ -219,10 +256,9 @@ function openTherapyRoom(event, roomId) {
 
 window.openTherapyRoom = openTherapyRoom;
 window.saveTherapyData = saveTherapyData;
+window.saveReservationInput = saveReservationInput;
 
-/* =========================
-   상단 탭
-========================= */
+/* 상단 탭 */
 
 const therapyTopTabs =
     document.querySelectorAll(".therapy-top-tab");
@@ -248,9 +284,7 @@ therapyTopTabs.forEach(tab => {
     });
 });
 
-/* =========================
-   사이드바 스크롤
-========================= */
+/* 사이드바 스크롤 */
 
 const floatingNav = document.querySelector(".sidebar .nav");
 
@@ -265,8 +299,35 @@ if (floatingNav) {
     });
 }
 
-/* =========================
-   최초 실행
-========================= */
+/* 최초 실행 */
 
 reloadTherapyPage();
+async function loadReservationInputs() {
+
+    const snap = await getDoc(
+        doc(db, "closings", getDateKey())
+    );
+
+    const data = snap.exists() ? snap.data() : {};
+
+    const reservation =
+        data.deskExtraData?.reservation || {};
+
+    document.getElementById("therapyReserve").value =
+        reservation["도수"]?.["예약"] || 0;
+
+    document.getElementById("therapyChange").value =
+        reservation["도수"]?.["변경"] || 0;
+
+    document.getElementById("therapyCancel").value =
+        reservation["도수"]?.["취소"] || 0;
+
+    document.getElementById("shockReserve").value =
+        reservation["충격파"]?.["예약"] || 0;
+
+    document.getElementById("shockChange").value =
+        reservation["충격파"]?.["변경"] || 0;
+
+    document.getElementById("shockCancel").value =
+        reservation["충격파"]?.["취소"] || 0;
+}

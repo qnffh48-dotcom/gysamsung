@@ -540,4 +540,10 @@
     display: block;
     margin-top: 8px;
     font-size: 26px;
+}.insurance-table td {
+    background: white;
+    font-weight: 400;
+}#insuranceTypeTable tbody td {
+    background: #fff !important;
+    font-weight: 400 !important;
 }

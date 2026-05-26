@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마감 리포트</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="closing-report.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+            <span class="gold-dot"></span>
+            홈
+            <img src="house.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='closing.html'">
+            <span class="gold-dot"></span>
+            일일 마감일지
+            <img src="notebook-pen.png" class="nav-img-icon">
+        </button>
+    </div>
+</div>
+
+<main class="report-main">
+
+    <h1 class="report-title">마감 리포트</h1>
+
+    <div class="report-date-bar">
+        <input type="date" id="startDate">
+        <span>~</span>
+        <input type="date" id="endDate">
+
+        <button id="loadReportBtn">조회</button>
+        <button onclick="window.print()">인쇄</button>
+    </div>
+
+    <section class="report-section">
+        <h2><span class="big-dot"></span>내원 · 매출 요약</h2>
+
+        <div class="report-card">
+            <table class="report-table" id="reportSummaryTable">
+                <thead>
+                    <tr>
+                        <th>초진</th>
+                        <th>재진</th>
+                        <th>90일초진</th>
+                        <th>산정X</th>
+                        <th>합계</th>
+                        <th>총매출</th>
+                        <th>건당진료비</th>
+                        <th>입금액</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="report-chart-box">
+    <canvas id="summaryVisitChart"></canvas>
+</div>
+        </div>
+    </section>
+
+    <section class="report-section">
+    <h2><span class="big-dot"></span>비급여 건수 · 매출 · 상담</h2>
+
+    <div class="report-card">
+        <table class="report-table" id="reportTherapyTable">
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>초진</th>
+                    <th>재진</th>
+                    <th>매출</th>
+                    <th>상담</th>
+                    <th>예약</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        
+    </div>
+</section>
+
+    <section class="report-section">
+        <h2><span class="big-dot"></span>주사 환자 예약 현황</h2>
+
+        <div class="report-card">
+            <table class="report-table" id="reportInjectionReserveTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>주사 경과</th>
+                        <th>주사</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            
+        </div>
+    </section>
+
+    <section class="report-section">
+        <h2><span class="big-dot"></span>주사 현황</h2>
+
+        <div class="report-card">
+            <table class="report-table" id="reportInjectionTable">
+                <thead>
+                    <tr>
+                        <th>C-ARM</th>
+                        <th>관절조영</th>
+                        <th>초음파</th>
+                        <th>합계</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="report-chart-box">
+    <canvas id="injectionChart"></canvas>
+</div>
+        </div>
+    </section>
+
+    <section class="report-section">
+        <h2><span class="big-dot"></span>내원 경로 · 매출</h2>
+
+        <div class="report-card">
+            <table class="report-table" id="reportRouteSalesTable">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>인원</th>
+                        <th>매출</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="report-chart-box">
+    <canvas id="routeSalesChart"></canvas>
+</div>
+        </div>
+    </section>
+
+</main>
+
+<script type="module" src="closing-report.js"></script>
+<script type="module" src="role-check.js"></script>
+
+</body>
+</html>

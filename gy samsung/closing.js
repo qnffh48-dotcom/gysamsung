@@ -292,8 +292,7 @@ function renderTherapyRoom(roomNum) {
 
 makeTabs("therapyClosingTabs", "therapy");
 
-renderDeskRoom(1);
-renderTherapyRoom("all");
+
 
 function getDateKey() {
     return `${closingYear.value}-${closingMonth.value}-${closingDay.value}`;
@@ -333,11 +332,7 @@ async function reloadClosingData() {
     renderTimeChartClosing();
     renderClosingRouteSales();
 }
-renderReservationClosing();
-renderInjectionReserveClosing();
-renderExpenseClosing();
-renderIncomeClosing();
-renderMemoClosing();
+
 
 function renderReservationClosing() {
     const table = document.getElementById("reservationClosingTable");
@@ -360,12 +355,16 @@ function renderReservationClosing() {
                     ${cols.map(col => {
 
     const reserve =
-        Number(deskExtraData.reservation?.[row]?.["예약"] || 0);
+    Number(deskExtraData.reservation?.[row]?.["예약"] || 0);
 
-    const cancel =
-        Number(deskExtraData.reservation?.[row]?.["취소"] || 0);
+const change =
+    Number(deskExtraData.reservation?.[row]?.["변경"] || 0);
 
-    const visit = reserve - cancel;
+const cancel =
+    Number(deskExtraData.reservation?.[row]?.["취소"] || 0);
+
+const visit =
+    reserve - (change + cancel);
 
     const visitRate =
         reserve
@@ -650,11 +649,15 @@ document
         changeClosingDate(1);
     });
 
-function startClosingPage() {
-    reloadClosingData();
+async function startClosingPage() {
+    await reloadClosingData();
 }
 
-window.addEventListener("load", startClosingPage);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startClosingPage);
+} else {
+    startClosingPage();
+}
 
 closingYear.onchange = function () {
     currentDay = Number(closingDay.value);
@@ -687,7 +690,7 @@ closingDay.onchange = function () {
     if (!chartData) return;
 
     const ageGroups = [
-        "0~19", "20~29", "30~39",
+        "0~19", "20", "30~39",
         "40~49", "50~59", "60~69",
         "70~79", "80~89", "90~100"
     ];
