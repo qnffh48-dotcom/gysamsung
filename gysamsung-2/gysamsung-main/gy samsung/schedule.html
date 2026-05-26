@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스케줄</title>
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="schedule.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+    <img src="logo.png" alt="가양삼성정형외과">
+</div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+    <span class="gold-dot"></span>
+    홈
+    <img src="house.png" class="nav-img-icon">
+</button>
+            
+
+    <button onclick="location.href='stats.html'">
+        <span class="gold-dot"></span>
+        통계
+        <img src="chart-column-increasing.png" class="nav-img-icon">
+    </button>
+
+    <button onclick="location.href='closing.html'">
+        <span class="gold-dot"></span>
+        마감일지
+        <img src="notebook-pen.png" class="nav-img-icon">
+    </button>
+
+    
+    </div>
+
+</div>
+
+<div class="schedule-main">
+    
+
+    <div class="schedule-wrap">
+        
+
+        <!-- 달력 -->
+        <div class="schedule-card">
+            <button onclick="printScheduleOnly()" id="schedulePrintBtn">
+    🖨️ 스케줄 인쇄
+</button>
+            
+            <div class="top-bar">
+
+                <button onclick="prevMonth(); renderLunchSchedule();">
+                    ◀
+                </button>
+
+                <div class="month-title">
+
+                    <span id="monthText"></span>
+
+                    <select id="yearSelect"
+                        onchange="changeDate(); renderLunchSchedule();">
+                    </select>
+
+                    <select id="monthSelect"
+                        onchange="changeDate(); renderLunchSchedule();">
+                    </select>
+
+                </div>
+
+                <button onclick="nextMonth(); renderLunchSchedule();">
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="calendar" id="calendar"></div>
+
+        </div>
+
+        <!-- 직원 점심시간 -->
+        <div class="lunch-box">
+
+            <div class="lunch-header">
+
+    <h2 class="lunch-title">
+        직원 점심시간
+        <span id="lunchMonthText"></span>
+    </h2>
+
+    <div class="lunch-control">
+        <button type="button" onclick="changeLunchMonth(-1)">
+    ◀
+</button>
+
+<div class="lunch-month-box">
+    <span id="lunchMonthText2"></span>
+</div>
+
+<button type="button" onclick="changeLunchMonth(1)">
+    ▶
+</button>
+    </div>
+
+    <div class="lunch-legend">
+        <span><i class="slot slot-12"></i>12:00 ~ 13:00</span>
+        <span><i class="slot slot-13"></i>13:00 ~ 14:00</span>
+        <span><i class="slot slot-14"></i>14:00 ~ 15:00</span>
+    </div>
+
+</div>
+
+            <div class="lunch-table-wrap">
+
+                <table class="monthly-lunch-table"
+                    id="monthlyLunchTable">
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+   
+
+    <script>
+
+    const today = new Date();
+
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth();
+    const dayNames = [
+        "일", "월", "화", "수", "목", "금", "토"
+    ];
+
+    // 년도/월 select 생성
+    function setupSelects() {
+
+        const yearSelect =
+            document.getElementById("yearSelect");
+
+        const monthSelect =
+            document.getElementById("monthSelect");
+
+        // 년도
+        for(let y = 2020; y <= 2035; y++) {
+
+            yearSelect.innerHTML += `
+                <option value="${y}">
+                    ${y}년
+                </option>
+            `;
+        }
+
+        // 월
+        for(let m = 1; m <= 12; m++) {
+
+            monthSelect.innerHTML += `
+                <option value="${m - 1}">
+                    ${m}월
+                </option>
+            `;
+        }
+
+        yearSelect.value = currentYear;
+        monthSelect.value = currentMonth;
+    }
+
+    // 달력 렌더
+    function renderCalendar() {
+
+    const calendar = document.getElementById("calendar");
+    calendar.innerHTML = "";
+
+    for (let day of dayNames) {
+        calendar.innerHTML += `
+            <div class="day-name">${day}</div>
+        `;
+    }
+
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const startDay = firstDay.getDay();
+
+    const lastDate = new Date(
+        currentYear,
+        currentMonth + 1,
+        0
+    ).getDate();
+
+    for (let i = 0; i < startDay; i++) {
+        calendar.innerHTML += `
+            <div class="day empty"></div>
+        `;
+    }
+
+    for (let date = 1; date <= lastDate; date++) {
+
+        const dayOfWeek = new Date(currentYear, currentMonth, date).getDay();
+
+        let dayClass = "";
+
+        if (dayOfWeek === 0) {
+            dayClass = "sun";
+        }
+
+        if (dayOfWeek === 6) {
+            dayClass = "sat";
+        }
+
+        calendar.innerHTML += `
+            <div class="day ${dayClass}">
+
+               <div class="date" style="color: ${getDateColor(date)};">
+    ${date}
+</div>
+
+                <div class="inputs">
+
+    <textarea class="doctor"
+        data-date="${currentYear}-${currentMonth + 1}-${date}"
+        placeholder="의사"></textarea>
+
+    <textarea class="room"
+        data-date="${currentYear}-${currentMonth + 1}-${date}"
+        placeholder="방과"></textarea>
+
+    <textarea class="nurse"
+        data-date="${currentYear}-${currentMonth + 1}-${date}"
+        placeholder="간호"></textarea>
+
+    <textarea class="desk"
+        data-date="${currentYear}-${currentMonth + 1}-${date}"
+        placeholder="원무"></textarea>
+
+    <textarea class="therapy"
+        data-date="${currentYear}-${currentMonth + 1}-${date}"
+        placeholder="물치"></textarea>
+
+        
+</div>
+
+            </div>
+        `;
+    }
+
+    document.getElementById("yearSelect").value = currentYear;
+    document.getElementById("monthSelect").value = currentMonth;
+}
+
+    // 이전달
+    function prevMonth() {
+
+        currentMonth--;
+
+        if(currentMonth < 0) {
+
+            currentMonth = 11;
+            currentYear--;
+        }
+
+        renderCalendar();
+    }
+
+    // 다음달
+    function nextMonth() {
+
+        currentMonth++;
+
+        if(currentMonth > 11) {
+
+            currentMonth = 0;
+            currentYear++;
+        }
+
+        renderCalendar();
+    }
+
+    // 직접 선택
+    function changeDate() {
+
+        currentYear =
+            parseInt(
+                document.getElementById(
+                    "yearSelect"
+                ).value
+            );
+
+        currentMonth =
+            parseInt(
+                document.getElementById(
+                    "monthSelect"
+                ).value
+            );
+
+        renderCalendar();
+    }
+
+    setupSelects();
+    renderCalendar();
+function getDateColor(date) {
+
+    const day =
+        new Date(currentYear, currentMonth, date).getDay();
+
+    const holidays = [
+
+    "2026-1-1",   // 신정
+
+    "2026-2-16",  // 설날 연휴
+    "2026-2-17",
+    "2026-2-18",
+
+    "2026-3-1",   // 삼일절
+
+    "2026-5-5",   // 어린이날
+
+    "2026-6-6",   // 현충일
+
+    "2026-8-15",  // 광복절
+
+    "2026-9-24",  // 추석 연휴
+    "2026-9-25",
+    "2026-9-26",
+
+    "2026-10-3",  // 개천절
+
+    "2026-10-9",  // 한글날
+
+    "2026-12-25"  // 크리스마스
+];
+
+    const current =
+        `${currentYear}-${currentMonth + 1}-${date}`;
+
+    // 공휴일
+    if (holidays.includes(current)) {
+        return "red";
+    }
+
+    // 일요일
+    if (day === 0) {
+        return "red";
+    }
+
+    // 토요일
+    if (day === 6) {
+        return "blue";
+    }
+
+    return "black";
+}
+
+</script>
+
+<script type="module" src="schedule.js"></script>
+<script type="module" src="role-check.js"></script>
+</body>
+</html>

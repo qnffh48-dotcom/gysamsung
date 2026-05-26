@@ -1,0 +1,253 @@
+.stats-main {
+    flex: 1;
+    padding: 36px 46px;
+    background: #dfe3e8;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.stats-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: #2f4858;
+}
+
+.stats-header p {
+    margin: 8px 0 0;
+    color: #667085;
+}
+
+.excel-upload {
+    background: #2f4858;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.excel-upload input {
+    display: none;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.summary-card span {
+    color: #667085;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.summary-card strong {
+    display: block;
+    margin-top: 10px;
+    font-size: 30px;
+    color: #111827;
+}
+
+.summary-card.wide strong {
+    font-size: 22px;
+}
+
+.stats-panel {
+    background: white;
+    border-radius: 22px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.stats-panel h2 {
+    margin: 0 0 18px;
+    color: #2f4858;
+    font-size: 23px;
+}
+
+.chart-wrap {
+    height: 330px;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.main-stats-table {
+    min-width: 1650px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.main-stats-table th,
+.main-stats-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 11px 13px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.main-stats-table th {
+    background: #f4f6f8;
+    color: #2f4858;
+    font-weight: 800;
+}
+
+.total-row {
+    background: #edf7ee;
+    font-weight: 800;
+}
+
+.injection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.injection-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.injection-card h3 {
+    margin: 0 0 12px;
+    color: #2f4858;
+    font-size: 16px;
+}
+
+.inject-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.inject-info strong {
+    color: #111827;
+}
+
+.injection-card table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.injection-card th,
+.injection-card td {
+    border: 1px solid #d9dee6;
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.injection-card th {
+    background: #eef2f7;
+    color: #2f4858;
+}.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.9;
+
+    margin-left: 2px;
+}/* =========================
+   통계 날짜 바
+========================= */
+
+.stats-date-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 28px;
+}.stats-date-btn {
+    width: 58px;
+    height: 58px;
+
+    border: none;
+    border-radius: 18px;
+
+    background: #2f4858;
+    color: white;
+
+    font-size: 28px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.stats-date-btn:hover {
+    transform: scale(1.05);
+}
+
+.stats-date-box {
+    display: flex;
+    gap: 14px;
+
+    background: #f5f5f5;
+
+    padding: 14px 18px;
+
+    border-radius: 24px;
+}
+
+.stats-date-box select {
+    width: 140px;
+    height: 54px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #e9ecef;
+
+    color: #2f4858;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    text-align: center;
+
+    outline: none;
+
+    cursor: pointer;
+}
