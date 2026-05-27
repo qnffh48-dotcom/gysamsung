@@ -1,3 +1,13 @@
+body {
+    background:
+        url("marble-bg.jpg") !important;
+
+    background-size: cover !important;
+
+    background-position: center !important;
+
+    background-attachment: fixed !important;
+}
 .therapy-section {
     width: 100%;
     margin-bottom: 34px;
@@ -190,7 +200,7 @@
 
     padding: 42px 40px !important;
 
-    background: #d6dbe1 !important;
+    background: transparent !important;
 
     box-sizing: border-box !important;
 }

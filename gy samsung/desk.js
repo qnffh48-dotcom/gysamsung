@@ -91,24 +91,26 @@ async function loadDeskStorage() {
 }
 
 async function saveDeskData(roomNum, field, value) {
+
     if (!deskData[`room${roomNum}`]) {
         deskData[`room${roomNum}`] = {};
     }
 
-    deskData[`room${roomNum}`][field] = Number(value) || 0;
+    deskData[`room${roomNum}`][field] =
+        Number(value) || 0;
 
     await setDoc(
-    doc(db, "closings", getDateKey()),
-    {
-        deskExtraData: {
-            ...deskExtraData,
-            updatedAt: Date.now()
-        }
-    },
-    { merge: true }
-);
+        doc(db, "closings", getDateKey()),
+        {
+            deskData: deskData,
+            deskExtraData: {
+                ...deskExtraData,
+                updatedAt: Date.now()
+            }
+        },
+        { merge: true }
+    );
 }
-
 async function saveDeskExtra() {
     await setDoc(
         doc(db, "closings", getDateKey()),
@@ -668,7 +670,11 @@ function makeClosingSummaryResult(rows) {
         new90: 0,
         noCalc: 0,
         total: 0,
-        sales: 0
+        sales: 0,
+
+        newSales: 0,
+        revisitSales: 0,
+        new90Sales: 0
     };
 
     rows.forEach(row => {
@@ -677,9 +683,20 @@ function makeClosingSummaryResult(rows) {
         const pay =
             Number(String(row["수납액"] || 0).replace(/,/g, "")) || 0;
 
-        if (visitType === "신환") result.new++;
-        else if (visitType === "재진") result.revisit++;
-        else if (visitType === "90일초진") result.new90++;
+        if (visitType === "신환") {
+            result.new++;
+            result.newSales += pay;
+        }
+
+        else if (visitType === "재진") {
+            result.revisit++;
+            result.revisitSales += pay;
+        }
+
+        else if (visitType === "90일초진") {
+            result.new90++;
+            result.new90Sales += pay;
+        }
 
         if (pay === 0) result.noCalc++;
 

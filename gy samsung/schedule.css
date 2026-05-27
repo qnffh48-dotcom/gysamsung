@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800;900&display=swap');
 /* 스케줄 페이지 가로 스크롤 강제 */
 
 html,
@@ -6,6 +7,13 @@ body {
     overflow-y: auto !important;
 
     min-width: 2700px !important;
+
+    background:
+        url("marble-bg.jpg") !important;
+
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
 }
 
 .schedule-main {
@@ -15,6 +23,8 @@ body {
     overflow: visible !important;
 
     padding: 45px 40px !important;
+
+    background: transparent !important;
 }
 
 .schedule-wrap {
@@ -34,12 +44,26 @@ body {
     width: 1050px !important;
     min-width: 1050px !important;
     flex-shrink: 0 !important;
+
+    background: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(6px);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.10),
+        inset 0 2px 8px rgba(255,255,255,0.75) !important;
 }
 
 .lunch-box {
     width: 1180px !important;
     min-width: 1180px !important;
     flex-shrink: 0 !important;
+
+    background: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(6px);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.10),
+        inset 0 2px 8px rgba(255,255,255,0.75) !important;
 }@media print {
 
     @page {
@@ -120,32 +144,26 @@ body {
     }
 
     .date {
-        font-size: 12px !important;
-        margin-bottom: 1mm !important;
-    }
+    font-size: 30px !important;
+
+    font-weight: 900 !important;
+
+    letter-spacing: -1px;
+
+    color: #1f2937 !important;
+}
 
     .inputs {
         gap: 1mm !important;
     }
 
     .inputs textarea {
-        height: 5mm !important;
-        min-height: 5mm !important;
-
-        font-size: 7px !important;
-        font-weight: 800 !important;
-
-        color: #000 !important;
-        -webkit-text-fill-color: #000 !important;
-
-        padding: 1mm !important;
-        border-radius: 2mm !important;
-
-        overflow: hidden !important;
-
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Pretendard",
+    sans-serif !important;
+}
 
     .doctor,
     .room,

@@ -1,3 +1,13 @@
+body {
+    background:
+        url("marble-bg.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-attachment: fixed;
+}
 /* =========================
    원무과 상단 탭
 ========================= */
@@ -414,13 +424,18 @@
 }
 
 .desk-top-page {
-    background: white !important;
-    border-radius: 0 28px 28px 28px !important;
-    padding: 25px 50px 45px !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
-    box-sizing: border-box !important;
-}
+    background: rgba(255,255,255,0.92) !important;
 
+    backdrop-filter: blur(6px);
+
+    border-radius: 0 28px 28px 28px !important;
+
+    padding: 25px 50px 45px !important;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.10),
+        inset 0 2px 8px rgba(255,255,255,0.75) !important;
+}
 .desk-top-page:not(.active) {
     display: none !important;
 }

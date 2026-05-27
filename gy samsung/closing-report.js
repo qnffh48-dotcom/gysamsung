@@ -6,6 +6,46 @@ let injectionReserveChart = null;
 let injectionChart = null;
 let routeSalesChart = null;
 
+const valueLabelPlugin = {
+    id: "valueLabelPlugin",
+
+    afterDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+
+        ctx.save();
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+
+            meta.data.forEach((bar, index) => {
+                const value = dataset.data[index];
+                if (!value) return;
+
+                const text =
+                    Number(value).toLocaleString("ko-KR");
+
+                let x = bar.x;
+                let y = bar.y + ((bar.base - bar.y) / 2);
+
+                if (chart.options.indexAxis === "y") {
+                    x = bar.x - ((bar.x - bar.base) / 2);
+                    y = bar.y;
+                }
+
+                x = Math.max(chartArea.left + 12, Math.min(x, chartArea.right - 12));
+                y = Math.max(chartArea.top + 12, Math.min(y, chartArea.bottom - 12));
+
+                ctx.fillText(text, x, y);
+            });
+        });
+
+        ctx.restore();
+    }
+};
+
 const startDate = document.getElementById("startDate");
 const endDate = document.getElementById("endDate");
 const loadReportBtn = document.getElementById("loadReportBtn");
@@ -74,7 +114,11 @@ async function loadReportData() {
             noCalc: 0,
             total: 0,
             sales: 0,
-            deposit: 0
+            deposit: 0,
+newSales: 0,
+revisitSales: 0,
+new90Sales: 0
+            
         },
         therapy: {},
         injectionReserve: {
@@ -123,9 +167,27 @@ function collectSummary(report, data) {
     report.summary.revisit += Number(summary.revisit || 0);
     report.summary.new90 += Number(summary.new90 || 0);
     report.summary.noCalc += Number(summary.noCalc || 0);
-    report.summary.sales += Number(summary.sales || 0);
+    report.summary.newSales += Number(summary.newSales || 0);
+report.summary.revisitSales += Number(summary.revisitSales || 0);
+report.summary.new90Sales += Number(summary.new90Sales || 0);
 
-    report.summary.deposit += Number(deskData.room1?.["현금"] || 0);
+    const salesFields = [
+        "급여",
+        "비급여",
+        "조합청구액",
+        "100/100미만 총액",
+        "장애인기금/전액본인"
+    ];
+
+    for (let i = 1; i <= 5; i++) {
+        const room = deskData[`room${i}`] || {};
+
+        salesFields.forEach(field => {
+            report.summary.sales += Number(room[field] || 0);
+        });
+
+        report.summary.deposit += Number(room["현금"] || 0);
+    }
 
     report.summary.total =
         report.summary.new +
@@ -262,7 +324,7 @@ function renderSummary(report) {
             <td>${count(s.noCalc, "명")}</td>
             <td class="total-cell">${count(s.total, "명")}</td>
             <td>${money(s.sales)}</td>
-            <td>0원</td>
+            <td>${money(s.total ? Math.round(s.sales / s.total) : 0)}</td>
             <td>${money(s.deposit)}</td>
         </tr>
     `;
@@ -408,34 +470,52 @@ function renderSummaryVisitChart(report) {
     const s = report.summary;
 
     summaryVisitChart = new Chart(canvas, {
+    plugins: [valueLabelPlugin],
         type: "bar",
         data: {
             labels: ["초진", "재진", "90일초진"],
-            datasets: [{
+            datasets: [
+                {
     label: "내원 인원",
+    data: [s.new, s.revisit, s.new90],
+    yAxisID: "y",
 
-    data: [
-        s.new,
-        s.revisit,
-        s.new90,
-        s.noCalc
-    ],
+    barPercentage: 0.5,
+    categoryPercentage: 0.6
+},
+{
+    label: "매출",
+    data: [s.newSales, s.revisitSales, s.new90Sales],
+    yAxisID: "y1",
 
-    barPercentage: 0.45,
-    categoryPercentage: 0.5
-}]
+    barPercentage: 0.5,
+    categoryPercentage: 0.6
+}
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    display: true
                 }
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    position: "left"
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: "right",
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        callback: value =>
+                            Number(value).toLocaleString("ko-KR") + "원"
+                    }
                 }
             }
         }
@@ -454,12 +534,17 @@ function renderTherapySalesChart(report) {
     );
 
     therapySalesChart = new Chart(canvas, {
+    plugins: [valueLabelPlugin],
         type: "bar",
         data: {
             labels,
             datasets: [{
                 label: "비급여 매출",
                 data: sales
+
+                
+
+                
             }]
         },
         options: {
@@ -495,6 +580,7 @@ function renderInjectionReserveChart(report) {
         r.revisitTotal ? (r.revisitInjection / r.revisitTotal) * 100 : 0;
 
     injectionReserveChart = new Chart(canvas, {
+    plugins: [valueLabelPlugin],
         type: "bar",
         data: {
             labels: ["초진 주사경과", "초진 주사", "재진 주사경과", "재진 주사"],
@@ -530,6 +616,52 @@ function renderInjectionChart(report) {
     const i = report.injection;
 
     injectionChart = new Chart(canvas, {
+
+    plugins: [{
+        id: "doughnutLabel",
+
+        afterDatasetsDraw(chart) {
+
+            const { ctx } = chart;
+
+            ctx.save();
+
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            const meta =
+                chart.getDatasetMeta(0);
+
+            meta.data.forEach((arc, index) => {
+
+                const value =
+                    chart.data.datasets[0].data[index];
+
+                if (!value) return;
+
+                const angle =
+                    (arc.startAngle + arc.endAngle) / 2;
+
+                const r =
+                    (arc.innerRadius + arc.outerRadius) / 2;
+
+                const x =
+                    arc.x + Math.cos(angle) * r;
+
+                const y =
+                    arc.y + Math.sin(angle) * r;
+
+                ctx.fillText(
+                    Number(value).toLocaleString("ko-KR"),
+                    x,
+                    y
+                );
+            });
+
+            ctx.restore();
+        }
+    }],
         type: "doughnut",
         data: {
             labels: ["C-ARM", "관절조영", "초음파"],
@@ -561,6 +693,7 @@ function renderRouteSalesChart(report) {
         .slice(0, 10);
 
     routeSalesChart = new Chart(canvas, {
+    plugins: [valueLabelPlugin],
         type: "bar",
         data: {
             labels: rows.map(([route]) => route),

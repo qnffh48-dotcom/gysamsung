@@ -7,7 +7,14 @@
 body {
     font-family: "Pretendard", sans-serif;
 
-    background: #d6dbe1;
+    background:
+    url("marble-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+background-attachment: fixed;
 
     min-height: 100vh;
 
@@ -29,7 +36,13 @@ body {
 .login-card {
     width: 470px;
 
-    background: white;
+    background: rgba(255,255,255,0.90);
+
+backdrop-filter: blur(8px);
+
+box-shadow:
+    0 15px 40px rgba(0,0,0,0.14),
+    inset 0 2px 8px rgba(255,255,255,0.75);
 
     border-radius: 30px;
 

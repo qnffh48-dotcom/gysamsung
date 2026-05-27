@@ -331,6 +331,8 @@ async function reloadClosingData() {
     renderRadiologyClosing();
     renderTimeChartClosing();
     renderClosingRouteSales();
+    renderClosingSummary();
+    renderClosingInsuranceType();
 }
 
 
@@ -690,7 +692,7 @@ closingDay.onchange = function () {
     if (!chartData) return;
 
     const ageGroups = [
-        "0~19", "20", "30~39",
+        "0~19", "20~29", "30~39",
         "40~49", "50~59", "60~69",
         "70~79", "80~89", "90~100"
     ];
@@ -765,6 +767,78 @@ closingDay.onchange = function () {
             <td>합계</td>
             <td>${totalCount}명</td>
             <td>${totalSales.toLocaleString("ko-KR")}원</td>
+        </tr>
+    `;
+}function renderClosingSummary() {
+
+    const tbody =
+        document.querySelector("#closingSummaryTable tbody");
+
+    if (!tbody) return;
+
+    const summary =
+        deskExtraData.summary || {};
+
+    const roomKeys = ["room1", "room2", "room3", "room4", "room5"];
+
+    const totalSalesFields = [
+        "급여",
+        "비급여",
+        "조합청구액",
+        "100/100미만 총액",
+        "장애인기금/전액본인"
+    ];
+
+    let totalSales = 0;
+    let cashTotal = 0;
+
+    roomKeys.forEach(roomKey => {
+        const room = deskData[roomKey] || {};
+
+        totalSalesFields.forEach(field => {
+            totalSales += Number(room[field] || 0);
+        });
+
+        cashTotal += Number(room["현금"] || 0);
+    });
+
+    const totalPeople =
+        Number(summary.total || 0);
+
+    const avg =
+        totalPeople
+            ? Math.round(totalSales / totalPeople)
+            : 0;
+
+    tbody.innerHTML = `
+        <tr>
+            <td>${summary.new || 0}명</td>
+            <td>${summary.revisit || 0}명</td>
+            <td>${summary.new90 || 0}명</td>
+            <td>${summary.noCalc || 0}명</td>
+            <td>${totalPeople}명</td>
+            <td>${totalSales.toLocaleString("ko-KR")}원</td>
+            <td>${avg.toLocaleString("ko-KR")}원</td>
+            <td>${cashTotal.toLocaleString("ko-KR")}원</td>
+        </tr>
+    `;
+}function renderClosingInsuranceType() {
+    const tbody =
+        document.querySelector("#closingInsuranceTypeTable tbody");
+
+    if (!tbody) return;
+
+    const types =
+        deskExtraData.insuranceType || {};
+
+    tbody.innerHTML = `
+        <tr>
+            <td>${Number(types["국민건강보험"] || 0)}</td>
+            <td>${Number(types["보호 1,2종"] || 0)}</td>
+            <td>${Number(types["자보-청구분"] || 0)}</td>
+            <td>${Number(types["일반"] || 0)}</td>
+            <td>${Number(types["국민건강보험(차상위1종)"] || 0)}</td>
+            <td>${Number(types["국민건강보험(차상위2종)"] || 0)}</td>
         </tr>
     `;
 }

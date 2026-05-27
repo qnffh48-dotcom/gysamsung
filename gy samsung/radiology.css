@@ -2,7 +2,14 @@ html,
 body {
     margin: 0;
     padding: 0;
-    background: #d6dbe1;
+    background:
+    url("marble-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+background-attachment: fixed;
 }
 
 /* 메인 */
@@ -10,7 +17,7 @@ body {
     flex: 1;
     min-height: 100vh;
     padding: 35px 40px 40px;
-    background: #d6dbe1;
+    background: transparent;
     box-sizing: border-box;
     overflow-x: auto;
 }
@@ -69,7 +76,9 @@ body {
     width: 1050px;
     min-height: 820px;
 
-    background: white;
+    background: rgba(255,255,255,0.92);
+
+    backdrop-filter: blur(6px);
 
     border-radius: 24px;
 
@@ -77,7 +86,9 @@ body {
 
     box-sizing: border-box;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.10),
+    inset 0 2px 8px rgba(255,255,255,0.75);
 }
 
 /* before 제거 */

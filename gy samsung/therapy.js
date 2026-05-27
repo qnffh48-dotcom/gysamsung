@@ -10,22 +10,24 @@ const therapyItems = [
 
 const therapyCols = ["신환", "재진", "매출", "상담", "예약"];
 
-const reservationRows = ["주사", "경과", "도수", "충격파"];
-const reservationCols = ["예약", "변경", "취소"];
+const ptItems = [
+    "도수",
+    "충격파",
+    "비급여치료1",
+    "비급여치료2"
+];
+
+const ptCols = ["건수", "매출"];
 
 let therapyData = {};
-let deskExtraData = {
-    reservation: {}
-};
-
-/* 날짜 */
+let ptData = {};
+let deskExtraData = { reservation: {} };
 
 const yearSelect = document.getElementById("therapyYear");
 const monthSelect = document.getElementById("therapyMonth");
 const daySelect = document.getElementById("therapyDay");
 
 const today = new Date();
-
 let currentYear = today.getFullYear();
 let currentMonth = today.getMonth() + 1;
 let currentDay = today.getDate();
@@ -56,36 +58,25 @@ function updateDays() {
 
 yearSelect.value = currentYear;
 monthSelect.value = currentMonth;
-
 updateDays();
-
 daySelect.value = currentDay;
 
 function getDateKey() {
     return `${yearSelect.value}-${monthSelect.value}-${daySelect.value}`;
 }
 
-/* 불러오기 */
-
 async function loadTherapyData() {
-    const snap = await getDoc(
-        doc(db, "closings", getDateKey())
-    );
-
+    const snap = await getDoc(doc(db, "closings", getDateKey()));
     const data = snap.exists() ? snap.data() : {};
 
     therapyData = data.therapyData || {};
-
-    deskExtraData = data.deskExtraData || {
-        reservation: {}
-    };
+    ptData = data.ptData || {};
+    deskExtraData = data.deskExtraData || { reservation: {} };
 
     if (!deskExtraData.reservation) {
         deskExtraData.reservation = {};
     }
 }
-
-/* 저장 */
 
 async function saveTherapyData(roomNum, item, col, value) {
     if (!therapyData[`room${roomNum}`]) {
@@ -96,8 +87,7 @@ async function saveTherapyData(roomNum, item, col, value) {
         therapyData[`room${roomNum}`][item] = {};
     }
 
-    therapyData[`room${roomNum}`][item][col] =
-        Number(value) || 0;
+    therapyData[`room${roomNum}`][item][col] = Number(value) || 0;
 
     await setDoc(
         doc(db, "closings", getDateKey()),
@@ -107,10 +97,6 @@ async function saveTherapyData(roomNum, item, col, value) {
 }
 
 async function saveReservationInput(row, col, value) {
-    if (!deskExtraData.reservation) {
-        deskExtraData.reservation = {};
-    }
-
     if (!deskExtraData.reservation[row]) {
         deskExtraData.reservation[row] = {};
     }
@@ -121,6 +107,7 @@ async function saveReservationInput(row, col, value) {
         doc(db, "closings", getDateKey()),
         {
             deskExtraData: {
+                ...deskExtraData,
                 reservation: deskExtraData.reservation
             }
         },
@@ -128,7 +115,25 @@ async function saveReservationInput(row, col, value) {
     );
 }
 
-/* 진료실 표 */
+async function savePtInput(ptNum, item, col, value) {
+    const ptKey = `pt${ptNum}`;
+
+    if (!ptData[ptKey]) {
+        ptData[ptKey] = {};
+    }
+
+    if (!ptData[ptKey][item]) {
+        ptData[ptKey][item] = {};
+    }
+
+    ptData[ptKey][item][col] = Number(value) || 0;
+
+    await setDoc(
+        doc(db, "closings", getDateKey()),
+        { ptData },
+        { merge: true }
+    );
+}
 
 function renderTherapyRooms() {
     for (let i = 1; i <= 5; i++) {
@@ -137,7 +142,6 @@ function renderTherapyRooms() {
         }
 
         const page = document.getElementById(`therapyRoom${i}`);
-
         if (!page) continue;
 
         page.innerHTML = `
@@ -163,7 +167,6 @@ function renderTherapyRooms() {
                         return `
                             <tr>
                                 <td>${item}</td>
-
                                 ${therapyCols.map(col => `
                                     <td>
                                         <input
@@ -182,19 +185,89 @@ function renderTherapyRooms() {
     }
 }
 
-/* 예약환자 내원 정보 표 */
+function renderPtPages() {
+    for (let pt = 1; pt <= 5; pt++) {
+        const page = document.getElementById(`therapy-temp${pt}`);
+        if (!page) continue;
 
+        const ptKey = `pt${pt}`;
+        if (!ptData[ptKey]) {
+            ptData[ptKey] = {};
+        }
 
+        page.innerHTML = `
+            <div class="therapy-card">
+                <h3>
+                    <span class="big-dot"></span>
+                    PT${pt} 비급여 치료 관리
+                </h3>
 
-/* 새로고침 */
+                <table class="therapy-table">
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>건수</th>
+                            <th>매출</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${ptItems.map(item => {
+                            if (!ptData[ptKey][item]) {
+                                ptData[ptKey][item] = {};
+                            }
+
+                            return `
+                                <tr>
+                                    <td>${item}</td>
+
+                                    ${ptCols.map(col => `
+                                        <td>
+                                            <input
+                                                type="number"
+                                                value="${ptData[ptKey][item][col] || 0}"
+                                                oninput="savePtInput(${pt}, '${item}', '${col}', this.value)"
+                                            >
+                                        </td>
+                                    `).join("")}
+                                </tr>
+                            `;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+}
+
+async function loadReservationInputs() {
+    const reservation = deskExtraData.reservation || {};
+
+    document.getElementById("therapyReserve").value =
+        reservation["도수"]?.["예약"] || 0;
+
+    document.getElementById("therapyChange").value =
+        reservation["도수"]?.["변경"] || 0;
+
+    document.getElementById("therapyCancel").value =
+        reservation["도수"]?.["취소"] || 0;
+
+    document.getElementById("shockReserve").value =
+        reservation["충격파"]?.["예약"] || 0;
+
+    document.getElementById("shockChange").value =
+        reservation["충격파"]?.["변경"] || 0;
+
+    document.getElementById("shockCancel").value =
+        reservation["충격파"]?.["취소"] || 0;
+}
 
 async function reloadTherapyPage() {
     await loadTherapyData();
     renderTherapyRooms();
+    renderPtPages();
     await loadReservationInputs();
 }
-
-/* 날짜 변경 */
 
 yearSelect.addEventListener("change", () => {
     currentDay = 1;
@@ -225,21 +298,18 @@ function changeDate(diff) {
     currentDay = date.getDate();
 
     updateDays();
-
     daySelect.value = currentDay;
 
     reloadTherapyPage();
 }
 
-document
-    .getElementById("prevDay")
-    .addEventListener("click", () => changeDate(-1));
+document.getElementById("prevDay").addEventListener("click", () => {
+    changeDate(-1);
+});
 
-document
-    .getElementById("nextDay")
-    .addEventListener("click", () => changeDate(1));
-
-/* 진료실 탭 */
+document.getElementById("nextDay").addEventListener("click", () => {
+    changeDate(1);
+});
 
 function openTherapyRoom(event, roomId) {
     document.querySelectorAll(".therapy-tab").forEach(tab => {
@@ -254,80 +324,32 @@ function openTherapyRoom(event, roomId) {
     document.getElementById(roomId).classList.add("active");
 }
 
-window.openTherapyRoom = openTherapyRoom;
-window.saveTherapyData = saveTherapyData;
-window.saveReservationInput = saveReservationInput;
-
-/* 상단 탭 */
-
-const therapyTopTabs =
-    document.querySelectorAll(".therapy-top-tab");
-
-const therapyTopPages =
-    document.querySelectorAll(".therapy-top-page");
+const therapyTopTabs = document.querySelectorAll(".therapy-top-tab");
+const therapyTopPages = document.querySelectorAll(".therapy-top-page");
 
 therapyTopTabs.forEach(tab => {
     tab.addEventListener("click", () => {
-        therapyTopTabs.forEach(t =>
-            t.classList.remove("active")
-        );
-
-        therapyTopPages.forEach(page =>
-            page.classList.remove("active")
-        );
+        therapyTopTabs.forEach(t => t.classList.remove("active"));
+        therapyTopPages.forEach(page => page.classList.remove("active"));
 
         tab.classList.add("active");
-
-        document
-            .getElementById(tab.dataset.tab)
-            .classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
     });
 });
-
-/* 사이드바 스크롤 */
 
 const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
     window.addEventListener("scroll", () => {
-        const targetY = window.scrollY;
-
         requestAnimationFrame(() => {
-            floatingNav.style.transform =
-                `translateY(${targetY}px)`;
+            floatingNav.style.transform = `translateY(${window.scrollY}px)`;
         });
     });
 }
 
-/* 최초 실행 */
+window.openTherapyRoom = openTherapyRoom;
+window.saveTherapyData = saveTherapyData;
+window.saveReservationInput = saveReservationInput;
+window.savePtInput = savePtInput;
 
 reloadTherapyPage();
-async function loadReservationInputs() {
-
-    const snap = await getDoc(
-        doc(db, "closings", getDateKey())
-    );
-
-    const data = snap.exists() ? snap.data() : {};
-
-    const reservation =
-        data.deskExtraData?.reservation || {};
-
-    document.getElementById("therapyReserve").value =
-        reservation["도수"]?.["예약"] || 0;
-
-    document.getElementById("therapyChange").value =
-        reservation["도수"]?.["변경"] || 0;
-
-    document.getElementById("therapyCancel").value =
-        reservation["도수"]?.["취소"] || 0;
-
-    document.getElementById("shockReserve").value =
-        reservation["충격파"]?.["예약"] || 0;
-
-    document.getElementById("shockChange").value =
-        reservation["충격파"]?.["변경"] || 0;
-
-    document.getElementById("shockCancel").value =
-        reservation["충격파"]?.["취소"] || 0;
-}

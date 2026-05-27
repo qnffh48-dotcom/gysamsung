@@ -1,40 +1,54 @@
 import { db, doc, getDoc, setDoc } from "./firebase.js";
 
-/* =========================
-   오늘 스케줄
-========================= */
+let notices = [];
+let savedUrls = [];
+let currentManualKey = "";
+let manualSaveTimer = null;
 
-async function loadTodaySchedule() {
-    const today = new Date();
+function todayKeys() {
+    const t = new Date();
+    const y = t.getFullYear();
+    const m = t.getMonth() + 1;
+    const d = t.getDate();
 
-    const date =
-        today.getFullYear() +
-        "-" +
-        (today.getMonth() + 1) +
-        "-" +
-        today.getDate();
-
-    const snap = await getDoc(doc(db, "schedules", date));
-
-    const data = snap.exists() ? snap.data() : {};
-
-    document.querySelector(".today-doctor").textContent = data.doctor || "미입력";
-    document.querySelector(".today-room").textContent = data.room || "미입력";
-    document.querySelector(".today-nurse").textContent = data.nurse || "미입력";
-    document.querySelector(".today-desk").textContent = data.desk || "미입력";
-    document.querySelector(".today-therapy").textContent = data.therapy || "미입력";
+    return [
+        `${y}-${m}-${d}`,
+        `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+    ];
 }
 
-/* =========================
-   공지사항 Firebase
-========================= */
+/* TODAY OFF */
+async function loadTodaySchedule() {
+    let data = {};
 
-let notices = [];
+    for (const key of todayKeys()) {
+        const snap = await getDoc(doc(db, "schedules", key));
+        if (snap.exists()) {
+            data = snap.data();
+            break;
+        }
+    }
 
+    document.querySelector(".today-doctor").textContent =
+        data.doctor || data.의사 || "미입력";
+
+    document.querySelector(".today-room").textContent =
+        data.room || data.방과 || "미입력";
+
+    document.querySelector(".today-nurse").textContent =
+        data.nurse || data.간호 || "미입력";
+
+    document.querySelector(".today-desk").textContent =
+        data.desk || data.원무 || "미입력";
+
+    document.querySelector(".today-therapy").textContent =
+        data.therapy || data.물치 || "미입력";
+}
+
+/* 공지 */
 async function loadNotices() {
     const snap = await getDoc(doc(db, "mainData", "notices"));
-
-    notices = snap.exists() ? (snap.data().items || [""]) : [""];
+    notices = snap.exists() ? snap.data().items || [] : [];
     renderNotices();
 }
 
@@ -53,19 +67,39 @@ function renderNotices() {
     noticeList.innerHTML = "";
 
     notices.forEach((text, index) => {
-        noticeList.innerHTML += `
-            <div class="notice-item">
-                <span class="dot"></span>
+        const item = document.createElement("div");
+        item.className = "notice-item";
 
-                <textarea class="notice-text"
-                    oninput="updateNotice(${index}, this); autoResize(this);">${text}</textarea>
+        const dot = document.createElement("span");
+        dot.className = "dot";
 
-                <button class="notice-delete-btn" onclick="deleteNotice(${index})">삭제</button>
-            </div>
-        `;
+        const textarea = document.createElement("textarea");
+        textarea.className = "notice-text";
+        textarea.value = text || "";
+
+        textarea.addEventListener("input", async function () {
+            notices[index] = this.value;
+            autoResize(this);
+            await saveNotices();
+        });
+
+        const btn = document.createElement("button");
+        btn.className = "notice-delete-btn";
+        btn.textContent = "삭제";
+
+        btn.addEventListener("click", async function () {
+            notices.splice(index, 1);
+            await saveNotices();
+            renderNotices();
+        });
+
+        item.appendChild(dot);
+        item.appendChild(textarea);
+        item.appendChild(btn);
+
+        noticeList.appendChild(item);
+        autoResize(textarea);
     });
-
-    document.querySelectorAll(".notice-text").forEach(autoResize);
 }
 
 async function addNotice() {
@@ -74,37 +108,10 @@ async function addNotice() {
     renderNotices();
 }
 
-async function deleteNotice(index) {
-    notices.splice(index, 1);
-    await saveNotices();
-    renderNotices();
-}
-
-async function updateNotice(index, textarea) {
-    notices[index] = textarea.value;
-    await saveNotices();
-}
-
-function autoResize(textarea) {
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
-}
-
-window.addNotice = addNotice;
-window.deleteNotice = deleteNotice;
-window.updateNotice = updateNotice;
-window.autoResize = autoResize;
-
-/* =========================
-   URL 모음 Firebase
-========================= */
-
-let savedUrls = [];
-
+/* URL */
 async function loadUrls() {
     const snap = await getDoc(doc(db, "mainData", "urls"));
-
-    savedUrls = snap.exists() ? (snap.data().items || []) : [];
+    savedUrls = snap.exists() ? snap.data().items || [] : [];
     renderUrls();
 }
 
@@ -123,12 +130,27 @@ function renderUrls() {
     urlList.innerHTML = "";
 
     savedUrls.forEach((url, index) => {
-        urlList.innerHTML += `
-            <div class="url-link-item">
-                <a href="${url.link}" target="_blank">${url.name}</a>
-                <button type="button" onclick="deleteUrl(${index})">삭제</button>
-            </div>
-        `;
+        const item = document.createElement("div");
+        item.className = "url-link-item";
+
+        const a = document.createElement("a");
+        a.href = url.link;
+        a.target = "_blank";
+        a.textContent = url.name;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = "삭제";
+
+        btn.addEventListener("click", async function () {
+            savedUrls.splice(index, 1);
+            await saveUrls();
+            renderUrls();
+        });
+
+        item.appendChild(a);
+        item.appendChild(btn);
+        urlList.appendChild(item);
     });
 }
 
@@ -140,7 +162,7 @@ async function addUrl() {
     let link = linkInput.value.trim();
 
     if (!name || !link) {
-        alert("사이트 이름이랑 주소 둘 다 입력해주세용");
+        alert("사이트 이름이랑 주소 둘 다 입력");
         return;
     }
 
@@ -157,61 +179,15 @@ async function addUrl() {
     renderUrls();
 }
 
-async function deleteUrl(index) {
-    savedUrls.splice(index, 1);
-    await saveUrls();
-    renderUrls();
-}
-
-window.addUrl = addUrl;
-window.deleteUrl = deleteUrl;
-
-/* =========================
-   업무 매뉴얼 Firebase
-========================= */
-
-let currentManualKey = "";
-
-async function openModal(key, title, basicContent) {
-    currentManualKey = key;
-
-    const modal = document.getElementById("manualModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalContent = document.getElementById("modalContent");
-
-    modal.classList.add("active");
-    modalTitle.textContent = title;
-
-    const snap = await getDoc(doc(db, "manualContents", key));
-
-    modalContent.value = snap.exists()
-        ? (snap.data().content || "")
-        : basicContent;
-
-    modalContent.oninput = async function () {
-        await setDoc(
-            doc(db, "manualContents", currentManualKey),
-            { content: modalContent.value },
-            { merge: true }
-        );
-    };
-}
-
-function closeModal() {
-    document.getElementById("manualModal").classList.remove("active");
-}
-
+/* 매뉴얼 카드 */
 async function saveManualCards() {
     const cards = document.querySelectorAll(".manual-card");
-    const items = [];
 
-    cards.forEach(card => {
-        items.push({
-            tag: card.querySelector(".manual-tag-input")?.value || "",
-            title: card.querySelector(".manual-title-input")?.value || "",
-            desc: card.querySelector(".manual-desc-input")?.value || ""
-        });
-    });
+    const items = [...cards].map(card => ({
+        tag: card.querySelector(".manual-tag-input")?.value || "",
+        title: card.querySelector(".manual-title-input")?.value || "",
+        desc: card.querySelector(".manual-desc-input")?.value || ""
+    }));
 
     await setDoc(
         doc(db, "mainData", "manualCards"),
@@ -228,80 +204,119 @@ async function loadManualCards() {
     const cards = document.querySelectorAll(".manual-card");
 
     cards.forEach((card, index) => {
-        const data = items[index];
-        if (!data) return;
+        const item = items[index];
+        if (!item) return;
 
-        card.querySelector(".manual-tag-input").value = data.tag || "";
-        card.querySelector(".manual-title-input").value = data.title || "";
-        card.querySelector(".manual-desc-input").value = data.desc || "";
+        card.querySelector(".manual-tag-input").value = item.tag || "";
+        card.querySelector(".manual-title-input").value = item.title || "";
+        card.querySelector(".manual-desc-input").value = item.desc || "";
     });
 }
 
-window.openModal = openModal;
-window.closeModal = closeModal;
-
-/* =========================
-   사이드바 시계
-========================= */
-
-function updateSidebarClock() {
-    const now = new Date();
-
-    const dateText =
-        now.getFullYear() + "." +
-        String(now.getMonth() + 1).padStart(2, "0") + "." +
-        String(now.getDate()).padStart(2, "0");
-
-    const timeText =
-        String(now.getHours()).padStart(2, "0") + ":" +
-        String(now.getMinutes()).padStart(2, "0") + ":" +
-        String(now.getSeconds()).padStart(2, "0");
-
-    const dateEl = document.getElementById("clockDate");
-    const timeEl = document.getElementById("clockTime");
-
-    if (dateEl) dateEl.textContent = dateText;
-    if (timeEl) timeEl.textContent = timeText;
-}
-
-/* =========================
-   사이드바 스크롤
-========================= */
-
-const floatingNav = document.querySelector(".sidebar .nav");
-
-if (floatingNav) {
-    window.addEventListener("scroll", () => {
-        const targetY = window.scrollY;
-
-        requestAnimationFrame(() => {
-            floatingNav.style.transform = `translateY(${targetY}px)`;
+function bindManualCardSave() {
+    document.querySelectorAll(
+        ".manual-tag-input, .manual-title-input, .manual-desc-input"
+    ).forEach(input => {
+        input.addEventListener("input", () => {
+            clearTimeout(manualSaveTimer);
+            manualSaveTimer = setTimeout(saveManualCards, 300);
         });
     });
 }
 
-/* =========================
-   시작
-========================= */
+/* 매뉴얼 모달 */
+async function openModal(key, title, basicContent) {
+    currentManualKey = key;
 
-window.addEventListener("load", async () => {
-    await loadTodaySchedule();
-    await loadNotices();
-    await loadUrls();
-    await loadManualCards();
+    const modal = document.getElementById("manualModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalContent = document.getElementById("modalContent");
 
-    document.querySelectorAll(
-        ".manual-tag-input, .manual-title-input, .manual-desc-input"
-    ).forEach(input => {
-        input.addEventListener("input", saveManualCards);
+    modal.classList.add("active");
+    modalTitle.textContent = title;
+
+    const snap = await getDoc(doc(db, "manualContents", key));
+
+    modalContent.value = snap.exists()
+        ? snap.data().content || ""
+        : basicContent || "";
+
+    modalContent.oninput = async function () {
+        await setDoc(
+            doc(db, "manualContents", currentManualKey),
+            { content: modalContent.value },
+            { merge: true }
+        );
+    };
+}
+
+function closeModal() {
+    document.getElementById("manualModal")?.classList.remove("active");
+}
+
+/* 시계 */
+function updateSidebarClock() {
+    const now = new Date();
+
+    const dateEl = document.getElementById("clockDate");
+    const timeEl = document.getElementById("clockTime");
+
+    if (dateEl) {
+        dateEl.textContent =
+            now.getFullYear() + "." +
+            String(now.getMonth() + 1).padStart(2, "0") + "." +
+            String(now.getDate()).padStart(2, "0");
+    }
+
+    if (timeEl) {
+        timeEl.textContent =
+            String(now.getHours()).padStart(2, "0") + ":" +
+            String(now.getMinutes()).padStart(2, "0") + ":" +
+            String(now.getSeconds()).padStart(2, "0");
+    }
+}
+
+/* 사이드바 */
+const floatingNav = document.querySelector(".sidebar .nav");
+
+if (floatingNav) {
+    window.addEventListener("scroll", () => {
+        requestAnimationFrame(() => {
+            floatingNav.style.transform = `translateY(${window.scrollY}px)`;
+        });
     });
+}
+
+/* 전역 */
+window.addNotice = addNotice;
+window.addUrl = addUrl;
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+/* 시작 */
+async function startMainPage() {
+    try { await loadTodaySchedule(); } catch (e) { console.error("TODAY OFF 실패", e); }
+    try { await loadNotices(); } catch (e) { console.error("공지 실패", e); }
+    try { await loadUrls(); } catch (e) { console.error("URL 실패", e); }
+    try { await loadManualCards(); } catch (e) { console.error("매뉴얼 실패", e); }
+
+    bindManualCardSave();
 
     updateSidebarClock();
     setInterval(updateSidebarClock, 1000);
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startMainPage);
+} else {
+    startMainPage();
+}
+
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
 });
 
-document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-        closeModal();
-    }
-});
+function autoResize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}

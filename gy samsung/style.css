@@ -7,7 +7,14 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background: #d6dbe1;
+    background:
+    url("marble-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+background-attachment: fixed;
     font-family: Arial, sans-serif;
     overflow-x: auto;
     min-width: 1450px;
@@ -94,7 +101,7 @@ body {
 .main {
     flex: 1;
     padding: 45px 70px;
-    background: #d6dbe1;
+    background: transparent;
 }
 
 .top-info {

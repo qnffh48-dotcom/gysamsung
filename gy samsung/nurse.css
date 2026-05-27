@@ -1,6 +1,13 @@
 body {
     margin: 0;
-    background: #d6dbe1;
+    background:
+    url("marble-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+background-attachment: fixed;
     font-family: Arial, sans-serif;
 }
 
@@ -8,7 +15,7 @@ body {
     margin-left: 240px;
     min-height: 100vh;
     padding: 42px 40px;
-    background: #d6dbe1;
+    background: transparent;
     box-sizing: border-box;
 }
 
@@ -159,13 +166,17 @@ body {
 /* 카드 */
 
 .nurse-card {
-    background: white;
+    background: rgba(255,255,255,0.92);
+
+    backdrop-filter: blur(6px);
 
     border-radius: 28px;
 
     padding: 34px 45px 50px;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.10),
+    inset 0 2px 8px rgba(255,255,255,0.75);
 
     box-sizing: border-box;
 }

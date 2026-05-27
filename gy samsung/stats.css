@@ -1,7 +1,17 @@
+body {
+    background:
+        url("marble-bg.jpg") !important;
+
+    background-size: cover !important;
+
+    background-position: center !important;
+
+    background-attachment: fixed !important;
+}
 .stats-main {
     flex: 1;
     padding: 36px 46px;
-    background: #dfe3e8;
+    background: transparent !important;
     box-sizing: border-box;
     overflow-x: auto;
 }
