@@ -129,6 +129,7 @@ function renderNurseTable() {
     let totalFluidNew = 0;
     let totalFluidRevisit = 0;
     let totalUltrasound = 0;
+    let totalSales = 0;
 
     table.innerHTML = `
         <thead>
@@ -137,42 +138,34 @@ function renderNurseTable() {
                 <th>수액 신환</th>
                 <th>수액 재진</th>
                 <th>초음파</th>
+                <th>매출</th>
             </tr>
         </thead>
 
         <tbody>
-
             ${nurseRooms.map(room => {
 
-                const row =
-                    nurseData[room.key] || {};
+                const row = nurseData[room.key] || {};
 
-                const fluidNew =
-                    Number(row.fluidNew || 0);
-
-                const fluidRevisit =
-                    Number(row.fluidRevisit || 0);
-
-                const ultrasound =
-                    Number(row.ultrasound || 0);
+                const fluidNew = Number(row.fluidNew || 0);
+                const fluidRevisit = Number(row.fluidRevisit || 0);
+                const ultrasound = Number(row.ultrasound || 0);
+                const sales = Number(row.sales || 0);
 
                 totalFluidNew += fluidNew;
                 totalFluidRevisit += fluidRevisit;
                 totalUltrasound += ultrasound;
+                totalSales += sales;
 
                 return `
                     <tr>
-
                         <td>${room.name}</td>
 
                         <td>
                             <input
                                 type="number"
-
                                 value="${row.fluidNew || ""}"
-
                                 data-room="${room.key}"
-
                                 data-field="fluidNew"
                             >
                         </td>
@@ -180,11 +173,8 @@ function renderNurseTable() {
                         <td>
                             <input
                                 type="number"
-
                                 value="${row.fluidRevisit || ""}"
-
                                 data-room="${room.key}"
-
                                 data-field="fluidRevisit"
                             >
                         </td>
@@ -192,47 +182,43 @@ function renderNurseTable() {
                         <td>
                             <input
                                 type="number"
-
                                 value="${row.ultrasound || ""}"
-
                                 data-room="${room.key}"
-
                                 data-field="ultrasound"
                             >
                         </td>
 
+                        <td>
+                            <input
+                                type="number"
+                                value="${row.sales || ""}"
+                                data-room="${room.key}"
+                                data-field="sales"
+                            >
+                        </td>
                     </tr>
                 `;
             }).join("")}
 
             <tr class="total-row">
-
                 <td>합계</td>
-
                 <td>${totalFluidNew}명</td>
-
                 <td>${totalFluidRevisit}명</td>
-
                 <td>${totalUltrasound}건</td>
-
+                <td>${totalSales.toLocaleString("ko-KR")}원</td>
             </tr>
-
         </tbody>
     `;
 
     table.querySelectorAll("input")
         .forEach(input => {
-
             input.addEventListener("input", () => {
-
                 clearTimeout(saveTimer);
 
                 saveTimer = setTimeout(() => {
                     saveNurseData();
                 }, 500);
-
             });
-
         });
 }
 

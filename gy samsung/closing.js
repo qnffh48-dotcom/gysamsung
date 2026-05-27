@@ -232,33 +232,43 @@ function renderTherapyRoom(roomNum) {
 
                     if (item === "수액") {
 
-                        const nurseData = window.nurseClosingData || {};
+    const nurseData = window.nurseClosingData || {};
 
-                        if (roomNum === "all") {
+    if (roomNum === "all") {
 
-                            row["신환"] =
-                                Number(nurseData.room1?.fluidNew || 0) +
-                                Number(nurseData.room2?.fluidNew || 0) +
-                                Number(nurseData.room3?.fluidNew || 0) +
-                                Number(nurseData.room4?.fluidNew || 0) +
-                                Number(nurseData.room5?.fluidNew || 0);
+        row["신환"] =
+            Number(nurseData.room1?.fluidNew || 0) +
+            Number(nurseData.room2?.fluidNew || 0) +
+            Number(nurseData.room3?.fluidNew || 0) +
+            Number(nurseData.room4?.fluidNew || 0) +
+            Number(nurseData.room5?.fluidNew || 0);
 
-                            row["재진"] =
-                                Number(nurseData.room1?.fluidRevisit || 0) +
-                                Number(nurseData.room2?.fluidRevisit || 0) +
-                                Number(nurseData.room3?.fluidRevisit || 0) +
-                                Number(nurseData.room4?.fluidRevisit || 0) +
-                                Number(nurseData.room5?.fluidRevisit || 0);
+        row["재진"] =
+            Number(nurseData.room1?.fluidRevisit || 0) +
+            Number(nurseData.room2?.fluidRevisit || 0) +
+            Number(nurseData.room3?.fluidRevisit || 0) +
+            Number(nurseData.room4?.fluidRevisit || 0) +
+            Number(nurseData.room5?.fluidRevisit || 0);
 
-                        } else {
+        row["매출"] =
+            Number(nurseData.room1?.sales || 0) +
+            Number(nurseData.room2?.sales || 0) +
+            Number(nurseData.room3?.sales || 0) +
+            Number(nurseData.room4?.sales || 0) +
+            Number(nurseData.room5?.sales || 0);
 
-                            row["신환"] =
-                                Number(nurseData[`room${roomNum}`]?.fluidNew || 0);
+    } else {
 
-                            row["재진"] =
-                                Number(nurseData[`room${roomNum}`]?.fluidRevisit || 0);
-                        }
-                    }
+        row["신환"] =
+            Number(nurseData[`room${roomNum}`]?.fluidNew || 0);
+
+        row["재진"] =
+            Number(nurseData[`room${roomNum}`]?.fluidRevisit || 0);
+
+        row["매출"] =
+            Number(nurseData[`room${roomNum}`]?.sales || 0);
+    }
+}
 
                     therapyCols.forEach(col => {
                         totals[col] += Number(row[col] || 0);
