@@ -99,8 +99,17 @@ onAuthStateChanged(auth, (user) => {
     }
 
     const email = (user.email || "").toLowerCase();
-    const path = location.pathname.split("/").pop() || "index.html";
-    const page = pageMap[path];
+    let path = location.pathname.split("/").pop();
+
+if (!path || path === "") {
+    path = "index.html";
+}
+else if (!path.includes(".")) {
+    path = path + ".html";
+}
+
+
+const page = pageMap[path];
 
     if (fullAccessUsers.includes(email)) {
         return;

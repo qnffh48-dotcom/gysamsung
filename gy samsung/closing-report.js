@@ -140,9 +140,15 @@ new90Sales: 0
 
     for (const key of keys) {
         const snap = await getDoc(doc(db, "closings", key));
-        if (!snap.exists()) continue;
+const nurseSnap = await getDoc(doc(db, "nurseClosing", key));
 
-        const data = snap.data();
+const data = snap.exists() ? snap.data() : {};
+
+if (nurseSnap.exists()) {
+    data.nurseData = nurseSnap.data();
+}
+
+if (!snap.exists() && !nurseSnap.exists()) continue;
 
         collectSummary(report, data);
         collectTherapy(report, data);
@@ -220,14 +226,19 @@ function collectTherapy(report, data) {
         }
 
         if (item === "수액") {
-            for (let i = 1; i <= 5; i++) {
-                report.therapy[item].신환 +=
-                    Number(nurseData[`room${i}`]?.fluidNew || 0);
 
-                report.therapy[item].재진 +=
-                    Number(nurseData[`room${i}`]?.fluidRevisit || 0);
-            }
-        }
+    for (let i = 1; i <= 5; i++) {
+
+        report.therapy[item].신환 +=
+            Number(nurseData[`room${i}`]?.fluidNew || 0);
+
+        report.therapy[item].재진 +=
+            Number(nurseData[`room${i}`]?.fluidRevisit || 0);
+
+        report.therapy[item].매출 +=
+    Number(nurseData[`room${i}`]?.sales || 0);
+    }
+}
     });
 }
 

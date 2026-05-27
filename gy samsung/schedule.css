@@ -9,7 +9,7 @@ body {
     min-width: 2700px !important;
 
     background:
-        url("marble-bg.jpg") !important;
+        url("./marble-bg.jpg") !important;
 
     background-size: cover !important;
     background-position: center !important;
