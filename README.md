@@ -1,2 +1,0 @@
-# gysamsung
-hospital
