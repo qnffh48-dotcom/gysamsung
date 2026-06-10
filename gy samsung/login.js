@@ -33,30 +33,42 @@ form.addEventListener("submit", async (e) => {
     message.textContent = "";
 
     try {
-        await setPersistence(
-    auth,
-    browserSessionPersistence
-);
+    await setPersistence(
+        auth,
+        browserSessionPersistence
+    );
 
-await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-);
-        if (rememberId.checked) {
-            localStorage.setItem("savedLoginId", email);
-        } else {
-            localStorage.removeItem("savedLoginId");
-        }
+    await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+    );
 
-        message.style.color = "#16a34a";
-        message.textContent = "로그인 성공";
+    /* 병원 자동 선택 */
+    const hospitalId =
+        email.endsWith("@bh.med")
+            ? "banghak"
+            : "gayang";
 
-        setTimeout(() => {
-            location.href = "index.html";
-        }, 500);
+    localStorage.setItem(
+        "hospitalId",
+        hospitalId
+    );
 
-    } catch (error) {
+    if (rememberId.checked) {
+        localStorage.setItem("savedLoginId", email);
+    } else {
+        localStorage.removeItem("savedLoginId");
+    }
+
+    message.style.color = "#16a34a";
+    message.textContent = "로그인 성공";
+
+    setTimeout(() => {
+        location.href = "index.html";
+    }, 500);
+
+} catch (error) {
         console.error(error);
 
         message.style.color = "#dc2626";

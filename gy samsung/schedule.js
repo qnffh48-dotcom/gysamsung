@@ -1,5 +1,19 @@
 import { db, doc, setDoc, getDoc } from "./firebase.js";
+import {
+    getHospitalId,
+    setHospitalId,
+    hospitalCollection
+} from "./hospital.js";
 
+const hospitalSelect = document.getElementById("hospitalSelect");
+
+if (hospitalSelect) {
+    hospitalSelect.value = getHospitalId();
+
+    hospitalSelect.addEventListener("change", e => {
+        setHospitalId(e.target.value);
+    });
+}
 console.log("schedule.js 자동저장 모드");
 
 function getKey(ta) {
@@ -18,7 +32,7 @@ async function saveOneTextarea(ta) {
   if (!date || !key) return;
 
   await setDoc(
-    doc(db, "schedules", date),
+    doc(db, hospitalCollection("schedules"), date),
     {
       [key]: ta.value
     },
@@ -34,7 +48,7 @@ async function loadAllSchedules() {
   const dates = [...new Set(textareas.map(ta => ta.dataset.date))];
 
   for (const date of dates) {
-    const snap = await getDoc(doc(db, "schedules", date));
+    const snap = await getDoc(doc(db, hospitalCollection("schedules"), date));
 
     if (!snap.exists()) continue;
 
@@ -247,7 +261,7 @@ function getLunchMonthKey() {
 
 async function loadLunchData() {
     const snap = await getDoc(
-        doc(db, "lunchSchedules", getLunchMonthKey())
+        doc(db, hospitalCollection("lunchSchedules"), getLunchMonthKey())
     );
 
     return snap.exists() ? snap.data() : {};
@@ -256,13 +270,13 @@ async function loadLunchData() {
 async function saveLunchData(key, value) {
     if (value) {
         await setDoc(
-            doc(db, "lunchSchedules", getLunchMonthKey()),
+            doc(db, hospitalCollection("lunchSchedules"), getLunchMonthKey()),
             { [key]: value },
             { merge: true }
         );
     } else {
         await setDoc(
-            doc(db, "lunchSchedules", getLunchMonthKey()),
+            doc(db, hospitalCollection("lunchSchedules"), getLunchMonthKey()),
             { [key]: "" },
             { merge: true }
         );

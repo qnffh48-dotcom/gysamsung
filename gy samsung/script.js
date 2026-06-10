@@ -1,5 +1,14 @@
 import { db, doc, getDoc, setDoc } from "./firebase.js";
 
+import {
+    hospitalCollection,
+    applyHospitalUI,
+    setHospitalId
+} from "./hospital.js";
+
+applyHospitalUI();
+
+window.selectHospital = setHospitalId;
 let notices = [];
 let savedUrls = [];
 let currentManualKey = "";
@@ -24,7 +33,9 @@ async function loadTodaySchedule() {
     let data = {};
 
     for (const key of todayKeys()) {
-        const snap = await getDoc(doc(db, "schedules", key));
+        const snap = await getDoc(
+    doc(db, hospitalCollection("schedules"), key)
+);
         if (snap.exists()) {
             data = snap.data();
             break;
@@ -49,14 +60,14 @@ async function loadTodaySchedule() {
 
 /* 공지 */
 async function loadNotices() {
-    const snap = await getDoc(doc(db, "mainData", "notices"));
+    const snap = await getDoc(doc(db, hospitalCollection("mainData"), "notices"));
     notices = snap.exists() ? snap.data().items || [] : [];
     renderNotices();
 }
 
 async function saveNotices() {
     await setDoc(
-        doc(db, "mainData", "notices"),
+        doc(db, hospitalCollection("mainData"), "notices"),
         { items: notices },
         { merge: true }
     );
@@ -112,14 +123,14 @@ async function addNotice() {
 
 /* URL */
 async function loadUrls() {
-    const snap = await getDoc(doc(db, "mainData", "urls"));
+    const snap = await getDoc(doc(db, hospitalCollection("mainData"), "urls"));
     savedUrls = snap.exists() ? snap.data().items || [] : [];
     renderUrls();
 }
 
 async function saveUrls() {
     await setDoc(
-        doc(db, "mainData", "urls"),
+        doc(db, hospitalCollection("mainData"), "urls"),
         { items: savedUrls },
         { merge: true }
     );
@@ -188,14 +199,14 @@ function makeManualKey() {
 
 async function saveManualCards() {
     await setDoc(
-        doc(db, "mainData", "manualCards"),
+        doc(db, hospitalCollection("mainData"), "manualCards"),
         { items: manualCards },
         { merge: true }
     );
 }
 
 async function loadManualCards() {
-    const snap = await getDoc(doc(db, "mainData", "manualCards"));
+    const snap = await getDoc(doc(db, hospitalCollection("mainData"), "manualCards"));
 
     manualCards = snap.exists()
         ? snap.data().items || []
@@ -320,7 +331,7 @@ modal.classList.add("active");
 
 
 modalTitle.textContent = title;
-    const snap = await getDoc(doc(db, "manualContents", key));
+    const snap = await getDoc(doc(db, hospitalCollection("manualContents"), key));
 
     modalContent.value = snap.exists()
         ? snap.data().content || ""
@@ -328,7 +339,7 @@ modalTitle.textContent = title;
 
     modalContent.oninput = async function () {
         await setDoc(
-            doc(db, "manualContents", currentManualKey),
+            doc(db, hospitalCollection("manualContents"), currentManualKey),
             { content: modalContent.value },
             { merge: true }
         );

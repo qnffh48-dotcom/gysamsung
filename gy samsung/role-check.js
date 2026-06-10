@@ -8,7 +8,7 @@ from "./firebase.js";
 const fullAccessUsers = [
     "admin@gy.med",
     "os1@gy.med",
-    
+    "admin@bh.med"
 ];
 
 /* 페이지 정의 */

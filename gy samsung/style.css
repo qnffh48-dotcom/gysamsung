@@ -1459,4 +1459,118 @@ textarea {
 
 .manual-delete-btn:hover {
     background: #dc2626;
+}.hospital-logo-menu {
+    position: relative;
+    cursor: pointer;
+}
+
+.hospital-dropdown {
+    display: none;
+
+    position: absolute;
+    top: 170px;
+    left: 20px;
+
+    width: 200px;
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 10px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+
+    z-index: 9999;
+}
+
+.hospital-logo-menu:hover .hospital-dropdown {
+    display: block;
+}
+
+.hospital-dropdown button {
+    width: 100%;
+    height: 42px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #2f4858;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    text-align: left;
+    padding-left: 12px;
+}
+
+.hospital-dropdown button:hover {
+    background: #eef2f7;
+}.hospital-logo-menu {
+    position: relative;
+    cursor: pointer;
+}
+
+.hospital-dropdown {
+    display: none;
+
+    position: absolute;
+    top: 165px;
+    left: 20px;
+
+    width: 205px;
+
+    background: white;
+    border-radius: 14px;
+
+    padding: 10px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+
+    z-index: 9999;
+}
+
+.hospital-logo-menu:hover .hospital-dropdown {
+    display: block;
+}
+
+.hospital-dropdown button {
+    width: 100%;
+    height: 42px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+    color: #2f4858;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    text-align: left;
+    padding-left: 12px;
+}
+
+.hospital-dropdown button:hover {
+    background: #eef2f7;
+}body.hospital-banghak .sidebar {
+    background: linear-gradient(
+        180deg,
+        #0f4c81,
+        #0b3b63
+    ) !important;
+}
+
+body.hospital-banghak .sidebar .logo {
+    background: transparent !important;
+}
+
+body.hospital-banghak .gold-dot {
+    background: #60a5fa !important;
 }
