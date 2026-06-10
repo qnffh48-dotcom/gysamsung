@@ -163,12 +163,12 @@ async function renderLunchSchedule() {
                 const cls = getLunchClass(value);
 
                 html += `
-                    <td class="lunch-cell ${cls}"
-                        data-key="${key}"
-                        data-value="${value}">
-                        <div class="lunch-dot"></div>
-                    </td>
-                `;
+    <td class="lunch-cell"
+        data-key="${key}"
+        data-value="${value}">
+        ${value ? `<span class="lunch-badge ${cls}">${value}</span>` : ""}
+    </td>
+`;
             }
 
             html += `</tr>`;
@@ -189,13 +189,18 @@ async function renderLunchSchedule() {
             let next = lunchTimes[(index + 1) % lunchTimes.length];
 
             cell.dataset.value = next;
-            cell.classList.remove("time-12", "time-13", "time-14");
+cell.innerHTML =
+    next
+        ? `<span class="lunch-badge ${getLunchClass(next)}">${next}</span>`
+        : "";
 
-            if (next) {
-                cell.classList.add(getLunchClass(next));
-            }
+cell.classList.remove("time-12", "time-13", "time-14");
 
-            await saveLunchData(cell.dataset.key, next);
+if (next) {
+    cell.classList.add(getLunchClass(next));
+}
+
+await saveLunchData(cell.dataset.key, next);
         };
     });
 }

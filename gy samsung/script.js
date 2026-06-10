@@ -4,6 +4,8 @@ let notices = [];
 let savedUrls = [];
 let currentManualKey = "";
 let manualSaveTimer = null;
+let savedScrollY = 0;
+let manualCards = [];
 
 function todayKeys() {
     const t = new Date();
@@ -180,48 +182,126 @@ async function addUrl() {
 }
 
 /* 매뉴얼 카드 */
+function makeManualKey() {
+    return "manual_" + Date.now();
+}
+
 async function saveManualCards() {
-    const cards = document.querySelectorAll(".manual-card");
-
-    const items = [...cards].map(card => ({
-        tag: card.querySelector(".manual-tag-input")?.value || "",
-        title: card.querySelector(".manual-title-input")?.value || "",
-        desc: card.querySelector(".manual-desc-input")?.value || ""
-    }));
-
     await setDoc(
         doc(db, "mainData", "manualCards"),
-        { items },
+        { items: manualCards },
         { merge: true }
     );
 }
 
 async function loadManualCards() {
     const snap = await getDoc(doc(db, "mainData", "manualCards"));
-    if (!snap.exists()) return;
 
-    const items = snap.data().items || [];
-    const cards = document.querySelectorAll(".manual-card");
+    manualCards = snap.exists()
+        ? snap.data().items || []
+        : [];
 
-    cards.forEach((card, index) => {
-        const item = items[index];
-        if (!item) return;
+    if (manualCards.length === 0) {
+        manualCards = [
+            {
+                key: "manual_001",
+                tag: "온보딩",
+                title: "신규 입사자 온보딩",
+                desc: "병원 시스템 및 기본 업무 안내"
+            },
+            {
+                key: "manual_002",
+                tag: "원무",
+                title: "환자 접수 프로세스",
+                desc: "초진 / 재진 접수 절차"
+            }
+        ];
 
-        card.querySelector(".manual-tag-input").value = item.tag || "";
-        card.querySelector(".manual-title-input").value = item.title || "";
-        card.querySelector(".manual-desc-input").value = item.desc || "";
+        await saveManualCards();
+    }
+
+    renderManualCards();
+}
+
+function renderManualCards() {
+    const grid = document.getElementById("manualGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    manualCards.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "manual-card";
+
+        card.onclick = function () {
+            openModal(
+                item.key,
+                item.title || "제목 없음",
+                item.desc || ""
+            );
+        };
+
+        card.innerHTML = `
+            <button class="manual-delete-btn" type="button">삭제</button>
+
+            <input class="manual-tag-input"
+                value="${item.tag || ""}"
+                onclick="event.stopPropagation()">
+
+            <input class="manual-title-input"
+                value="${item.title || ""}"
+                onclick="event.stopPropagation()">
+
+            <textarea class="manual-desc-input"
+                onclick="event.stopPropagation()">${item.desc || ""}</textarea>
+        `;
+
+        const tagInput = card.querySelector(".manual-tag-input");
+        const titleInput = card.querySelector(".manual-title-input");
+        const descInput = card.querySelector(".manual-desc-input");
+        const deleteBtn = card.querySelector(".manual-delete-btn");
+
+        tagInput.addEventListener("input", () => {
+            manualCards[index].tag = tagInput.value;
+            saveManualCards();
+        });
+
+        titleInput.addEventListener("input", () => {
+            manualCards[index].title = titleInput.value;
+            saveManualCards();
+        });
+
+        descInput.addEventListener("input", () => {
+            manualCards[index].desc = descInput.value;
+            saveManualCards();
+        });
+
+        deleteBtn.addEventListener("click", async e => {
+            e.stopPropagation();
+
+            const ok = confirm("이 매뉴얼을 삭제할까요?");
+            if (!ok) return;
+
+            manualCards.splice(index, 1);
+
+            await saveManualCards();
+            renderManualCards();
+        });
+
+        grid.appendChild(card);
     });
 }
 
-function bindManualCardSave() {
-    document.querySelectorAll(
-        ".manual-tag-input, .manual-title-input, .manual-desc-input"
-    ).forEach(input => {
-        input.addEventListener("input", () => {
-            clearTimeout(manualSaveTimer);
-            manualSaveTimer = setTimeout(saveManualCards, 300);
-        });
+async function addManualCard() {
+    manualCards.push({
+        key: makeManualKey(),
+        tag: "기타",
+        title: "새 매뉴얼",
+        desc: ""
     });
+
+    await saveManualCards();
+    renderManualCards();
 }
 
 /* 매뉴얼 모달 */
@@ -229,12 +309,17 @@ async function openModal(key, title, basicContent) {
     currentManualKey = key;
 
     const modal = document.getElementById("manualModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalContent = document.getElementById("modalContent");
+const modalTitle = document.getElementById("modalTitle");
+const modalContent = document.getElementById("modalContent");
 
-    modal.classList.add("active");
-    modalTitle.textContent = title;
 
+
+modal.classList.add("active");
+
+
+
+
+modalTitle.textContent = title;
     const snap = await getDoc(doc(db, "manualContents", key));
 
     modalContent.value = snap.exists()
@@ -251,7 +336,12 @@ async function openModal(key, title, basicContent) {
 }
 
 function closeModal() {
-    document.getElementById("manualModal")?.classList.remove("active");
+
+    document
+        .getElementById("manualModal")
+        ?.classList.remove("active");
+
+    
 }
 
 /* 시계 */
@@ -292,6 +382,7 @@ window.addNotice = addNotice;
 window.addUrl = addUrl;
 window.openModal = openModal;
 window.closeModal = closeModal;
+window.addManualCard = addManualCard;
 
 /* 시작 */
 async function startMainPage() {
@@ -300,7 +391,7 @@ async function startMainPage() {
     try { await loadUrls(); } catch (e) { console.error("URL 실패", e); }
     try { await loadManualCards(); } catch (e) { console.error("매뉴얼 실패", e); }
 
-    bindManualCardSave();
+    
 
     updateSidebarClock();
     setInterval(updateSidebarClock, 1000);
@@ -319,4 +410,13 @@ document.addEventListener("keydown", e => {
 function autoResize(textarea) {
     textarea.style.height = "auto";
     textarea.style.height = textarea.scrollHeight + "px";
-}
+}const manualModal = document.getElementById("manualModal");
+const modalContent = document.getElementById("modalContent");
+
+manualModal?.addEventListener("wheel", function (e) {
+    e.preventDefault();
+}, { passive: false });
+
+modalContent?.addEventListener("wheel", function (e) {
+    e.stopPropagation();
+}, { passive: false });

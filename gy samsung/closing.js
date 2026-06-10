@@ -762,23 +762,21 @@ closingDay.onchange = function () {
     const rows = Object.entries(result);
 
     const totalCount = rows.reduce((sum, [, row]) => sum + Number(row.count || 0), 0);
-    const totalSales = rows.reduce((sum, [, row]) => sum + Number(row.sales || 0), 0);
+    
 
-    tbody.innerHTML = `
-        ${rows.map(([route, row]) => `
-            <tr>
-                <td>${route}</td>
-                <td>${Number(row.count || 0)}명</td>
-                <td>${Number(row.sales || 0).toLocaleString("ko-KR")}원</td>
-            </tr>
-        `).join("")}
-
-        <tr class="total-row">
-            <td>합계</td>
-            <td>${totalCount}명</td>
-            <td>${totalSales.toLocaleString("ko-KR")}원</td>
+   tbody.innerHTML = `
+    ${rows.map(([route, row]) => `
+        <tr>
+            <td>${route}</td>
+            <td>${Number(row.count || 0)}명</td>
         </tr>
-    `;
+    `).join("")}
+
+    <tr class="total-row">
+        <td>합계</td>
+        <td>${totalCount}명</td>
+    </tr>
+`;
 }function renderClosingSummary() {
 
     const tbody =
@@ -821,17 +819,18 @@ closingDay.onchange = function () {
             : 0;
 
     tbody.innerHTML = `
-        <tr>
-            <td>${summary.new || 0}명</td>
-            <td>${summary.revisit || 0}명</td>
-            <td>${summary.new90 || 0}명</td>
-            <td>${summary.noCalc || 0}명</td>
-            <td>${totalPeople}명</td>
-            <td>${totalSales.toLocaleString("ko-KR")}원</td>
-            <td>${avg.toLocaleString("ko-KR")}원</td>
-            <td>${cashTotal.toLocaleString("ko-KR")}원</td>
-        </tr>
-    `;
+    <tr>
+        <td>${summary.new || 0}명</td>
+<td>${summary.revisit || 0}명</td>
+<td>${summary.new90 || 0}명</td>
+<td>${summary.therapyVisit || 0}명</td>
+<td>${summary.noCalc || 0}명</td>
+<td>${totalPeople}명</td>
+<td>${totalSales.toLocaleString("ko-KR")}원</td>
+<td>${avg.toLocaleString("ko-KR")}원</td>
+<td>${cashTotal.toLocaleString("ko-KR")}원</td>
+    </tr>
+`;
 }function renderClosingInsuranceType() {
     const tbody =
         document.querySelector("#closingInsuranceTypeTable tbody");
@@ -841,14 +840,30 @@ closingDay.onchange = function () {
     const types =
         deskExtraData.insuranceType || {};
 
+    const health = Number(types["국민건강보험"] || 0);
+    const medicalAid = Number(types["보호 1,2종"] || 0);
+    const car = Number(types["자보-청구분"] || 0);
+    const general = Number(types["일반"] || 0);
+    const lower1 = Number(types["국민건강보험(차상위1종)"] || 0);
+    const lower2 = Number(types["국민건강보험(차상위2종)"] || 0);
+
+    const total =
+        health +
+        medicalAid +
+        car +
+        general +
+        lower1 +
+        lower2;
+
     tbody.innerHTML = `
         <tr>
-            <td>${Number(types["국민건강보험"] || 0)}</td>
-            <td>${Number(types["보호 1,2종"] || 0)}</td>
-            <td>${Number(types["자보-청구분"] || 0)}</td>
-            <td>${Number(types["일반"] || 0)}</td>
-            <td>${Number(types["국민건강보험(차상위1종)"] || 0)}</td>
-            <td>${Number(types["국민건강보험(차상위2종)"] || 0)}</td>
+            <td>${health}</td>
+            <td>${medicalAid}</td>
+            <td>${car}</td>
+            <td>${general}</td>
+            <td>${lower1}</td>
+            <td>${lower2}</td>
+            <td>${total}명</td>
         </tr>
     `;
 }

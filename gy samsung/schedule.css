@@ -64,120 +64,132 @@ body {
     box-shadow:
         0 10px 30px rgba(0,0,0,0.10),
         inset 0 2px 8px rgba(255,255,255,0.75) !important;
-}@media print {
+}@page {
+    size: A4 landscape;
+    margin: 5mm;
+}
 
-    @page {
-        size: A4 portrait;
-        margin: 6mm;
-    }
-
+@media print {
     html,
     body {
-        width: 210mm !important;
-        min-width: 210mm !important;
+        width: 287mm !important;
+        height: 200mm !important;
+        min-width: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
         background: white !important;
-        overflow: visible !important;
-    }
-
-    .sidebar,
-.lunch-box,
-.print-btn {
-    display: none !important;
-}
-    .schedule-main {
-        width: 198mm !important;
-        min-width: 198mm !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: visible !important;
-        background: white !important;
-    }
-
-    .schedule-wrap {
-        display: block !important;
-        width: 198mm !important;
-        min-width: 198mm !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .schedule-card {
-        width: 198mm !important;
-        min-width: 198mm !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-        background: white !important;
-    }
-
-    .calendar {
-        display: grid !important;
-        grid-template-columns: repeat(7, 1fr) !important;
-
-        width: 198mm !important;
-        min-width: 198mm !important;
-
-        border: 1px solid #222 !important;
-        overflow: visible !important;
-    }
-
-    .day-name {
-        height: 8mm !important;
-        padding: 0 !important;
-
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-
-        font-size: 8px !important;
-    }
-
-    .day {
-        min-height: 37mm !important;
-        height: 37mm !important;
-
-        padding: 2mm !important;
         overflow: hidden !important;
     }
 
-    .date {
-    font-size: 30px !important;
+    .sidebar,
+    .lunch-box,
+    #schedulePrintBtn,
+    .top-bar button {
+        display: none !important;
+    }
 
-    font-weight: 900 !important;
+    .schedule-main,
+    .schedule-wrap,
+    .schedule-card {
+        width: 287mm !important;
+        min-width: 0 !important;
+        max-width: 287mm !important;
+        height: auto !important;
+        min-height: 0 !important;
 
-    letter-spacing: -1px;
+        margin: 0 !important;
+        padding: 0 !important;
 
-    color: #1f2937 !important;
+        background: white !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+
+        display: block !important;
+        overflow: hidden !important;
+
+        transform: none !important;
+    }
+
+    .top-bar {
+        height: 12mm !important;
+        margin: 0 0 3mm 0 !important;
+        padding: 0 !important;
+    }
+
+    .month-title {
+        box-shadow: none !important;
+        background: white !important;
+        padding: 0 !important;
+    }
+
+    .month-title select {
+        font-size: 12px !important;
+        height: 8mm !important;
+    }
+
+    .calendar {
+    width: 287mm !important;
+    height: 190mm !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    grid-template-rows: 8mm repeat(6, 30.3mm) !important;
+
+    border: 1px solid #222 !important;
+    overflow: hidden !important;
 }
 
+    .day-name {
+        height: 8mm !important;
+        line-height: 8mm !important;
+        padding: 0 !important;
+        font-size: 8px !important;
+    }
+
+    .day,
+.empty {
+    height: 30.3mm !important;
+    min-height: 0 !important;
+    padding: 2px !important;
+    overflow: hidden !important;
+}
+
+    .date {
+        font-size: 13px !important;
+        line-height: 13px !important;
+        margin-bottom: 1px !important;
+    }
+
     .inputs {
-        gap: 1mm !important;
+        gap: 1px !important;
     }
 
     .inputs textarea {
-    font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Pretendard",
-    sans-serif !important;
+        height: 4.1mm !important;
+        min-height: 0 !important;
+        font-size: 6.5px !important;
+        line-height: 1.1 !important;
+        padding: 1px 3px !important;
+        border-radius: 3px !important;
+    }
+
+
+}.lunch-header {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-    .doctor,
-    .room,
-    .nurse,
-    .desk,
-    .therapy {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }.top-bar {
-    display: flex !important;
-    margin-bottom: 4mm !important;
+.lunch-title {
+    margin-right: auto;
 }
 
-.top-bar button {
+.lunch-control {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.lunch-legend {
     display: none !important;
-}
 }

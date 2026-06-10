@@ -280,11 +280,7 @@ background-attachment: fixed;
     font-weight: 400 !important;
 }
 
-#closingSummaryTable tbody td:nth-child(5) {
-    background: #edf7ee !important;
-    font-weight: 900 !important;
-    color: #111 !important;
-}.closing-print-btn {
+.closing-print-btn {
     width: 140px;
     height: 54px;
 
@@ -393,4 +389,12 @@ background-attachment: fixed;
     .closing-table td {
         padding: 6px !important;
     }
+}#closingSummaryTable tbody td:nth-child(6) {
+    background: #edf7ee !important;
+    font-weight: 900 !important;
+    color: #111 !important;
+}#closingInsuranceTypeTable tbody td:last-child {
+    background: #edf7ee !important;
+    color: #111 !important;
+    font-weight: 900 !important;
 }

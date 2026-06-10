@@ -1,0 +1,144 @@
+.purchase-main {
+    margin-left: 240px;
+    padding: 40px;
+    
+}
+
+.purchase-title {
+    font-size: 32px;
+    margin-bottom: 24px;
+    color: #1f2a44;
+}
+
+.date-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.date-bar select,
+.date-bar button {
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.date-bar button {
+    background: #1f2a44;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.purchase-card {
+    background: white;
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.purchase-card h2 {
+    margin-bottom: 20px;
+    color: #1f2a44;
+}
+
+.purchase-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr auto;
+    gap: 12px;
+}
+
+.purchase-form input,
+.purchase-form select,
+.search-box input {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 15px;
+}
+
+.purchase-form button,
+.save-box button,
+.search-box button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background: #1f2a44;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.purchase-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.purchase-table th,
+.purchase-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.purchase-table th {
+    background: #f7f7f7;
+    color: #1f2a44;
+}
+
+.delete-btn {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ef4444;
+    color: white;
+    cursor: pointer;
+}
+
+.total-box {
+    text-align: right;
+    margin-top: 18px;
+    font-size: 18px;
+}
+
+.total-box strong {
+    color: #1f2a44;
+}
+
+.save-box {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.search-box {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    flex: 1;
+}
+
+@media print {
+    .sidebar,
+    .date-bar,
+    .purchase-form,
+    .save-box,
+    .search-box,
+    .delete-btn {
+        display: none !important;
+    }
+
+    .purchase-main {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .purchase-card {
+        box-shadow: none;
+    }
+}

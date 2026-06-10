@@ -22,7 +22,8 @@ const pageMap = {
     "therapy.html": "therapy",
     "closing.html": "closing",
     "closing-report.html": "closingReport",
-    "stats.html": "stats"
+    "stats.html": "stats",
+    "purchase.html": "purchase"
 };
 
 /* 계정별 권한 */
@@ -110,6 +111,11 @@ else if (!path.includes(".")) {
 
 
 const page = pageMap[path];
+
+if (page === "purchase") {
+    return;
+}
+
 
     if (fullAccessUsers.includes(email)) {
         return;

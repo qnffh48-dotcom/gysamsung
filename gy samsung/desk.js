@@ -215,7 +215,9 @@ function setupInjectionReserve() {
         const inputs = row.querySelectorAll("input");
 
         if (!name) return;
-
+        if (!deskExtraData.injectionReserve) {
+    deskExtraData.injectionReserve = {};
+}
         if (!deskExtraData.injectionReserve[name]) {
             deskExtraData.injectionReserve[name] = {};
         }
@@ -256,6 +258,8 @@ function setupMemo() {
 ========================= */
 
 async function reloadDeskPage() {
+     console.log("불러오는 날짜:", getDateKey());
+
     await loadDeskStorage();
     renderRooms();
     setupExtraInputs();
@@ -290,7 +294,10 @@ monthSelect.addEventListener("change", () => {
     reloadDeskPage();
 });
 
-daySelect.addEventListener("change", reloadDeskPage);
+daySelect.addEventListener("change", () => {
+    currentDay = Number(daySelect.value);
+    reloadDeskPage();
+});
 
 function changeDate(diff) {
     const date = new Date(
@@ -392,11 +399,7 @@ document.getElementById("dailyExcelInput").addEventListener("change", function (
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
-        const rows = XLSX.utils.sheet_to_json(sheet, {
-            range: 6,
-            defval: ""
-        });
-
+        const rows = getRowsFromDailySheet(sheet);
         const timeChart = makeTimePeriodResult(rows);
 const insuranceType = makeInsuranceTypeResult(rows);
 const summary = makeClosingSummaryResult(rows);
@@ -407,16 +410,25 @@ deskExtraData.timeChart = timeChart;
         deskExtraData.insuranceType = insuranceType;
         deskExtraData.summary = summary;
 
-        await setDoc(
-            doc(db, "closings", getDateKey()),
-            {
-                deskExtraData: deskExtraData
-            },
-            { merge: true }
-        );
+        const saveKey = getDateKey();
+
+if (!confirm(`${saveKey} 날짜에 저장할까요?`)) {
+    return;
+}
+
+await setDoc(
+    doc(db, "closings", saveKey),
+    {
+        deskExtraData: deskExtraData
+    },
+    { merge: true }
+);
 
         drawTimePeriodChart(timeChart);
         renderInsuranceTypeTable(insuranceType);
+        if (routeRowsForSales) {
+    await makeRouteSalesTable();
+}
 
         alert("엑셀 업로드 저장 완료");
     };
@@ -501,23 +513,28 @@ function clearTimePeriodChart() {
 
     const reader = new FileReader();
 
-    reader.onload = function (event) {
+    reader.onload = async function (event) {
         const data = new Uint8Array(event.target.result);
         const workbook = XLSX.read(data, { type: "array" });
-
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
         routeRowsForSales = XLSX.utils.sheet_to_json(sheet, {
-    defval: ""
-}).filter(row => {
+            defval: ""
+        }).filter(row => {
+            const route = String(row["내원경로"] || "")
+                .replace(/[\s\[\]]/g, "");
 
-    const route =
-        String(row["내원경로"] || "")
-        .replace(/[\s\[\]]/g, "");
+            return route !== "총계";
+        });
 
-    return route !== "총계";
-});
-        makeRouteSalesTable();
+        if (!dailyRowsForRoute) {
+            alert("일일 환자 집계를 먼저 업로드해주세요.");
+            return;
+        }
+
+        await makeRouteSalesTable();
+
+        alert("내원경로 엑셀 업로드 완료");
     };
 
     reader.readAsArrayBuffer(file);
@@ -545,7 +562,7 @@ async function makeRouteSalesTable() {
     const salesMap = {};
 
     dailyRowsForRoute.forEach(row => {
-        const chartNo = cleanText(row["챠트번호"]);
+        const chartNo = cleanText(row["챠트번호"] || row["차트번호"]);
 
         const amount = Number(
             String(row["수납액"] || 0).replace(/,/g, "")
@@ -561,7 +578,7 @@ async function makeRouteSalesTable() {
     routeRowsForSales.forEach(row => {
         if (isTotalRow(row)) return;
 
-        const chartNo = cleanText(row["차트번호"]);
+        const chartNo = cleanText(row["차트번호"] || row["챠트번호"]);
         const route = String(row["내원경로"] || "").trim();
 
         if (!chartNo) return;
@@ -577,7 +594,11 @@ async function makeRouteSalesTable() {
         result[route].count++;
         result[route].sales += salesMap[chartNo] || 0;
     });
+const saveKey = getDateKey();
 
+if (!confirm(`${saveKey} 날짜에 저장할까요?`)) {
+    return;
+}
     deskExtraData.routeSales = result;
     await saveDeskExtra();
 
@@ -591,27 +612,25 @@ function renderRouteSalesTable(result) {
     const rows = Object.entries(result);
 
     const totalCount = rows.reduce((sum, [, row]) => sum + row.count, 0);
-    const totalSales = rows.reduce((sum, [, row]) => sum + row.sales, 0);
+    
 
     tbody.innerHTML = `
-        ${rows
+    ${rows
 .filter(([route]) =>
     route.replace(/\s/g, "") !== "[총계]"
 )
 .map(([route, row]) => `
-            <tr>
-                <td>${route}</td>
-                <td>${row.count}명</td>
-                <td>${Number(row.sales || 0).toLocaleString("ko-KR")}원</td>
-            </tr>
-        `).join("")}
-
-        <tr class="total-row">
-            <td>합계</td>
-            <td>${totalCount}명</td>
-            <td>${totalSales.toLocaleString("ko-KR")}원</td>
+        <tr>
+            <td>${route}</td>
+            <td>${row.count}명</td>
         </tr>
-    `;
+    `).join("")}
+
+    <tr class="total-row">
+        <td>합계</td>
+        <td>${totalCount}명</td>
+    </tr>
+`;
 }function clearRouteSalesTable() {
     const tbody =
         document.querySelector("#routeSalesTable tbody");
@@ -665,20 +684,23 @@ function clearInsuranceTypeTable() {
 
 function makeClosingSummaryResult(rows) {
     const result = {
-        new: 0,
-        revisit: 0,
-        new90: 0,
-        noCalc: 0,
-        total: 0,
-        sales: 0,
+    new: 0,
+    revisit: 0,
+    new90: 0,
+    noCalc: 0,
+    therapyVisit: 0,
+    total: 0,
+    sales: 0,
 
-        newSales: 0,
-        revisitSales: 0,
-        new90Sales: 0
-    };
+    newSales: 0,
+    revisitSales: 0,
+    new90Sales: 0,
+    therapyVisitSales: 0,
+    noCalcSales: 0
+};
 
     rows.forEach(row => {
-        const visitType = String(row["초/재"] || "").trim();
+        const visitType = String(row["초/재"] || row["초재진구분"] || "").trim();
 
         const pay =
             Number(String(row["수납액"] || 0).replace(/,/g, "")) || 0;
@@ -698,8 +720,15 @@ function makeClosingSummaryResult(rows) {
             result.new90Sales += pay;
         }
 
-        if (pay === 0) result.noCalc++;
+        else if (visitType === "진찰료 산정안함") {
+    result.noCalc++;
+    result.noCalcSales += pay;
+}
 
+        else if (visitType === "물리치료내원") {
+    result.therapyVisit++;
+    result.therapyVisitSales += pay;
+}
         result.sales += pay;
     });
 
@@ -707,7 +736,8 @@ function makeClosingSummaryResult(rows) {
         result.new +
         result.revisit +
         result.new90 +
-        result.noCalc;
+        result.noCalc +
+        result.therapyVisit;
 
     return result;
 }
@@ -755,24 +785,40 @@ function makeTimePeriodResult(rows) {
     }
 
     rows.forEach(row => {
-        const timeValue = String(row["진료시작시간"] || "").trim();
-        const age = getAgeFromJumin(row["주민번호"]);
 
-        if (timeValue.length < 12 || age === null) return;
+    const timeValue = String(row["진료시작시간"] || "").trim();
+    const age = getAgeFromJumin(row["주민번호"]);
 
-        const hour = Number(timeValue.slice(8, 10));
-        const minute = Number(timeValue.slice(10, 12));
-        const ageGroup = getAgeGroup(age);
+  
+    if (!timeValue || age === null) return;
 
-        let period = "";
+    
 
-        if (hour >= 9 && hour < 12) period = "오전";
-        else if (hour >= 12 && hour < 17) period = "오후";
-        else if (hour === 17 || hour === 18 || (hour === 19 && minute <= 30)) period = "저녁";
+    let hour = null;
+    let minute = 0;
 
-        if (period) result[ageGroup][period]++;
-    });
+    const timeMatch = timeValue.match(/(\d{1,2}):(\d{2})/);
 
+    if (timeMatch) {
+        hour = Number(timeMatch[1]);
+        minute = Number(timeMatch[2]);
+    } else if (timeValue.length >= 12) {
+        hour = Number(timeValue.slice(8, 10));
+        minute = Number(timeValue.slice(10, 12));
+    }
+
+    if (hour === null || Number.isNaN(hour)) return;
+
+    const ageGroup = getAgeGroup(age);
+
+    let period = "";
+
+    if (hour >= 9 && hour < 12) period = "오전";
+    else if (hour >= 12 && hour < 17) period = "오후";
+    else if (hour === 17 || hour === 18 || (hour === 19 && minute <= 30)) period = "저녁";
+
+    if (period) result[ageGroup][period]++;
+});
     return result;
 }function makeInsuranceTypeResult(rows) {
     const types = {
@@ -822,4 +868,39 @@ function makeTimePeriodResult(rows) {
     });
 
     return types;
+}function getRowsFromDailySheet(sheet) {
+    const raw = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: ""
+    });
+
+    const headerIndex = raw.findIndex(row =>
+        row.map(v => String(v).trim()).includes("주민번호") &&
+        row.map(v => String(v).trim()).includes("진료시작시간")
+    );
+
+    if (headerIndex === -1) {
+        alert("일일 환자 집계 엑셀에서 주민번호/진료시작시간 헤더를 찾지 못했습니다.");
+        return [];
+    }
+
+    const headers = raw[headerIndex].map(v =>
+        String(v).trim()
+    );
+
+    return raw.slice(headerIndex + 1)
+        .map(row => {
+            const obj = {};
+
+            headers.forEach((header, index) => {
+                if (header) {
+                    obj[header] = row[index] ?? "";
+                }
+            });
+
+            return obj;
+        })
+        .filter(row =>
+            Object.values(row).some(v => String(v).trim() !== "")
+        );
 }

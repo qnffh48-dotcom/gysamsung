@@ -6,7 +6,9 @@ import {
     doc,
     setDoc,
     getDoc,
-    getDocFromServer
+    getDocFromServer,
+    collection,
+    getDocs
 }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -44,6 +46,8 @@ export {
     setDoc,
     getDoc,
     getDocFromServer,
+    collection,
+    getDocs,
 
     signInWithEmailAndPassword,
     onAuthStateChanged,

@@ -112,13 +112,15 @@ async function loadReportData() {
             revisit: 0,
             new90: 0,
             noCalc: 0,
+            therapyVisit: 0,
             total: 0,
             sales: 0,
             deposit: 0,
 newSales: 0,
 revisitSales: 0,
-new90Sales: 0
-            
+new90Sales: 0,
+therapyVisitSales: 0,
+noCalcSales: 0
         },
         therapy: {},
         injectionReserve: {
@@ -173,9 +175,12 @@ function collectSummary(report, data) {
     report.summary.revisit += Number(summary.revisit || 0);
     report.summary.new90 += Number(summary.new90 || 0);
     report.summary.noCalc += Number(summary.noCalc || 0);
+    report.summary.therapyVisit += Number(summary.therapyVisit || 0);
     report.summary.newSales += Number(summary.newSales || 0);
 report.summary.revisitSales += Number(summary.revisitSales || 0);
 report.summary.new90Sales += Number(summary.new90Sales || 0);
+report.summary.therapyVisitSales += Number(summary.therapyVisitSales || 0);
+report.summary.noCalcSales += Number(summary.noCalcSales || 0);
 
     const salesFields = [
         "급여",
@@ -199,6 +204,7 @@ report.summary.new90Sales += Number(summary.new90Sales || 0);
         report.summary.new +
         report.summary.revisit +
         report.summary.new90 +
+        report.summary.therapyVisit +
         report.summary.noCalc;
 }
 
@@ -330,13 +336,14 @@ function renderSummary(report) {
     tbody.innerHTML = `
         <tr>
             <td>${count(s.new, "명")}</td>
-            <td>${count(s.revisit, "명")}</td>
-            <td>${count(s.new90, "명")}</td>
-            <td>${count(s.noCalc, "명")}</td>
-            <td class="total-cell">${count(s.total, "명")}</td>
-            <td>${money(s.sales)}</td>
-            <td>${money(s.total ? Math.round(s.sales / s.total) : 0)}</td>
-            <td>${money(s.deposit)}</td>
+<td>${count(s.revisit, "명")}</td>
+<td>${count(s.new90, "명")}</td>
+<td>${count(s.noCalc, "명")}</td>
+<td>${count(s.therapyVisit, "명")}</td>
+<td class="total-cell">${count(s.total, "명")}</td>
+<td>${money(s.sales)}</td>
+<td>${money(s.total ? Math.round(s.sales / s.total) : 0)}</td>
+<td>${money(s.deposit)}</td>
         </tr>
     `;
 }
@@ -435,24 +442,21 @@ function renderRouteSales(report) {
     const totalCount =
         rows.reduce((sum, [, row]) => sum + Number(row.count || 0), 0);
 
-    const totalSales =
-        rows.reduce((sum, [, row]) => sum + Number(row.sales || 0), 0);
+    
 
     tbody.innerHTML = `
-        ${rows.map(([route, row]) => `
-            <tr>
-                <td>${route}</td>
-                <td>${count(row.count, "명")}</td>
-                <td>${money(row.sales)}</td>
-            </tr>
-        `).join("")}
-
-        <tr class="total-row">
-            <td>합계</td>
-            <td>${count(totalCount, "명")}</td>
-            <td>${money(totalSales)}</td>
+    ${rows.map(([route, row]) => `
+        <tr>
+            <td>${route}</td>
+            <td>${count(row.count, "명")}</td>
         </tr>
-    `;
+    `).join("")}
+
+    <tr class="total-row">
+        <td>합계</td>
+        <td>${count(totalCount, "명")}</td>
+    </tr>
+`;
 }
 
 loadReportBtn.addEventListener("click", loadReportData);
@@ -484,25 +488,37 @@ function renderSummaryVisitChart(report) {
     plugins: [valueLabelPlugin],
         type: "bar",
         data: {
-            labels: ["초진", "재진", "90일초진"],
+            labels: ["초진", "재진", "90일초진", "물리치료내원", "산정X"],
             datasets: [
-                {
-    label: "내원 인원",
-    data: [s.new, s.revisit, s.new90],
-    yAxisID: "y",
+    {
+        label: "내원 인원",
+        data: [
+            s.new,
+            s.revisit,
+            s.new90,
+            s.therapyVisit,
+            s.noCalc
+        ],
+        yAxisID: "y",
 
-    barPercentage: 0.5,
-    categoryPercentage: 0.6
-},
-{
-    label: "매출",
-    data: [s.newSales, s.revisitSales, s.new90Sales],
-    yAxisID: "y1",
+        barPercentage: 0.5,
+        categoryPercentage: 0.6
+    },
+    {
+        label: "매출",
+        data: [
+    s.newSales,
+    s.revisitSales,
+    s.new90Sales,
+    s.therapyVisitSales,
+    s.noCalcSales
+],
+        yAxisID: "y1",
 
-    barPercentage: 0.5,
-    categoryPercentage: 0.6
-}
-            ]
+        barPercentage: 0.5,
+        categoryPercentage: 0.6
+    }
+]
         },
         options: {
             responsive: true,
@@ -699,8 +715,8 @@ function renderRouteSalesChart(report) {
 
     const rows = Object.entries(report.routeSales)
         .sort((a, b) =>
-            Number(b[1].sales || 0) - Number(a[1].sales || 0)
-        )
+    Number(b[1].count || 0) - Number(a[1].count || 0)
+)
         .slice(0, 10);
 
     routeSalesChart = new Chart(canvas, {
@@ -709,10 +725,10 @@ function renderRouteSalesChart(report) {
         data: {
             labels: rows.map(([route]) => route),
             datasets: [{
-                label: "내원 경로별 매출 TOP 10",
+                label: "내원 경로별 인원 TOP 10",
                 data: rows.map(([, row]) =>
-                    Number(row.sales || 0)
-                )
+    Number(row.count || 0)
+)
             }]
         },
         options: {

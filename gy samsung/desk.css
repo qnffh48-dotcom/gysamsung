@@ -561,4 +561,35 @@ body {
 }#insuranceTypeTable tbody td {
     background: #fff !important;
     font-weight: 400 !important;
+}.excel-upload-buttons {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.excel-arrow {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #f5d08a,
+        #c9a86a
+    );
+
+    color: white;
+
+    font-size: 24px;
+    font-weight: 900;
+
+    box-shadow:
+        0 4px 12px rgba(201,168,106,0.35);
+
+    flex-shrink: 0;
 }
