@@ -260,4 +260,71 @@ body {
     outline: none;
 
     cursor: pointer;
+}.doctor-insight-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.doctor-insight-card {
+    background: #fffdf7;
+    border: 1px solid #e2d5b8;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+}
+
+.doctor-insight-card span {
+    display: block;
+    font-size: 13px;
+    color: #77684d;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.doctor-insight-card strong {
+    display: block;
+    font-size: 22px;
+    color: #2f2618;
+    margin-bottom: 6px;
+}
+
+.doctor-insight-card p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #5b4825;
+}
+
+.doctor-comment-box {
+    background: #fffdf7;
+    border-left: 5px solid #c8a85a;
+    border-radius: 10px;
+    padding: 16px 18px;
+    line-height: 1.75;
+    color: #3d3322;
+    font-weight: 600;
+}
+
+.doctor-comment-box div {
+    margin-bottom: 6px;
+}
+
+@media (max-width: 1400px) {
+    .doctor-insight-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .doctor-insight-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media print {
+    #doctorInsightPanel {
+        break-inside: avoid;
+    }
 }

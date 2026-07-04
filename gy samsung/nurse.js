@@ -11,9 +11,84 @@ if (floatingNav) {
         const targetY = window.scrollY;
 
         requestAnimationFrame(() => {
-            floatingNav.style.transform =
-                `translateY(${targetY}px)`;
+            floatingNav.style.transform = `translateY(${targetY}px)`;
         });
+    });
+}
+
+/* =========================
+   탭 버튼 활성화
+========================= */
+
+const nurseCard = document.querySelector(".nurse-card");
+const nurseTabs = document.querySelectorAll(".nurse-tab");
+
+if (nurseCard && nurseTabs.length > 0) {
+    setupNurseTabs();
+}
+
+function setupNurseTabs() {
+    const originalContent = document.createElement("div");
+    originalContent.className = "nurse-tab-page active";
+    originalContent.dataset.page = "closing";
+
+    while (nurseCard.firstChild) {
+        originalContent.appendChild(nurseCard.firstChild);
+    }
+
+    nurseCard.appendChild(originalContent);
+
+    nurseCard.appendChild(makeTempPage(
+        "schedule",
+        "간호스케줄",
+        "간호 스케줄 페이지입니다. 나중에 근무표 기능을 여기에 넣으면 됩니다."
+    ));
+
+    nurseCard.appendChild(makeTempPage(
+        "temp2",
+        "임시2",
+        "임시 페이지입니다."
+    ));
+
+    nurseCard.appendChild(makeTempPage(
+        "temp3",
+        "임시3",
+        "임시 페이지입니다."
+    ));
+
+    nurseTabs.forEach((tab, index) => {
+        const pageKey = ["closing", "schedule", "temp2", "temp3"][index];
+
+        tab.dataset.page = pageKey;
+
+        tab.addEventListener("click", () => {
+            activateNurseTab(pageKey);
+        });
+    });
+}
+
+function makeTempPage(pageKey, title, text) {
+    const page = document.createElement("div");
+    page.className = "nurse-tab-page";
+    page.dataset.page = pageKey;
+
+    page.innerHTML = `
+        <div class="nurse-temp-page">
+            <h1>${title}</h1>
+            <p>${text}</p>
+        </div>
+    `;
+
+    return page;
+}
+
+function activateNurseTab(pageKey) {
+    document.querySelectorAll(".nurse-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.page === pageKey);
+    });
+
+    document.querySelectorAll(".nurse-tab-page").forEach(page => {
+        page.classList.toggle("active", page.dataset.page === pageKey);
     });
 }
 
@@ -47,7 +122,6 @@ for (let m = 1; m <= 12; m++) {
 }
 
 function updateDays() {
-
     const lastDay = new Date(
         Number(yearSelect.value),
         Number(monthSelect.value),
@@ -60,6 +134,10 @@ function updateDays() {
         daySelect.innerHTML += `
             <option value="${d}">${d}일</option>
         `;
+    }
+
+    if (currentDay > lastDay) {
+        currentDay = lastDay;
     }
 
     daySelect.value = currentDay;
@@ -93,7 +171,6 @@ const nurseRooms = [
 ];
 
 let nurseData = {};
-
 let saveTimer = null;
 
 /* =========================
@@ -101,7 +178,6 @@ let saveTimer = null;
 ========================= */
 
 async function loadNurseData() {
-
     const snap = await getDoc(
         doc(db, "closings", getDateKey())
     );
@@ -120,9 +196,7 @@ async function loadNurseData() {
 ========================= */
 
 function renderNurseTable() {
-
-    const table =
-        document.getElementById("nurseClosingTable");
+    const table = document.getElementById("nurseClosingTable");
 
     if (!table) return;
 
@@ -144,7 +218,6 @@ function renderNurseTable() {
 
         <tbody>
             ${nurseRooms.map(room => {
-
                 const row = nurseData[room.key] || {};
 
                 const fluidNew = Number(row.fluidNew || 0);
@@ -210,16 +283,15 @@ function renderNurseTable() {
         </tbody>
     `;
 
-    table.querySelectorAll("input")
-        .forEach(input => {
-            input.addEventListener("input", () => {
-                clearTimeout(saveTimer);
+    table.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", () => {
+            clearTimeout(saveTimer);
 
-                saveTimer = setTimeout(() => {
-                    saveNurseData();
-                }, 500);
-            });
+            saveTimer = setTimeout(() => {
+                saveNurseData();
+            }, 500);
         });
+    });
 }
 
 /* =========================
@@ -227,27 +299,17 @@ function renderNurseTable() {
 ========================= */
 
 async function saveNurseData() {
-
-    const inputs =
-        document.querySelectorAll(
-            "#nurseClosingTable input"
-        );
+    const inputs = document.querySelectorAll("#nurseClosingTable input");
 
     inputs.forEach(input => {
-
-        const room =
-            input.dataset.room;
-
-        const field =
-            input.dataset.field;
+        const room = input.dataset.room;
+        const field = input.dataset.field;
 
         if (!nurseData[room]) {
             nurseData[room] = {};
         }
 
-        nurseData[room][field] =
-            Number(input.value || 0);
-
+        nurseData[room][field] = Number(input.value || 0);
     });
 
     await setDoc(
@@ -266,90 +328,61 @@ async function saveNurseData() {
 ========================= */
 
 function changeDate(diff) {
-
     const date = new Date(
         Number(yearSelect.value),
         Number(monthSelect.value) - 1,
         Number(daySelect.value)
     );
 
-    date.setDate(
-        date.getDate() + diff
-    );
+    date.setDate(date.getDate() + diff);
 
-    currentYear =
-        date.getFullYear();
+    currentYear = date.getFullYear();
+    currentMonth = date.getMonth() + 1;
+    currentDay = date.getDate();
 
-    currentMonth =
-        date.getMonth() + 1;
-
-    currentDay =
-        date.getDate();
-
-    yearSelect.value =
-        currentYear;
-
-    monthSelect.value =
-        currentMonth;
+    yearSelect.value = currentYear;
+    monthSelect.value = currentMonth;
 
     updateDays();
 
-    daySelect.value =
-        currentDay;
+    daySelect.value = currentDay;
 
     loadNurseData();
 }
 
-prevDateBtn.addEventListener(
-    "click",
-    () => {
-        changeDate(-1);
-    }
-);
+prevDateBtn.addEventListener("click", () => {
+    changeDate(-1);
+});
 
-nextDateBtn.addEventListener(
-    "click",
-    () => {
-        changeDate(1);
-    }
-);
+nextDateBtn.addEventListener("click", () => {
+    changeDate(1);
+});
 
-yearSelect.addEventListener(
-    "change",
-    () => {
+yearSelect.addEventListener("change", () => {
+    currentYear = Number(yearSelect.value);
+    currentMonth = Number(monthSelect.value);
+    currentDay = Number(daySelect.value);
 
-        currentDay =
-            Number(daySelect.value);
+    updateDays();
 
-        updateDays();
+    loadNurseData();
+});
 
-        loadNurseData();
-    }
-);
+monthSelect.addEventListener("change", () => {
+    currentYear = Number(yearSelect.value);
+    currentMonth = Number(monthSelect.value);
+    currentDay = Number(daySelect.value);
 
-monthSelect.addEventListener(
-    "change",
-    () => {
+    updateDays();
 
-        currentDay =
-            Number(daySelect.value);
+    loadNurseData();
+});
 
-        updateDays();
+daySelect.addEventListener("change", () => {
+    currentDay = Number(daySelect.value);
 
-        loadNurseData();
-    }
-);
-
-daySelect.addEventListener(
-    "change",
-    () => {
-
-        currentDay =
-            Number(daySelect.value);
-
-        loadNurseData();
-    }
-);
+    loadNurseData();
+});
 
 /* =========================
    시작

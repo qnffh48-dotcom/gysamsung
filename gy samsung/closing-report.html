@@ -36,14 +36,49 @@
     <h1 class="report-title">마감 리포트</h1>
 
     <div class="report-date-bar">
-        <input type="date" id="startDate">
-        <span>~</span>
-        <input type="date" id="endDate">
 
-        <button id="loadReportBtn">조회</button>
-        <button onclick="window.print()">인쇄</button>
+        
+    <input type="date" id="startDate">
+    <span>~</span>
+    <input type="date" id="endDate">
+
+    <button id="loadReportBtn">조회</button>
+
+   <button type="button" id="compareReportBtn">비교 분석</button>
+
+    <button onclick="window.print()">인쇄</button>
+</div>
+<section class="report-section" id="autoInsightSection">
+    <h2><span class="big-dot"></span>자동 분석</h2>
+
+    <div class="report-card auto-insight-card">
+        <div class="insight-grid">
+            <div class="insight-box">
+                <div class="insight-label">총 내원</div>
+                <div class="insight-value" id="insightTotalVisit">-</div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-label">총 매출</div>
+                <div class="insight-value" id="insightTotalSales">-</div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-label">건당 진료비</div>
+                <div class="insight-value" id="insightSalesPerVisit">-</div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-label">주요 내원경로</div>
+                <div class="insight-value" id="insightTopRoute">-</div>
+            </div>
+        </div>
+
+        <div class="auto-comment-box" id="autoCommentBox">
+            조회 후 자동 분석이 표시됩니다.
+        </div>
     </div>
-
+</section>
     <section class="report-section">
         <h2><span class="big-dot"></span>내원 · 매출 요약</h2>
 
@@ -153,7 +188,7 @@
 
 </main>
 
-<script type="module" src="closing-report.js?v=30"></script>
+<script type="module" src="closing-report.js?v=32"></script>
 <script type="module" src="role-check.js"></script>
 
 </body>

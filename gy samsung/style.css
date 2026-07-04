@@ -276,252 +276,6 @@ body {
     font-weight: bold;
 }
 
-/* 스케줄 페이지 */
-.schedule-main {
-    flex: 1;
-    padding: 45px 70px;
-    background: #d6dbe1;
-    box-sizing: border-box;
-    overflow-x: auto;
-}
-
-.schedule-card {
-    width: 1050px;
-    min-height: 860px;
-    background: white;
-    border-radius: 22px;
-    padding: 40px 45px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.schedule-card .calendar {
-    width: 100%;
-    margin: 0 auto;
-}
-
-.schedule-card .day {
-    min-height: 125px;
-}
-
-.schedule-card .top-bar {
-    margin-bottom: 28px;
-}
-
-/* 달력 */
-.top-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-}
-
-.top-bar button {
-    width: 54px;
-    height: 44px;
-    border: none;
-    border-radius: 14px;
-    background: #2f4858;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 5px 12px rgba(47,72,88,0.25);
-    transition: 0.2s;
-}
-
-.top-bar button:hover {
-    background: #243947;
-    transform: translateY(-2px);
-}
-
-.month-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.month-title select {
-    border: none;
-    outline: none;
-    background: #f3f6f9;
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    color: #2f4858;
-    cursor: pointer;
-}
-
-#monthText {
-    font-size: 34px;
-    font-weight: 900;
-    color: #2f4858;
-    margin-right: 18px;
-    letter-spacing: -1px;
-}
-
-.month-wrapper {
-    position: relative;
-}
-
-.month-display {
-    background: white;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 32px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.month-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    width: 220px;
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 100;
-}
-
-.month-menu div {
-    padding: 12px;
-    cursor: pointer;
-}
-
-.month-menu div:hover {
-    background: #f0f0f0;
-}
-
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0;
-    width: 900px;
-    margin: 0 auto;
-    background: white;
-    border: 2px solid #222;
-    overflow: hidden;
-}
-
-.day-name {
-    background: linear-gradient(to bottom, #34495e, #2c3e50);
-    color: white;
-    text-align: center;
-    padding: 12px 0;
-    font-weight: bold;
-    font-size: 15px;
-    border-right: 1px solid #4c647c;
-    border-bottom: 1px solid #1e2b38;
-}
-
-.day {
-    background: white;
-    border: 1px solid #d8dee6;
-    min-height: 165px;
-    padding: 8px;
-    transition: 0.15s;
-}
-
-.day:hover {
-    background: #f8fafc;
-}
-
-.empty {
-    background: transparent;
-    box-shadow: none;
-}
-
-.date {
-    font-size: 28px;
-    font-weight: 900;
-    color: #222;
-    margin-bottom: 6px;
-}
-
-/* 스케줄 입력칸 */
-.inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.inputs textarea,
-textarea {
-    width: 100%;
-    height: 40px;
-
-    border: none;
-
-    resize: none;
-    overflow: hidden;
-
-    outline: none;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    border-radius: 6px;
-
-    color: #334155;
-
-    padding: 4px 6px;
-
-    letter-spacing: -0.2px;
-
-    font-family:
-        "Pretendard",
-        "Noto Sans KR",
-        sans-serif;
-}
-
-.inputs textarea {
-    height: 38px;
-
-    font-size: 13px;
-
-    border-radius: 10px;
-
-    padding: 8px 10px;
-
-    box-shadow:
-        inset 0 1px 2px rgba(255,255,255,0.5);
-
-    transition: 0.15s;
-}
-
-.inputs textarea {
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-.doctor {
-    background: #d7dde5;
-}
-
-.room {
-    background: #c5daf3;
-}
-
-
-.nurse {
-    background: #f0d4de;
-}
-
-.desk {
-    background: #e8d39d;
-}
-
-.therapy {
-    background: #c8e5d0;
-}
 /* 대시보드 */
 .dashboard {
     display: flex;
@@ -964,292 +718,13 @@ textarea {
     font-weight: 900;
 
     letter-spacing: 1px;
-}/* =========================
-   스케줄 + 점심표 배치
-========================= */
-
-.schedule-main {
-    flex: 1;
-
-    padding: 45px 40px;
-
-    background: #d6dbe1;
-
-    overflow-x: auto;
-}
-
-.schedule-wrap {
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 34px;
-
-    width: max-content;
-
-    margin: 0 auto;
 }
 
 /* =========================
-   기존 스케줄 박스
+   로그아웃 버튼
 ========================= */
 
-.schedule-card {
-    width: 1050px;
-
-    min-height: 860px;
-
-    background: white;
-
-    border-radius: 22px;
-
-    padding: 40px 45px;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-
-    flex-shrink: 0;
-}/* =========================
-   스케줄 + 직원 점심시간 가로 배치
-========================= */
-
-.schedule-main {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 55px !important;
-
-    padding: 45px 70px !important;
-
-    overflow-x: auto !important;
-
-    width: max-content !important;
-}
-
-.schedule-card {
-    flex-shrink: 0 !important;
-    width: 1050px !important;
-}
-
-.lunch-box {
-    flex-shrink: 0 !important;
-
-    width: 1180px !important;
-    min-height: 860px !important;
-
-    background: white !important;
-
-    border-radius: 22px !important;
-
-    padding: 36px 34px !important;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
-
-    box-sizing: border-box !important;
-}
-
-.lunch-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 28px;
-}
-
-.lunch-title {
-    margin: 0;
-
-    color: #2f4858;
-
-    font-size: 34px;
-    font-weight: 900;
-}
-
-.lunch-title span {
-    font-size: 22px;
-    font-weight: 800;
-}
-
-.lunch-legend {
-    display: flex;
-    gap: 22px;
-
-    font-size: 15px;
-    font-weight: 800;
-
-    color: #2f4858;
-}
-
-.lunch-legend span {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.slot {
-    width: 14px;
-    height: 14px;
-
-    border-radius: 50%;
-
-    display: inline-block;
-}
-
-.slot-12 {
-    background: #bfddff;
-}
-
-.slot-13 {
-    background: #ffd1e3;
-}
-
-.slot-14 {
-    background: #fff1a8;
-}
-
-.lunch-table-wrap {
-    width: 100%;
-
-    overflow: hidden;
-
-    border: 1px solid #d8dee6;
-    border-radius: 10px;
-}
-
-.monthly-lunch-table {
-    width: 100%;
-
-    border-collapse: collapse;
-
-    table-layout: fixed;
-}
-
-.monthly-lunch-table th,
-.monthly-lunch-table td {
-    border: 1px solid #d8dee6;
-
-    text-align: center;
-    vertical-align: middle;
-
-    height: 38px;
-
-    font-size: 13px;
-    font-weight: 800;
-
-    padding: 0;
-}
-
-.monthly-lunch-table th {
-    background: #2f4858;
-
-    color: white;
-}
-
-.monthly-lunch-table .name-cell {
-    width: 72px;
-
-    background: white;
-
-    color: #111;
-
-    font-size: 17px;
-    font-weight: 900;
-}
-
-.monthly-lunch-table .day-cell {
-    height: 32px;
-
-    background: white;
-
-    color: #111;
-}
-
-.monthly-lunch-table .sat {
-    color: #2563eb !important;
-}
-
-.monthly-lunch-table .sun {
-    color: #dc2626 !important;
-}
-
-.monthly-lunch-table .divider td {
-    height: 14px;
-
-    background: #eeeeee;
-}
-
-.lunch-cell {
-    font-weight: 900;
-    font-size: 14px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    caret-color: transparent;
-}
-
-.lunch-badge {
-    width: 26px;
-    height: 26px;
-
-    border-radius: 50%;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    color: white;
-    font-weight: 900;
-    font-size: 12px;
-}
-
-.lunch-badge.time-12 {
-    background: #2f4858;
-}
-
-.lunch-badge.time-13 {
-    background: #c9a46a;
-}
-
-.lunch-badge.time-14 {
-    background: #6b7280;
-}
-.lunch-control {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.lunch-control button {
-    width: 48px;
-    height: 48px;
-
-    border: none;
-    border-radius: 14px;
-
-    background: #2f4858;
-    color: white;
-
-    font-size: 24px;
-    font-weight: 900;
-
-    cursor: pointer;
-}
-
-.lunch-month-box {
-    min-width: 140px;
-    height: 48px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: #f4f6f8;
-
-    border-radius: 14px;
-
-    color: #2f4858;
-
-    font-size: 18px;
-    font-weight: 900;
-}.logout-btn {
+.logout-btn {
     width: 190px;
     height: 54px;
 
@@ -1272,7 +747,6 @@ textarea {
 
 .logout-btn:hover {
     transform: scale(1.03);
-
     background: #b91c1c;
 }.notice-add-btn,
 .notice-delete-btn {
@@ -1459,118 +933,160 @@ textarea {
 
 .manual-delete-btn:hover {
     background: #dc2626;
-}.hospital-logo-menu {
+}/* =========================
+   병원 선택 드롭다운 디자인
+========================= */
+
+.hospital-logo-menu {
     position: relative;
+    width: 100%;
+    height: 220px;
     cursor: pointer;
 }
 
+.hospital-logo-menu .logo {
+    width: 100%;
+    height: 220px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.25s ease;
+}
+
+.hospital-logo-menu:hover .logo {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.hospital-logo-menu .logo img {
+    width: 220px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 드롭다운 박스 - 오른쪽으로 등장 */
 .hospital-dropdown {
-    display: none;
-
     position: absolute;
-    top: 170px;
-    left: 20px;
+    top: 72px;
+    left: 218px;
 
-    width: 200px;
+    transform: translateX(-10px) scale(0.96);
 
-    background: white;
-
-    border-radius: 14px;
-
+    width: 220px;
     padding: 10px;
 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
 
-    z-index: 9999;
+    border-radius: 18px;
+    box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    z-index: 99999;
+
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease,
+        visibility 0.22s ease;
 }
 
+/* hover 시 오른쪽에서 부드럽게 등장 */
 .hospital-logo-menu:hover .hospital-dropdown {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
 }
 
-.hospital-dropdown button {
-    width: 100%;
-    height: 42px;
-
-    border: none;
-    border-radius: 10px;
-
-    background: transparent;
-
-    color: #2f4858;
-
-    font-size: 14px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    text-align: left;
-    padding-left: 12px;
-}
-
-.hospital-dropdown button:hover {
-    background: #eef2f7;
-}.hospital-logo-menu {
-    position: relative;
-    cursor: pointer;
-}
-
-.hospital-dropdown {
-    display: none;
-
+/* 왼쪽 작은 삼각형 */
+.hospital-dropdown::before {
+    content: "";
     position: absolute;
-    top: 165px;
-    left: 20px;
+    top: 34px;
+    left: -7px;
 
-    width: 205px;
+    width: 16px;
+    height: 16px;
 
-    background: white;
-    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    transform: rotate(45deg);
 
-    padding: 10px;
-
-    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-
-    z-index: 9999;
+    border-radius: 3px;
 }
 
-.hospital-logo-menu:hover .hospital-dropdown {
-    display: block;
-}
-
+/* 버튼 */
 .hospital-dropdown button {
-    width: 100%;
-    height: 42px;
+    width: 100% !important;
+    height: 46px !important;
 
-    border: none;
-    border-radius: 10px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
 
-    background: transparent;
-    color: #2f4858;
+    border: none !important;
+    border-radius: 13px !important;
 
-    font-size: 14px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    text-align: left;
-    padding-left: 12px;
-}
-
-.hospital-dropdown button:hover {
-    background: #eef2f7;
-}body.hospital-banghak .sidebar {
-    background: linear-gradient(
-        180deg,
-        #0f4c81,
-        #0b3b63
-    ) !important;
-}
-
-body.hospital-banghak .sidebar .logo {
     background: transparent !important;
+    color: #2f4858 !important;
+
+    font-size: 14px !important;
+    font-weight: 900 !important;
+
+    text-align: left !important;
+    padding: 0 12px !important;
+    margin: 0 0 4px 0 !important;
+
+    white-space: nowrap !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
 }
 
-body.hospital-banghak .gold-dot {
-    background: #60a5fa !important;
+.hospital-dropdown button:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 버튼 앞 아이콘 느낌 점 */
+.hospital-dropdown button::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+
+    margin-right: 10px;
+
+    border-radius: 50%;
+    background: #c9a46a;
+
+    flex-shrink: 0;
+}
+
+/* hover 효과 */
+.hospital-dropdown button:hover {
+    background: #eef3f7 !important;
+    color: #102a3a !important;
+    transform: translateX(4px) !important;
+}
+
+/* 병원별 색상 */
+.hospital-dropdown button:nth-child(1)::before {
+    background: #c9a46a;
+}
+
+.hospital-dropdown button:nth-child(2)::before {
+    background: #4f9fd9;
+}
+
+.hospital-dropdown button:nth-child(3)::before {
+    background: #68b984;
 }

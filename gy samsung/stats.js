@@ -88,6 +88,7 @@ function renderStats(rows) {
     const { headers, dataRows } = tableInfo;
 
     renderSummary(headers, dataRows);
+    renderDoctorInsight(headers, dataRows, rows);
     renderMainTable(headers, dataRows);
     renderChart(rows);
     renderInjectionStats(rows);
@@ -407,7 +408,216 @@ function renderInjectionStats(rows) {
     });
 }
 
+function getCellByHeader(headers, row, headerName) {
+    const index = col(headers, headerName);
+    if (index === -1) return 0;
+    return num(row[index]);
+}
 
+function getDoctorDisplayName(name) {
+    return String(name || "-")
+        .replace(/\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function getDoctorShortName(name) {
+    const text = getDoctorDisplayName(name);
+
+    const match = text.match(/\((.*?)\)/);
+    if (match) return match[1];
+
+    return text;
+}
+
+function maxBy(list, key) {
+    return list.reduce((best, item) => {
+        if (!best) return item;
+        return Number(item[key] || 0) > Number(best[key] || 0) ? item : best;
+    }, null);
+}
+
+function minBy(list, key) {
+    const filtered = list.filter(item => Number(item[key] || 0) > 0);
+
+    return filtered.reduce((best, item) => {
+        if (!best) return item;
+        return Number(item[key] || 0) < Number(best[key] || 0) ? item : best;
+    }, null);
+}
+
+function averageOf(list, key) {
+    const values = list
+        .map(item => Number(item[key] || 0))
+        .filter(value => value > 0);
+
+    if (!values.length) return 0;
+
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function escapeHtml(text) {
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function renderDoctorInsight(headers, dataRows, rawRows) {
+    const grid = document.getElementById("doctorInsightGrid");
+    const commentBox = document.getElementById("doctorCommentBox");
+
+    if (!grid || !commentBox) return;
+
+    const injectionBlocks = findInjectionBlocks(rawRows);
+
+    const doctors = dataRows
+        .filter(row => {
+            const name = String(row[0] || "");
+            return name && !name.includes("총합");
+        })
+        .map((row, index) => {
+            const block = injectionBlocks[index] || {};
+
+            return {
+                name: getDoctorDisplayName(row[0]),
+                shortName: getDoctorShortName(row[0]),
+
+                newCount: getCellByHeader(headers, row, "초진수"),
+                revisitCount: getCellByHeader(headers, row, "재진수"),
+                totalVisit: getCellByHeader(headers, row, "합계"),
+
+                totalSales: getCellByHeader(headers, row, "총 진료비"),
+                salesPerVisit: getCellByHeader(headers, row, "건당 진료비"),
+
+                newAvgVisit: getCellByHeader(headers, row, "신환 진료실별 평균내원횟수"),
+                revisitRate: getCellByHeader(headers, row, "재내원률"),
+                fiveVisitRate: getCellByHeader(headers, row, "5회 이상내원"),
+
+                injectionRate: getCellByHeader(headers, row, "주사 처방률"),
+                avgInjectionCount: getCellByHeader(headers, row, "평균 주사 횟수"),
+                injectionAvgVisit: getCellByHeader(headers, row, "주사 평균 내원"),
+                injectionReturnRate: getCellByHeader(headers, row, "주사 후 재내원률"),
+
+                firstInjectionTotal: num(block.total),
+                firstInjectionAvg: num(block.avg),
+                firstInjectionOnce: num(block.values?.[0]),
+                firstInjectionTwice: num(block.values?.[1]),
+                firstInjectionThree: num(block.values?.[2]),
+                firstInjectionFour: num(block.values?.[3]),
+                firstInjectionFivePlus: num(block.values?.[4]),
+                firstInjectionFivePlusRate: num(block.rates?.[4])
+            };
+        });
+
+    if (!doctors.length) {
+        grid.innerHTML = "";
+        commentBox.textContent = "의사별 분석에 사용할 데이터가 없습니다.";
+        return;
+    }
+
+    const visitTop = maxBy(doctors, "totalVisit");
+    const salesTop = maxBy(doctors, "totalSales");
+    const unitTop = maxBy(doctors, "salesPerVisit");
+    const injectionRateTop = maxBy(doctors, "injectionRate");
+    const injectionAvgTop = maxBy(doctors, "avgInjectionCount");
+    const returnTop = maxBy(doctors, "injectionReturnRate");
+    const fivePlusTop = maxBy(doctors, "firstInjectionFivePlusRate");
+
+    const lowUnit = minBy(doctors, "salesPerVisit");
+    const lowReturn = minBy(doctors, "injectionReturnRate");
+
+    grid.innerHTML = `
+        <div class="doctor-insight-card">
+            <span>내원 최다</span>
+            <strong>${escapeHtml(visitTop.shortName)}</strong>
+            <p>${formatNumber(visitTop.totalVisit)}명</p>
+        </div>
+
+        <div class="doctor-insight-card">
+            <span>총 진료비 최다</span>
+            <strong>${escapeHtml(salesTop.shortName)}</strong>
+            <p>${formatMoney(salesTop.totalSales)}</p>
+        </div>
+
+        <div class="doctor-insight-card">
+            <span>건당 진료비 최고</span>
+            <strong>${escapeHtml(unitTop.shortName)}</strong>
+            <p>${formatMoney(unitTop.salesPerVisit)}</p>
+        </div>
+
+        <div class="doctor-insight-card">
+            <span>주사 처방률 최고</span>
+            <strong>${escapeHtml(injectionRateTop.shortName)}</strong>
+            <p>${formatPercent(injectionRateTop.injectionRate)}</p>
+        </div>
+
+        <div class="doctor-insight-card">
+            <span>평균 주사 횟수 최고</span>
+            <strong>${escapeHtml(injectionAvgTop.shortName)}</strong>
+            <p>${formatNumber(injectionAvgTop.avgInjectionCount)}회</p>
+        </div>
+
+        <div class="doctor-insight-card">
+            <span>주사 후 재내원률 최고</span>
+            <strong>${escapeHtml(returnTop.shortName)}</strong>
+            <p>${formatPercent(returnTop.injectionReturnRate)}</p>
+        </div>
+    `;
+
+    const avgSalesPerVisit = averageOf(doctors, "salesPerVisit");
+    const avgInjectionRate = averageOf(doctors, "injectionRate");
+    const avgReturnRate = averageOf(doctors, "injectionReturnRate");
+
+    const comments = [];
+
+    comments.push(`${visitTop.name}은 선택 월 기준 총 내원 ${formatNumber(visitTop.totalVisit)}명으로 가장 많은 환자를 진료했습니다.`);
+
+    if (salesTop.name === visitTop.name) {
+        comments.push(`${salesTop.name}은 내원수와 총 진료비가 모두 가장 높아 전체 매출 기여도가 가장 큰 진료실입니다.`);
+    } else {
+        comments.push(`총 진료비는 ${salesTop.name}이 ${formatMoney(salesTop.totalSales)}로 가장 높습니다. 내원수 1위와 매출 1위가 달라 진료 단가 차이가 있는 것으로 보입니다.`);
+    }
+
+    if (unitTop.salesPerVisit >= avgSalesPerVisit * 1.15) {
+        comments.push(`${unitTop.name}은 건당 진료비가 ${formatMoney(unitTop.salesPerVisit)}로 평균보다 높습니다. 비급여, 주사, 고단가 처치 비중이 높은지 확인해볼 만합니다.`);
+    } else {
+        comments.push(`건당 진료비는 ${unitTop.name}이 가장 높지만, 전체 진료실 간 차이는 크지 않은 편입니다.`);
+    }
+
+    if (lowUnit && lowUnit.name !== unitTop.name) {
+        comments.push(`${lowUnit.name}은 건당 진료비가 ${formatMoney(lowUnit.salesPerVisit)}로 낮은 편입니다. 단순 재진 또는 저단가 진료 비중이 높은지 확인이 필요합니다.`);
+    }
+
+    if (injectionRateTop.injectionRate >= avgInjectionRate * 1.2) {
+        comments.push(`${injectionRateTop.name}은 주사 처방률이 ${formatPercent(injectionRateTop.injectionRate)}로 가장 높습니다. 주사 치료 연결이 강한 진료실입니다.`);
+    } else {
+        comments.push(`주사 처방률은 ${injectionRateTop.name}이 가장 높지만, 진료실 간 차이는 과도하지 않습니다.`);
+    }
+
+    if (injectionAvgTop.avgInjectionCount > 0) {
+        comments.push(`${injectionAvgTop.name}은 평균 주사 횟수가 ${formatNumber(injectionAvgTop.avgInjectionCount)}회로 가장 높습니다.`);
+    }
+
+    if (returnTop.injectionReturnRate >= avgReturnRate * 1.1) {
+        comments.push(`${returnTop.name}은 주사 후 재내원률이 ${formatPercent(returnTop.injectionReturnRate)}로 가장 높아 치료 후 추적 내원이 잘 이어지는 편입니다.`);
+    }
+
+    if (lowReturn && lowReturn.name !== returnTop.name) {
+        comments.push(`${lowReturn.name}은 주사 후 재내원률이 ${formatPercent(lowReturn.injectionReturnRate)}로 낮은 편입니다. 주사 후 경과 예약 또는 재내원 안내가 충분한지 확인해볼 수 있습니다.`);
+    }
+
+    if (fivePlusTop.firstInjectionFivePlusRate > 0) {
+        comments.push(`초진 주사 5회 이상 비율은 ${fivePlusTop.name}이 ${formatPercent(fivePlusTop.firstInjectionFivePlusRate)}로 가장 높습니다. 장기 치료 연결률이 상대적으로 높은 진료실입니다.`);
+    }
+
+    commentBox.innerHTML = comments
+        .slice(0, 7)
+        .map(text => `<div>• ${escapeHtml(text)}</div>`)
+        .join("");
+}
 const floatingNav = document.querySelector(".sidebar .nav");
 
 if (floatingNav) {
@@ -461,6 +671,12 @@ function clearStatsScreen() {
     document.getElementById("summaryGrid").innerHTML = "";
     document.getElementById("mainStatsTable").innerHTML = "";
     document.getElementById("injectionGrid").innerHTML = "";
+
+    const doctorGrid = document.getElementById("doctorInsightGrid");
+    const doctorComment = document.getElementById("doctorCommentBox");
+
+    if (doctorGrid) doctorGrid.innerHTML = "";
+    if (doctorComment) doctorComment.textContent = "엑셀 업로드 후 의사별 자동 분석이 표시됩니다.";
 
     if (mainChart) {
         mainChart.destroy();

@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-
     <title>간호</title>
 
     <link rel="stylesheet" href="style.css">
@@ -12,7 +11,6 @@
 
 <body>
 
-    <!-- 사이드바 -->
     <div class="sidebar">
 
         <div class="logo">
@@ -49,47 +47,53 @@
 
     </div>
 
-    <!-- 메인 -->
     <main class="nurse-main">
 
-    <div class="nurse-layout">
+        <div class="nurse-layout">
 
-        <div class="nurse-card">
+            <div class="nurse-tabs">
+    <button class="nurse-tab active">마감일지</button>
+    <button class="nurse-tab">간호스케줄</button>
+    <button class="nurse-tab">임시2</button>
+    <button class="nurse-tab">임시3</button>
+</div>
 
-            <div class="nurse-date-bar">
+            <div class="nurse-card">
 
-                <button class="nurse-date-btn" id="prevDateBtn">◀</button>
+                <div class="nurse-date-bar">
 
-                <div class="nurse-date-box">
-                    <select id="yearSelect"></select>
-                    <select id="monthSelect"></select>
-                    <select id="daySelect"></select>
+                    <button class="nurse-date-btn" id="prevDateBtn">◀</button>
+
+                    <div class="nurse-date-box">
+                        <select id="yearSelect"></select>
+                        <select id="monthSelect"></select>
+                        <select id="daySelect"></select>
+                    </div>
+
+                    <button class="nurse-date-btn" id="nextDateBtn">▶</button>
+
                 </div>
 
-                <button class="nurse-date-btn" id="nextDateBtn">▶</button>
+                <h1 class="nurse-title">간호 마감일지</h1>
+
+                <section class="nurse-section">
+
+                    <h2>
+                        <span class="big-dot"></span>
+                        간호 수액 · 초음파
+                    </h2>
+
+                    <table class="nurse-table" id="nurseClosingTable"></table>
+
+                </section>
 
             </div>
 
-            <h1 class="nurse-title">간호 마감일지</h1>
-
-            <section class="nurse-section">
-
-                <h2>
-                    <span class="big-dot"></span>
-                    간호 수액 · 초음파
-                </h2>
-
-                <table class="nurse-table" id="nurseClosingTable"></table>
-
-            </section>
-
         </div>
 
-    </div>
+    </main>
 
-</main>
-
-    <script type="module" src="./nurse.js?v=10"></script>
+    <script type="module" src="./nurse.js?v=12"></script>
     <script type="module" src="./role-check.js"></script>
 
 </body>

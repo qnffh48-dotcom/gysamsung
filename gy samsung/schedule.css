@@ -1,70 +1,303 @@
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800;900&display=swap');
-/* 스케줄 페이지 가로 스크롤 강제 */
 
 html,
 body {
+    margin: 0;
+    padding: 0;
     overflow-x: auto !important;
     overflow-y: auto !important;
-
-    min-width: 2700px !important;
-
-    background:
-        url("./marble-bg.jpg") !important;
-
+    min-width: 1500px !important;
+    background: url("./marble-bg.jpg") !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
+    font-family: "Pretendard", sans-serif;
 }
 
+/* =========================
+   메인 레이아웃
+========================= */
+
 .schedule-main {
-    width: 2460px !important;
-    min-width: 2460px !important;
-
-    overflow: visible !important;
-
+    width: calc(100vw - 240px) !important;
+    min-width: 1250px !important;
+    margin-left: 240px !important;
     padding: 45px 40px !important;
-
+    box-sizing: border-box !important;
     background: transparent !important;
+    overflow: visible !important;
 }
 
 .schedule-wrap {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    align-items: flex-start !important;
-
-    gap: 34px !important;
-
-    width: 2300px !important;
-    min-width: 2300px !important;
-
-    margin: 0 !important;
+    width: 1250px !important;
+    min-width: 1250px !important;
+    margin: 0 auto !important;
+    display: block !important;
 }
 
 .schedule-card {
-    width: 1050px !important;
-    min-width: 1050px !important;
-    flex-shrink: 0 !important;
+    width: 1250px !important;
+    min-width: 1250px !important;
+    min-height: 820px !important;
+    padding: 45px !important;
+    box-sizing: border-box !important;
 
-    background: rgba(255,255,255,0.92) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
     backdrop-filter: blur(6px);
+    border-radius: 24px !important;
 
     box-shadow:
-        0 10px 30px rgba(0,0,0,0.10),
-        inset 0 2px 8px rgba(255,255,255,0.75) !important;
+        0 10px 30px rgba(0, 0, 0, 0.10),
+        inset 0 2px 8px rgba(255, 255, 255, 0.75) !important;
 }
 
-.lunch-box {
-    width: 1180px !important;
-    min-width: 1180px !important;
-    flex-shrink: 0 !important;
+/* =========================
+   인쇄 버튼
+========================= */
 
-    background: rgba(255,255,255,0.92) !important;
-    backdrop-filter: blur(6px);
+#schedulePrintBtn {
+    display: block;
+    margin: 0 auto 28px;
+    padding: 8px 16px;
+    border: 1px solid #9aa8b5;
+    border-radius: 8px;
+    background: #f5f7fa;
+    color: #243b53;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
 
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.10),
-        inset 0 2px 8px rgba(255,255,255,0.75) !important;
-}@page {
+#schedulePrintBtn:hover {
+    background: #e8edf2;
+}
+
+/* =========================
+   상단 날짜 바
+========================= */
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 32px;
+}
+
+.top-bar button {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: #2f4c64;
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.18s;
+}
+
+.top-bar button:hover {
+    transform: translateY(-2px);
+    background: #3d6484;
+}
+
+.month-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+#monthText {
+    display: none;
+}
+
+.month-title select {
+    height: 44px;
+    min-width: 120px;
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 12px;
+    background: #eef2f6;
+
+    color: #243b53;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* =========================
+   달력
+========================= */
+
+.calendar {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 0 !important;
+    border: 1px solid #cfd8e3 !important;
+    background: white !important;
+}
+
+.day-name {
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: #2f4858 !important;
+    color: white !important;
+
+    border: 1px solid #cfd8e3 !important;
+
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    box-sizing: border-box !important;
+}
+
+.day-name:first-child {
+    color: #ffdddd !important;
+}
+
+.day-name:nth-child(7) {
+    color: #bcdcff !important;
+}
+
+.day {
+    min-height: 195px !important;
+    padding: 12px !important;
+
+    background: white !important;
+    border: 1px solid #cfd8e3 !important;
+
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+.day.empty {
+    min-height: 195px !important;
+    background: rgba(244, 247, 250, 0.65) !important;
+    border: 1px solid #cfd8e3 !important;
+}
+
+.date {
+    font-size: 25px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    margin-bottom: 12px !important;
+}
+
+.day.sun .date {
+    color: red !important;
+}
+
+.day.sat .date {
+    color: #0066cc !important;
+}
+
+/* =========================
+   입력칸
+========================= */
+
+.inputs {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+}
+
+.inputs textarea {
+    width: 100% !important;
+    height: 35px !important;
+    min-height: 35px !important;
+
+    resize: none !important;
+    overflow: hidden !important;
+
+    border: none !important;
+    border-radius: 9px !important;
+    padding: 8px 10px !important;
+
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+
+    box-sizing: border-box !important;
+    color: #243b53 !important;
+    outline: none !important;
+}
+
+.inputs textarea::placeholder {
+    color: #576b7a !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+}
+
+.inputs textarea:focus {
+    box-shadow: 0 0 0 2px rgba(47, 76, 100, 0.25) !important;
+    background: white !important;
+}
+
+/* 칸별 색상 */
+.inputs textarea.doctor {
+    background: #d8e0ea !important;
+}
+
+.inputs textarea.room {
+    background: #c7ddf4 !important;
+}
+
+.inputs textarea.nurse {
+    background: #f1d4df !important;
+}
+
+.inputs textarea.desk {
+    background: #ecd698 !important;
+}
+
+.inputs textarea.therapy {
+    background: #c7e5cf !important;
+}
+
+/* =========================
+   사이드바
+========================= */
+
+.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    margin-left: 2px;
+}
+
+/* =========================
+   인쇄
+========================= */
+
+@page {
     size: A4 landscape;
     margin: 5mm;
 }
@@ -82,7 +315,6 @@ body {
     }
 
     .sidebar,
-    .lunch-box,
     #schedulePrintBtn,
     .top-bar button {
         display: none !important;
@@ -128,16 +360,16 @@ body {
     }
 
     .calendar {
-    width: 287mm !important;
-    height: 190mm !important;
+        width: 287mm !important;
+        height: 190mm !important;
 
-    display: grid !important;
-    grid-template-columns: repeat(7, 1fr) !important;
-    grid-template-rows: 8mm repeat(6, 30.3mm) !important;
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        grid-template-rows: 8mm repeat(6, 30.3mm) !important;
 
-    border: 1px solid #222 !important;
-    overflow: hidden !important;
-}
+        border: 1px solid #222 !important;
+        overflow: hidden !important;
+    }
 
     .day-name {
         height: 8mm !important;
@@ -147,12 +379,12 @@ body {
     }
 
     .day,
-.empty {
-    height: 30.3mm !important;
-    min-height: 0 !important;
-    padding: 2px !important;
-    overflow: hidden !important;
-}
+    .day.empty {
+        height: 30.3mm !important;
+        min-height: 0 !important;
+        padding: 2px !important;
+        overflow: hidden !important;
+    }
 
     .date {
         font-size: 13px !important;
@@ -172,24 +404,4 @@ body {
         padding: 1px 3px !important;
         border-radius: 3px !important;
     }
-
-
-}.lunch-header {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.lunch-title {
-    margin-right: auto;
-}
-
-.lunch-control {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.lunch-legend {
-    display: none !important;
 }

@@ -106,16 +106,7 @@ if (floatingNav) {
     });
 }
 
-let lunchCurrentYear = new Date().getFullYear();
-let lunchCurrentMonth = new Date().getMonth();
 
-const lunchGroups = [
-    ["권", "진영", "도영", "한솔"],
-    ["윤아", "수현", "다은", "유진", "임시", "임시", "임시", "임시", "임시", "임시", "임시"],
-    ["송희", "빈", "예지", "유빈"]
-];
-
-const lunchTimes = ["", "12", "13", "14"];
 
 function getLunchKey(year, month, name, day) {
     return `lunch-${year}-${month}-${name}-${day}`;

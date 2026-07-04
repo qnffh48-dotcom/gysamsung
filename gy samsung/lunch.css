@@ -1,0 +1,984 @@
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800;900&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: url("./marble-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: "Pretendard", sans-serif;
+    overflow-x: auto;
+}
+
+/* 메인 */
+.lunch-main {
+    flex: 1;
+    min-height: 100vh;
+
+    padding: 35px 40px 50px;
+
+    background: transparent;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    overflow-x: auto;
+
+    margin-left: 0 !important;
+    width: auto !important;
+}
+
+/* 전체 래퍼 */
+.lunch-layout {
+    width: 1180px;
+    min-width: 1180px;
+    margin: 0 auto;
+}
+
+/* 카드 */
+.lunch-card {
+    width: 1180px;
+    min-height: 760px;
+
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(6px);
+
+    border-radius: 24px;
+    padding: 42px 38px 34px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.10),
+        inset 0 2px 8px rgba(255,255,255,0.75);
+}
+
+/* 상단 날짜 */
+.lunch-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.lunch-move-btn {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: #2f4c64;
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.18s;
+}
+
+.lunch-move-btn:hover {
+    transform: translateY(-2px);
+    background: #3d6484;
+}
+
+.lunch-date-box {
+    display: flex;
+    gap: 12px;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.lunch-date-box select {
+    height: 44px;
+    min-width: 120px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 12px;
+    background: #eef2f6;
+    font-size: 17px;
+    font-weight: 800;
+    color: #243b53;
+    cursor: pointer;
+}
+
+/* 제목 */
+.lunch-main-title {
+    text-align: center;
+    margin: 0 0 38px;
+    color: #2f4858;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.lunch-sub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.lunch-sub-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    color: #2f4858;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.big-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #d0a45b;
+    display: inline-block;
+}
+
+/* 범례 */
+.lunch-legend {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    color: #2f4858;
+}
+
+/* 테이블 */
+.lunch-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 18px;
+}
+
+.monthly-lunch-table {
+    width: 100%;
+    min-width: 1080px;
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed;
+    overflow: hidden;
+}
+
+.monthly-lunch-table th {
+    height: 38px;
+    background: #dfe5eb;
+    color: #243b53;
+    border: 1px solid #cfd8e3;
+    font-size: 14px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.monthly-lunch-table td {
+    height: 42px;
+    border: 1px solid #d7dee7;
+    text-align: center;
+    background: white;
+    font-size: 14px;
+    font-weight: 800;
+    color: #1f2f3c;
+}
+
+.group-head {
+    width: 90px;
+}
+
+.name-head {
+    width: 90px;
+}
+
+.group-cell {
+    background: #eef3f7 !important;
+    color: #243b53;
+    font-weight: 900;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 2px;
+}
+
+.name-cell {
+    background: #f7f9fb !important;
+    font-weight: 900;
+    color: #243b53;
+}
+
+.day-head {
+    font-size: 13px !important;
+}
+
+.sun {
+    color: #d90000 !important;
+}
+
+.sat {
+    color: #0066cc !important;
+}
+
+.sun-bg {
+    background: #fff5f5 !important;
+}
+
+.sat-bg {
+    background: #f3f8ff !important;
+}
+
+.group-divider td {
+    height: 12px;
+    background: #eef3f7 !important;
+    border-left: none;
+    border-right: none;
+}
+
+/* 점심칸 */
+.lunch-cell {
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.lunch-cell:hover {
+    background: #edf5ff !important;
+    outline: 2px solid #7aa7d9;
+    outline-offset: -2px;
+}
+
+/* 배지 */
+.lunch-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 26px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 900;
+    color: white;
+}
+
+.time-12 {
+    background: #2f80ed !important;
+}
+
+.time-13 {
+    background: #27ae60 !important;
+}
+
+.time-14 {
+    background: #f2994a !important;
+}
+
+/* 안내 */
+.lunch-help {
+    margin: 18px 0 0;
+    color: #6b7d8b;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* 사이드바 */
+.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    margin-left: 2px;
+}.lunch-name-input {
+    width: 72px;
+    height: 30px;
+    border: 1px solid #c7d2df;
+    border-radius: 8px;
+    background: #ffffff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: #243b53;
+    outline: none;
+}
+
+.lunch-name-input:focus {
+    border-color: #2f4c64;
+    box-shadow: 0 0 0 2px rgba(47, 76, 100, 0.15);
+}.lunch-name-input {
+    color: #000 !important;
+}
+
+.name-cell {
+    color: #000 !important;
+}
+
+.name-cell input {
+    color: #000 !important;
+}/* =========================
+   점심표 셀 표시 보정
+========================= */
+
+.lunch-cell {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.lunch-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 24px !important;
+    max-width: 100% !important;
+    height: 22px !important;
+
+    padding: 0 4px !important;
+    border-radius: 7px !important;
+
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+/* 점심시간 */
+.lunch-badge.time-12 {
+    background: #2f80ed !important;
+    color: white !important;
+}
+
+.lunch-badge.time-13 {
+    background: #27ae60 !important;
+    color: white !important;
+}
+
+.lunch-badge.time-14 {
+    background: #f2994a !important;
+    color: white !important;
+}
+
+/* 어시 */
+.lunch-badge.assist-1 {
+    background: #8e44ad !important;
+    color: white !important;
+    min-width: 30px !important;
+    font-size: 10px !important;
+}
+
+.lunch-badge.assist-23 {
+    background: #34495e !important;
+    color: white !important;
+    min-width: 38px !important;
+    font-size: 10px !important;
+}.picker-btn.assist-1 {
+    background: #8e44ad !important;
+    color: white !important;
+}
+
+.picker-btn.assist-23 {
+    background: #34495e !important;
+    color: white !important;
+}/* =========================
+   점심표 칸 직접입력 방식
+========================= */
+
+.lunch-cell {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: white;
+}
+
+.lunch-value-input {
+    width: 100% !important;
+    height: 100% !important;
+
+    border: none !important;
+    outline: none !important;
+
+    background: transparent;
+    color: #111;
+
+    text-align: center;
+    font-size: 11px;
+    font-weight: 900;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    box-sizing: border-box;
+}
+
+.lunch-value-input:focus {
+    background: #fffbe8 !important;
+    box-shadow: inset 0 0 0 2px #2f4858;
+}
+
+.lunch-value-input::placeholder {
+    color: transparent;
+}
+
+/* 색상 */
+.lunch-value-input.time-12,
+.lunch-cell.time-12 {
+    background: #2f80ed !important;
+    color: white !important;
+}
+
+.lunch-value-input.time-13,
+.lunch-cell.time-13 {
+    background: #27ae60 !important;
+    color: white !important;
+}
+
+.lunch-value-input.time-14,
+.lunch-cell.time-14 {
+    background: #f2994a !important;
+    color: white !important;
+}
+
+.lunch-value-input.assist-1,
+.lunch-cell.assist-1 {
+    background: #8e44ad !important;
+    color: white !important;
+}
+
+.lunch-value-input.assist-23,
+.lunch-cell.assist-23 {
+    background: #34495e !important;
+    color: white !important;
+}/* =========================
+   점심표 직접입력 디자인 최종
+========================= */
+
+/* 오래된 팝업 혹시 남아있으면 숨김 */
+.lunch-picker {
+    display: none !important;
+}
+
+/* 셀 기본 */
+.lunch-cell {
+    padding: 2px !important;
+    overflow: hidden !important;
+    background: white !important;
+    position: relative !important;
+}
+
+/* 직접 입력칸 */
+.lunch-value-input {
+    width: 100% !important;
+    height: 24px !important;
+
+    border: none !important;
+    outline: none !important;
+
+    border-radius: 7px !important;
+    background: transparent !important;
+    color: #111 !important;
+
+    text-align: center !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    line-height: 24px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+    font-family: "Pretendard", Arial, sans-serif !important;
+}
+
+/* 빈칸에 마우스 올렸을 때만 살짝 보이게 */
+.lunch-value-input:hover {
+    background: rgba(47, 76, 100, 0.06) !important;
+}
+
+/* 입력 중 */
+.lunch-value-input:focus {
+    background: #fff8dc !important;
+    color: #111 !important;
+    box-shadow: inset 0 0 0 2px #2f4858 !important;
+}
+
+/* 선택된 값 공통 */
+.lunch-value-input.time-12,
+.lunch-value-input.time-13,
+.lunch-value-input.time-14,
+.lunch-value-input.assist-1,
+.lunch-value-input.assist-23 {
+    color: white !important;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.18);
+}
+
+/* 12시 */
+.lunch-value-input.time-12 {
+    background: #2f80ed !important;
+}
+
+/* 13시 */
+.lunch-value-input.time-13 {
+    background: #27ae60 !important;
+}
+
+/* 14시 */
+.lunch-value-input.time-14 {
+    background: #f2994a !important;
+}
+
+/* 1진 어시 */
+.lunch-value-input.assist-1 {
+    background: #8e44ad !important;
+}
+
+/* 2,3진 어시 */
+.lunch-value-input.assist-23 {
+    background: #34495e !important;
+    font-size: 9px !important;
+}
+
+/* 셀 배경은 항상 깔끔하게 유지 */
+.lunch-cell.time-12,
+.lunch-cell.time-13,
+.lunch-cell.time-14,
+.lunch-cell.assist-1,
+.lunch-cell.assist-23 {
+    background: white !important;
+}
+
+/* 이름 입력칸 */
+.lunch-name-input {
+    width: 72px !important;
+    height: 28px !important;
+
+    border: 1px solid #cbd8e3 !important;
+    border-radius: 8px !important;
+
+    background: white !important;
+    color: #000 !important;
+
+    text-align: center !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+
+    outline: none !important;
+}
+
+.lunch-name-input:focus {
+    border-color: #2f4858 !important;
+    box-shadow: 0 0 0 2px rgba(47, 76, 100, 0.16) !important;
+}
+
+/* 안내문 디자인 */
+.lunch-help {
+    margin-top: 16px !important;
+    color: #5f7180 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}/* =========================
+   점심표 클릭 배지 방식 복구
+========================= */
+
+.lunch-value-input {
+    display: none !important;
+}
+
+.lunch-picker {
+    display: none !important;
+}
+
+.lunch-cell {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: white !important;
+    cursor: pointer !important;
+    user-select: none !important;
+}
+
+.lunch-cell:hover {
+    background: #eef6ff !important;
+    outline: 2px solid rgba(47, 76, 100, 0.22);
+    outline-offset: -2px;
+}
+
+.lunch-badge {
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 0 !important;
+
+    color: white !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+.lunch-badge.time-12,
+.lunch-cell.time-12 {
+    background: #2f80ed !important;
+}
+
+.lunch-badge.time-13,
+.lunch-cell.time-13 {
+    background: #27ae60 !important;
+}
+
+.lunch-badge.time-14,
+.lunch-cell.time-14 {
+    background: #f2994a !important;
+}
+
+.lunch-badge.assist-1,
+.lunch-cell.assist-1 {
+    background: #8e44ad !important;
+}
+
+.lunch-badge.assist-23,
+.lunch-cell.assist-23 {
+    background: #34495e !important;
+}
+
+.lunch-name-input {
+    width: 72px !important;
+    height: 28px !important;
+
+    border: 1px solid #cbd8e3 !important;
+    border-radius: 8px !important;
+
+    background: white !important;
+    color: #000 !important;
+
+    text-align: center !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+
+    outline: none !important;
+}
+
+.lunch-name-input:focus {
+    border-color: #2f4858 !important;
+    box-shadow: 0 0 0 2px rgba(47, 76, 100, 0.16) !important;
+}/* =========================
+   점심표 UI 정리
+========================= */
+
+/* 범례 */
+.lunch-legend {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.lunch-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 13px;
+    font-weight: 900;
+    color: #2f4858;
+}
+
+.lunch-legend-badge {
+    min-width: 34px;
+    height: 22px;
+    padding: 0 8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.lunch-legend-badge.time-12 {
+    background: #2f80ed;
+}
+
+.lunch-legend-badge.time-13 {
+    background: #27ae60;
+}
+
+.lunch-legend-badge.time-14 {
+    background: #f2994a;
+}
+
+.lunch-legend-badge.assist-1 {
+    background: #8e44ad;
+}
+
+.lunch-legend-badge.assist-23 {
+    background: #34495e;
+}
+
+/* 설명문 */
+.lunch-guide {
+    margin: 0 0 18px;
+    padding: 12px 16px;
+
+    background: #f4f8fb;
+    border: 1px solid #d8e3ec;
+    border-radius: 12px;
+
+    color: #5e7283;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+/* 셀 */
+.lunch-cell {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: white !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    position: relative !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.lunch-cell:hover {
+    background: #eef6ff !important;
+    outline: 2px solid rgba(47, 76, 100, 0.18);
+    outline-offset: -2px;
+}
+
+/* 선택된 칸 */
+.lunch-cell.selected-cell {
+    outline: 3px solid #2f4858 !important;
+    outline-offset: -3px;
+}
+
+/* 배지 */
+.lunch-badge {
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 0 !important;
+
+    color: white !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    text-align: center !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.2px;
+}
+
+/* 특히 23진 더 가운데/더 보기 좋게 */
+.lunch-badge.assist-23 {
+    font-size: 9px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    letter-spacing: -0.4px;
+}
+
+/* 색상 */
+.lunch-badge.time-12,
+.lunch-cell.time-12 {
+    background: #2f80ed !important;
+}
+
+.lunch-badge.time-13,
+.lunch-cell.time-13 {
+    background: #27ae60 !important;
+}
+
+.lunch-badge.time-14,
+.lunch-cell.time-14 {
+    background: #f2994a !important;
+}
+
+.lunch-badge.assist-1,
+.lunch-cell.assist-1 {
+    background: #8e44ad !important;
+}
+
+.lunch-badge.assist-23,
+.lunch-cell.assist-23 {
+    background: #34495e !important;
+}/* =========================
+   점심표 칸 경계선 고정
+========================= */
+
+.monthly-lunch-table {
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+}
+
+.monthly-lunch-table th,
+.monthly-lunch-table td {
+    border: 1px solid #d7dee7 !important;
+}
+
+.lunch-cell {
+    border: 1px solid #d7dee7 !important;
+    background-clip: padding-box !important;
+    box-shadow: none !important;
+}
+
+/* 선택된 칸 표시: border 대신 안쪽 그림자로 처리 */
+.lunch-cell.selected-cell {
+    outline: none !important;
+    box-shadow: inset 0 0 0 2px #2f4858 !important;
+}
+
+/* 빈칸 hover 해도 선 유지 */
+.lunch-cell:hover {
+    outline: none !important;
+    box-shadow: inset 0 0 0 2px rgba(47, 76, 100, 0.25) !important;
+}
+
+/* 값 있는 칸도 테두리 유지 */
+.lunch-cell.time-12,
+.lunch-cell.time-13,
+.lunch-cell.time-14,
+.lunch-cell.assist-1,
+.lunch-cell.assist-23 {
+    border: 1px solid #d7dee7 !important;
+}
+
+/* 배지는 칸 안에서만 꽉 차게 */
+.lunch-badge {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+}/* =========================
+   2진 / 1진 배지 정렬 최종 리셋
+========================= */
+
+.monthly-lunch-table td.lunch-cell {
+    position: relative !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.monthly-lunch-table td.lunch-cell .lunch-badge {
+    position: static !important;
+    inset: auto !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    min-width: 0 !important;
+    max-width: none !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+    vertical-align: middle !important;
+
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    transform: none !important;
+    transform-origin: center center !important;
+
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+}
+
+/* 1진 */
+.monthly-lunch-table td.lunch-cell .lunch-badge.assist-1 {
+    background: #8e44ad !important;
+    color: white !important;
+}
+
+/* 2진 */
+.monthly-lunch-table td.lunch-cell .lunch-badge.assist-23 {
+    background: #34495e !important;
+    color: white !important;
+    font-size: 10px !important;
+    letter-spacing: 0 !important;
+    transform: none !important;
+}
+
+/* 셀 배경 */
+.monthly-lunch-table td.lunch-cell.assist-1 {
+    background: #8e44ad !important;
+}
+
+.monthly-lunch-table td.lunch-cell.assist-23 {
+    background: #34495e !important;
+}/* =========================
+   점심표 드래그 복사
+========================= */
+
+.monthly-lunch-table,
+.lunch-cell,
+.lunch-badge {
+    user-select: none !important;
+}
+
+.lunch-cell.drag-copy-target {
+    box-shadow: inset 0 0 0 2px #111 !important;
+}
