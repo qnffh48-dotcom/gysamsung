@@ -8,7 +8,8 @@ import {
     getDoc,
     getDocFromServer,
     collection,
-    getDocs
+    getDocs,
+    serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -32,10 +33,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
-
 const auth = getAuth(app);
+
 await setPersistence(auth, browserLocalPersistence);
 
 export {
@@ -48,6 +48,7 @@ export {
     getDocFromServer,
     collection,
     getDocs,
+    serverTimestamp,
 
     signInWithEmailAndPassword,
     onAuthStateChanged,

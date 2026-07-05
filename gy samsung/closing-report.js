@@ -1096,4 +1096,14 @@ function observeReportTables() {
 document.addEventListener("DOMContentLoaded", () => {
     initQuickReportButtons();
     observeReportTables();
-});
+});const floatingReportNav = document.querySelector(".sidebar .nav");
+
+if (floatingReportNav) {
+    window.addEventListener("scroll", () => {
+        const targetY = window.scrollY;
+
+        requestAnimationFrame(() => {
+            floatingReportNav.style.transform = `translateY(${targetY}px)`;
+        });
+    });
+}

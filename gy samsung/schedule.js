@@ -45,12 +45,25 @@ async function saveOneTextarea(ta) {
 async function loadAllSchedules() {
   const textareas = [...document.querySelectorAll("textarea[data-date]")];
 
+  // 달력이 아직 안 그려졌으면 아주 짧게 재시도
+  if (!textareas.length) {
+    clearTimeout(window.scheduleFirstLoadTimer);
+    window.scheduleFirstLoadTimer = setTimeout(loadAllSchedules, 50);
+    return;
+  }
+
   const dates = [...new Set(textareas.map(ta => ta.dataset.date))];
 
-  for (const date of dates) {
-    const snap = await getDoc(doc(db, hospitalCollection("schedules"), date));
+  // 날짜별 getDoc을 동시에 실행해서 속도 개선
+  const snaps = await Promise.all(
+    dates.map(async date => {
+      const snap = await getDoc(doc(db, hospitalCollection("schedules"), date));
+      return { date, snap };
+    })
+  );
 
-    if (!snap.exists()) continue;
+  snaps.forEach(({ date, snap }) => {
+    if (!snap.exists()) return;
 
     const data = snap.data();
 
@@ -62,6 +75,12 @@ async function loadAllSchedules() {
 
         ta.value = data[key] || "";
       });
+  });
+
+  try {
+    await loadMakerOffSchedulesToMainSchedule();
+  } catch (error) {
+    console.error("스케줄 생성기 휴무 반영 실패:", error);
   }
 
   console.log("전체 불러오기 완료");
@@ -79,14 +98,21 @@ document.addEventListener("input", function (e) {
 });
 
 // 페이지 열 때 불러오기
-window.addEventListener("load", loadAllSchedules);
+function reloadSchedulesSoon(delay = 50) {
+  clearTimeout(window.scheduleReloadTimer);
+
+  window.scheduleReloadTimer = setTimeout(() => {
+    loadAllSchedules();
+  }, delay);
+}
+
+// 페이지 열 때 여러 번 안전하게 시도
+document.addEventListener("DOMContentLoaded", () => reloadSchedulesSoon(50));
+window.addEventListener("load", () => reloadSchedulesSoon(100));
+setTimeout(loadAllSchedules, 200);
 // 달력 DOM이 바뀔 때마다 다시 불러오기
 const observer = new MutationObserver(() => {
-  clearTimeout(window.loadTimer);
-
-  window.loadTimer = setTimeout(() => {
-    loadAllSchedules();
-  }, 100);
+  reloadSchedulesSoon(50);
 });
 
 observer.observe(document.body, {
@@ -105,8 +131,112 @@ if (floatingNav) {
         });
     });
 }
+const makerDepartmentMap = {
+    radiology: "room",
+    nurse: "nurse",
+    desk: "desk",
+    therapy: "therapy"
+};
 
+function cleanOffWorkerName(name) {
+    return String(name || "")
+        .replace("(휴가)", "")
+        .replace("(want)", "")
+        .trim();
+}
+function normalizeDateKey(value) {
+    if (!value) return "";
 
+    const parts = String(value).split("-");
+    if (parts.length !== 3) return String(value);
+
+    const [y, m, d] = parts;
+
+    return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+}
+function getCurrentScheduleMonthKey() {
+    const textareas = [...document.querySelectorAll("textarea[data-date]")];
+
+    const monthCount = {};
+
+    textareas.forEach(ta => {
+        const normalized = normalizeDateKey(ta.dataset.date);
+        if (!normalized) return;
+
+        const monthKey = normalized.slice(0, 7);
+        monthCount[monthKey] = (monthCount[monthKey] || 0) + 1;
+    });
+
+    const monthKey = Object.entries(monthCount)
+        .sort((a, b) => b[1] - a[1])[0]?.[0];
+
+    if (!monthKey) {
+        return null;
+    }
+
+    const [year, month] = monthKey.split("-").map(Number);
+
+    return {
+        year,
+        month,
+        monthKey
+    };
+}
+
+async function loadMakerOffSchedulesToMainSchedule() {
+    const textareas = [...document.querySelectorAll("textarea[data-date]")];
+
+    if (!textareas.length) return;
+
+    const current = getCurrentScheduleMonthKey();
+    if (!current) return;
+
+    const { year, month, monthKey } = current;
+
+    for (const department of Object.keys(makerDepartmentMap)) {
+        const field = makerDepartmentMap[department];
+        const docId = `${monthKey}_${department}`;
+
+        const snap = await getDoc(
+            doc(db, hospitalCollection("scheduleMakers"), docId)
+        );
+
+        if (!snap.exists()) continue;
+
+        const data = snap.data();
+        const rows = Array.isArray(data.rows) ? data.rows : [];
+
+        rows.forEach(row => {
+            if (!row.isTargetMonth) return;
+            if (!row.dateKey) return;
+
+            const offWorkers = Array.isArray(row.offWorkers)
+                ? row.offWorkers.map(cleanOffWorkerName).filter(Boolean)
+                : [];
+
+            const textarea = textareas.find(ta => {
+                return ta.classList.contains(field)
+                    && normalizeDateKey(ta.dataset.date) === row.dateKey;
+            });
+
+            if (!textarea) return;
+
+            const newValue = offWorkers.join(", ");
+
+if (!newValue) return;
+
+// 방과(room)는 기존 값이 있어도 스케줄 생성기 값을 우선 반영
+// 나머지 과는 직접 저장된 값이 있으면 덮어쓰지 않음
+if (textarea.value.trim() && field !== "room") return;
+
+textarea.value = newValue;
+
+textarea.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+    }
+
+    console.log("스케줄 생성기 휴무 자동 반영 완료:", year, month);
+}
 
 function getLunchKey(year, month, name, day) {
     return `lunch-${year}-${month}-${name}-${day}`;

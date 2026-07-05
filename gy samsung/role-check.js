@@ -23,7 +23,8 @@ const pageMap = {
     "closing.html": "closing",
     "closing-report.html": "closingReport",
     "stats.html": "stats",
-    "purchase.html": "purchase"
+    "purchase.html": "purchase",
+    "schedule-maker.html": "schedule",
 };
 
 /* 계정별 권한 */

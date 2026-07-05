@@ -1,0 +1,456 @@
+/* schedule-maker.css */
+:root {
+    --maker-bg: #f6f3ea;
+    --maker-card: #fffdf8;
+    --maker-line: #e3d8bd;
+    --maker-gold: #b89b5e;
+    --maker-deep: #2b2418;
+    --maker-muted: #7a715f;
+    --maker-danger: #b84b4b;
+}
+
+body {
+    background: url("./marble-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.schedule-maker-page {
+    flex: 1;
+    padding: 45px 70px;
+    min-height: 100vh;
+    color: var(--maker-deep);
+    background: transparent;
+}
+
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.eyebrow {
+    margin: 0 0 6px;
+    color: var(--maker-gold);
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -1px;
+}
+
+.page-desc {
+    margin: 8px 0 0;
+    color: var(--maker-muted);
+    font-size: 14px;
+}
+
+.department-tabs-wrap {
+    width: 100%;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: white;
+    border-radius: 22px;
+    padding: 18px 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.department-tabs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.department-tab {
+    min-width: 120px;
+    height: 46px;
+    border: none;
+    border-radius: 999px;
+    background: #f4f6f8;
+    color: #2f4858;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.16s ease;
+}
+
+.department-tab:hover {
+    transform: translateY(-2px);
+    background: #eef3f7;
+}
+
+.department-tab.active {
+    background: #2f4858;
+    color: white;
+    box-shadow: 0 8px 18px rgba(47,72,88,0.22);
+}
+
+.active-department-label {
+    color: #6b7280;
+    font-size: 15px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.active-department-label strong {
+    color: #2f4858;
+    font-size: 18px;
+}
+
+.hidden-department-select {
+    display: none;
+}
+
+.header-actions,
+.button-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.maker-card {
+    background: white;
+    border: none;
+    border-radius: 22px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.maker-card h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+}
+
+.maker-card h3 {
+    margin: 20px 0 10px;
+    font-size: 15px;
+}
+
+.top-grid,
+.employee-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--maker-muted);
+}
+
+input, select {
+    height: 40px;
+    border: 1px solid var(--maker-line);
+    border-radius: 10px;
+    padding: 0 11px;
+    background: #fff;
+    color: var(--maker-deep);
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: var(--maker-gold);
+    box-shadow: 0 0 0 3px rgba(184, 155, 94, 0.16);
+}
+
+.day-row {
+    display: grid;
+    grid-template-columns: 86px repeat(3, minmax(120px, 1fr)) 2fr;
+    gap: 12px;
+    align-items: start;
+    padding: 14px 0;
+    border-bottom: 1px solid #eee5d2;
+}
+
+.day-row:last-child {
+    border-bottom: 0;
+}
+
+.day-title {
+    padding-top: 28px;
+    font-weight: 900;
+    color: var(--maker-deep);
+}
+
+.fixed-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.fixed-members label,
+.vacation-days label {
+    flex-direction: row;
+    align-items: center;
+    font-weight: 600;
+    color: var(--maker-deep);
+}
+
+.fixed-members input,
+.vacation-days input {
+    width: 16px;
+    height: 16px;
+}
+
+.hint {
+    margin: -6px 0 14px;
+    color: var(--maker-muted);
+    font-size: 13px;
+}
+
+.want-person {
+    display: grid;
+    grid-template-columns: 120px 220px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.want-person-name,
+.vacation-name {
+    font-weight: 900;
+}
+
+.vacation-person {
+    padding: 14px 0;
+    border-bottom: 1px solid #eee5d2;
+}
+
+.vacation-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-top: 10px;
+}
+
+.sunday, .sun {
+    color: #c94f4f !important;
+}
+
+.saturday, .sat {
+    color: #3f6fb5 !important;
+}
+
+.other-month-label {
+    opacity: 0.38;
+}
+
+.sticky-actions {
+    position: sticky;
+    bottom: 14px;
+    z-index: 20;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--maker-line);
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 18px;
+}
+
+.primary-btn,
+.sub-btn,
+.danger-btn,
+.button-row button {
+    border: 0;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.primary-btn {
+    background: #2f4858;
+    color: #fff;
+}
+
+.sub-btn {
+    background: #eef3f7;
+    color: #2f4858;
+}
+
+.danger-btn {
+    background: #f3d8d8;
+    color: var(--maker-danger);
+}
+
+.save-status {
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.save-status.success { color: #2f8754; }
+.save-status.error { color: var(--maker-danger); }
+.save-status.loading { color: var(--maker-gold); }
+
+.calendar-wrap {
+    overflow-x: auto;
+}
+
+.calendar-table,
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.calendar-table th,
+.calendar-table td,
+.summary-table th,
+.summary-table td {
+    border: 1px solid #e5dcc8;
+    padding: 10px;
+    vertical-align: top;
+}
+
+.calendar-table th,
+.summary-table th {
+    background: #eef3f7;
+    font-size: 13px;
+}
+
+.calendar-table td {
+    min-width: 148px;
+    height: 118px;
+}
+
+.other-month {
+    background: #f8fafc;
+    opacity: 0.55;
+}
+
+.date-line {
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.worker-line,
+.off-line {
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 8px;
+}
+
+.worker-label {
+    color: #2f8754;
+    font-weight: 900;
+}
+
+.off-label {
+    color: #8b6f36;
+    font-weight: 900;
+}
+
+.warning,
+.warning-box {
+    color: var(--maker-danger);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.vacation-mark {
+    color: #c94f4f;
+    font-weight: 900;
+}
+
+.want-mark {
+    color: #a47c20;
+    font-weight: 900;
+}
+
+.balance-box,
+.warning-box {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #f7f1e2;
+}
+
+.balance-plus { color: #c94f4f; font-weight: 900; }
+.balance-minus { color: #2f8754; font-weight: 900; }
+
+@media (max-width: 1100px) {
+    .top-grid,
+    .employee-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+    }
+
+    .day-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .day-title {
+        padding-top: 0;
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 760px) {
+    .schedule-maker-page {
+        padding: 22px;
+    }
+
+    .page-header,
+    .department-tabs-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .top-grid,
+    .employee-grid,
+    .day-row,
+    .want-person {
+        grid-template-columns: 1fr;
+    }
+}
+#yearInput,
+#monthInput,
+#employeeCount,
+#departmentSelect {
+    display: block !important;
+    width: 100% !important;
+    height: 42px !important;
+    padding: 0 14px !important;
+
+    background: #fff !important;
+    color: #111 !important;
+
+    border: 1px solid #d8c3a5 !important;
+    border-radius: 10px !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+    appearance: auto !important;
+}/* 스케줄 생성 페이지 사이드바 메뉴 스무스 따라오기 */
+body:has(.schedule-maker-page) .sidebar .nav {
+    position: absolute !important;
+    top: 220px !important;
+    left: 0 !important;
+    width: 240px !important;
+    z-index: 999 !important;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
