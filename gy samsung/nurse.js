@@ -332,9 +332,10 @@ function loadWorkDayData(date) {
 function saveWorkDayData(date, data) {
     localStorage.setItem(getWorkStorageKey(date), JSON.stringify(data));
 }
+
+
 function makeHourOptions(selectedTime = "") {
     const selectedHour = selectedTime ? selectedTime.split(":")[0] : "";
-
     let html = `<option value="">시</option>`;
 
     for (let h = 6; h <= 22; h++) {
@@ -347,7 +348,6 @@ function makeHourOptions(selectedTime = "") {
 
 function makeMinuteOptions(selectedTime = "") {
     const selectedMinute = selectedTime ? selectedTime.split(":")[1] : "";
-
     let html = `<option value="">분</option>`;
 
     for (let m = 0; m < 60; m += 10) {
@@ -356,6 +356,15 @@ function makeMinuteOptions(selectedTime = "") {
     }
 
     return html;
+}
+
+function getSelectedTime(name, type) {
+    const hour = document.querySelector(`[data-name="${name}"][data-type="${type}Hour"]`)?.value;
+    const minute = document.querySelector(`[data-name="${name}"][data-type="${type}Minute"]`)?.value;
+
+    if (!hour || !minute) return "";
+
+    return `${hour}:${minute}`;
 }
 function renderWorkDaily() {
     const workDate = document.getElementById("workDate");
@@ -374,46 +383,46 @@ function renderWorkDaily() {
         dailyBody.innerHTML += `
             <tr>
                 <td>
-    <input class="work-name-input" value="${name}" data-old-name="${name}">
-</td>
+                    <input class="work-name-input" value="${name}" data-old-name="${name}">
+                </td>
 
-<td>
-    <div class="work-time-group">
-        <select data-name="${name}" data-type="startHour">
-            ${makeHourOptions(row.start || "")}
-        </select>
-        <select data-name="${name}" data-type="startMinute">
-            ${makeMinuteOptions(row.start || "")}
-        </select>
-    </div>
-</td>
+                <td>
+                    <div class="work-time-group">
+                        <select data-name="${name}" data-type="startHour">
+                            ${makeHourOptions(row.start || "")}
+                        </select>
+                        <select data-name="${name}" data-type="startMinute">
+                            ${makeMinuteOptions(row.start || "")}
+                        </select>
+                    </div>
+                </td>
 
-<td>
-    <select data-name="${name}" data-type="lunch">
-        <option value="0" ${Number(row.lunch || 0) === 0 ? "selected" : ""}>0</option>
-        <option value="10" ${Number(row.lunch || 0) === 10 ? "selected" : ""}>10</option>
-        <option value="20" ${Number(row.lunch || 0) === 20 ? "selected" : ""}>20</option>
-        <option value="30" ${Number(row.lunch || 0) === 30 ? "selected" : ""}>30</option>
-        <option value="40" ${Number(row.lunch || 0) === 40 ? "selected" : ""}>40</option>
-        <option value="50" ${Number(row.lunch || 0) === 50 ? "selected" : ""}>50</option>
-        <option value="60" ${Number(row.lunch || 0) === 60 ? "selected" : ""}>60</option>
-    </select>
-</td>
+                <td>
+                    <select data-name="${name}" data-type="lunch">
+                        <option value="0" ${Number(row.lunch || 0) === 0 ? "selected" : ""}>0</option>
+                        <option value="10" ${Number(row.lunch || 0) === 10 ? "selected" : ""}>10</option>
+                        <option value="20" ${Number(row.lunch || 0) === 20 ? "selected" : ""}>20</option>
+                        <option value="30" ${Number(row.lunch || 0) === 30 ? "selected" : ""}>30</option>
+                        <option value="40" ${Number(row.lunch || 0) === 40 ? "selected" : ""}>40</option>
+                        <option value="50" ${Number(row.lunch || 0) === 50 ? "selected" : ""}>50</option>
+                        <option value="60" ${Number(row.lunch || 0) === 60 ? "selected" : ""}>60</option>
+                    </select>
+                </td>
 
-<td>
-    <div class="work-time-group">
-        <select data-name="${name}" data-type="endHour">
-            ${makeHourOptions(row.end || "")}
-        </select>
-        <select data-name="${name}" data-type="endMinute">
-            ${makeMinuteOptions(row.end || "")}
-        </select>
-    </div>
-</td>
+                <td>
+                    <div class="work-time-group">
+                        <select data-name="${name}" data-type="endHour">
+                            ${makeHourOptions(row.end || "")}
+                        </select>
+                        <select data-name="${name}" data-type="endMinute">
+                            ${makeMinuteOptions(row.end || "")}
+                        </select>
+                    </div>
+                </td>
 
-<td>
-    <input type="checkbox" data-name="${name}" data-type="off" ${row.off ? "checked" : ""}>
-</td>
+                <td>
+                    <input type="checkbox" data-name="${name}" data-type="off" ${row.off ? "checked" : ""}>
+                </td>
 
                 <td id="ot-${name}" class="work-ot-cell">${row.ot || 0}</td>
                 <td id="early-${name}" class="work-early-cell">${row.early || 0}</td>
@@ -450,26 +459,37 @@ function changeWorkEmployeeName(e) {
 
 function updateWorkCalc() {
     employees.forEach(name => {
-        const startInput = document.querySelector(`[data-name="${name}"][data-type="start"]`);
+        const startHour = document.querySelector(`[data-name="${name}"][data-type="startHour"]`);
+        const startMinute = document.querySelector(`[data-name="${name}"][data-type="startMinute"]`);
+        const endHour = document.querySelector(`[data-name="${name}"][data-type="endHour"]`);
+        const endMinute = document.querySelector(`[data-name="${name}"][data-type="endMinute"]`);
         const lunchInput = document.querySelector(`[data-name="${name}"][data-type="lunch"]`);
-        const endInput = document.querySelector(`[data-name="${name}"][data-type="end"]`);
         const offInput = document.querySelector(`[data-name="${name}"][data-type="off"]`);
 
-        if (!startInput || !lunchInput || !endInput || !offInput) return;
+        if (!startHour || !startMinute || !endHour || !endMinute || !lunchInput || !offInput) return;
 
-        startInput.disabled = offInput.checked;
-        lunchInput.disabled = offInput.checked;
-        endInput.disabled = offInput.checked;
+        const disabled = offInput.checked;
 
-        if (offInput.checked) {
-            startInput.value = "";
+        startHour.disabled = disabled;
+        startMinute.disabled = disabled;
+        endHour.disabled = disabled;
+        endMinute.disabled = disabled;
+        lunchInput.disabled = disabled;
+
+        if (disabled) {
+            startHour.value = "";
+            startMinute.value = "";
+            endHour.value = "";
+            endMinute.value = "";
             lunchInput.value = "0";
-            endInput.value = "";
         }
 
+        const start = getSelectedTime(name, "start");
+        const end = getSelectedTime(name, "end");
+
         const result = calcWorkTime(
-            startInput.value,
-            endInput.value,
+            start,
+            end,
             lunchInput.value,
             offInput.checked
         );
@@ -484,24 +504,25 @@ function saveWorkDay(showAlert = true) {
     const data = {};
 
     employees.forEach(name => {
-        const startInput = document.querySelector(`[data-name="${name}"][data-type="start"]`);
         const lunchInput = document.querySelector(`[data-name="${name}"][data-type="lunch"]`);
-        const endInput = document.querySelector(`[data-name="${name}"][data-type="end"]`);
         const offInput = document.querySelector(`[data-name="${name}"][data-type="off"]`);
 
-        if (!startInput || !lunchInput || !endInput || !offInput) return;
+        if (!lunchInput || !offInput) return;
+
+        const start = getSelectedTime(name, "start");
+        const end = getSelectedTime(name, "end");
 
         const result = calcWorkTime(
-            startInput.value,
-            endInput.value,
+            start,
+            end,
             lunchInput.value,
             offInput.checked
         );
 
         data[name] = {
-            start: startInput.value,
+            start,
             lunch: lunchInput.value,
-            end: endInput.value,
+            end,
             off: offInput.checked,
             ot: result.ot,
             early: result.early,
