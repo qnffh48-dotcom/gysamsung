@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>물리치료</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="therapy.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+
+        <button onclick="location.href='index.html'">
+            <span class="gold-dot"></span>
+            홈
+            <img src="house.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='schedule.html'">
+            <span class="gold-dot"></span>
+            스케줄
+            <img src="calendar-check.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='stats.html'">
+            <span class="gold-dot"></span>
+            통계
+            <img src="chart-column-increasing.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='closing.html'">
+            <span class="gold-dot"></span>
+            마감일지
+            <img src="notebook-pen.png" class="nav-img-icon">
+        </button>
+
+    </div>
+
+</div>
+
+<main class="therapy-main">
+
+    
+
+        
+
+    <div class="therapy-top-tabs">
+
+        <button class="therapy-top-tab active" data-tab="therapy-main-page">
+            마감일지
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp1">
+            pt1
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp2">
+            pt2
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp3">
+            pt3
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp4">
+            pt4
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp5">
+            pt5
+        </button>
+
+    </div>
+
+    <div class="therapy-top-page active" id="therapy-main-page">
+
+        <section class="therapy-section">
+
+<div class="therapy-date-bar">
+        <button class="therapy-date-btn" id="prevDay">◀</button>
+
+        <div class="therapy-date-box">
+
+            <select id="therapyYear"></select>
+            <select id="therapyMonth"></select>
+            <select id="therapyDay"></select>
+        </div>
+
+        <button class="therapy-date-btn" id="nextDay">▶</button>
+    </div>
+            <h1 class="therapy-title">
+                물리치료 마감일지
+            </h1>
+
+            <div class="therapy-layout">
+
+                <div class="therapy-tabs">
+
+                    <button class="therapy-tab active"
+                        onclick="openTherapyRoom(event, 'therapyRoom1')">
+                        1 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom2')">
+                        2 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom3')">
+                        3 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom4')">
+                        4 진료실
+                    </button>
+
+                    <button class="therapy-tab"
+                        onclick="openTherapyRoom(event, 'therapyRoom5')">
+                        5 진료실
+                    </button>
+
+                </div>
+
+                <div class="therapy-card">
+
+                    <div id="therapyRoom1" class="therapy-page active"></div>
+                    <div id="therapyRoom2" class="therapy-page"></div>
+                    <div id="therapyRoom3" class="therapy-page"></div>
+                    <div id="therapyRoom4" class="therapy-page"></div>
+                    <div id="therapyRoom5" class="therapy-page"></div>
+
+                </div>
+
+                <div class="therapy-reservation-box">
+
+                    <h3>
+                        <span class="big-dot"></span>
+                        예약환자 내원 정보
+                    </h3>
+
+                    <table class="therapy-table">
+
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>예약</th>
+                                <th>변경</th>
+                                <th>취소</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>도수</td>
+                                <td>
+                                    <input type="number" id="therapyReserve" value="0"
+                                        oninput="saveReservationInput('도수', '예약', this.value)">
+                                </td>
+                                <td>
+                                    <input type="number" id="therapyChange" value="0"
+                                        oninput="saveReservationInput('도수', '변경', this.value)">
+                                </td>
+                                <td>
+                                    <input type="number" id="therapyCancel" value="0"
+                                        oninput="saveReservationInput('도수', '취소', this.value)">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>충격파</td>
+                                <td>
+                                    <input type="number" id="shockReserve" value="0"
+                                        oninput="saveReservationInput('충격파', '예약', this.value)">
+                                </td>
+                                <td>
+                                    <input type="number" id="shockChange" value="0"
+                                        oninput="saveReservationInput('충격파', '변경', this.value)">
+                                </td>
+                                <td>
+                                    <input type="number" id="shockCancel" value="0"
+                                        oninput="saveReservationInput('충격파', '취소', this.value)">
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div class="therapy-top-page" id="therapy-temp1"></div>
+    <div class="therapy-top-page" id="therapy-temp2"></div>
+    <div class="therapy-top-page" id="therapy-temp3"></div>
+    <div class="therapy-top-page" id="therapy-temp4"></div>
+    <div class="therapy-top-page" id="therapy-temp5"></div>
+
+</main>
+
+<script type="module" src="therapy.js"></script>
+<script type="module" src="role-check.js"></script>
+
+</body>
+</html>

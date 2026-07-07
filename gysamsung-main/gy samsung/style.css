@@ -1,0 +1,1092 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background:
+    url("././marble-bg.jpg");
+
+background-size: cover;
+
+background-position: center;
+
+
+    font-family: Arial, sans-serif;
+    overflow-x: auto;
+    min-width: 1450px;
+     position: relative;
+}
+
+body {
+    display: flex;
+    align-items: stretch;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    height: auto;
+    background: #5b6670;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar .logo {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #5b6670;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar .logo img {
+    width: 220px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.nav button {
+    width: 100%;
+    height: 54px;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: #f5f3ef;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    padding-left: 18px;
+    cursor: pointer;
+    white-space: normal;
+    line-height: 1.25;
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        color 0.18s ease;
+}
+
+.nav button:hover {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    transform: translateX(4px);
+}
+
+.gold-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #8b7d6b;
+}
+
+/* 메인 공통 */
+.main {
+    flex: 1;
+    padding: 45px 70px;
+    background: transparent;
+}
+
+.top-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #111;
+    margin-bottom: 70px;
+}
+
+.top-info strong {
+    display: block;
+    font-size: 38px;
+    margin-top: 10px;
+}
+
+/* 공지 */
+.notice-card {
+    width: calc(100vw - 520px);
+
+    max-width: 1200px;
+
+    min-width: 700px;
+
+    margin: 0 auto;
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 42px 52px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 25px;
+}
+
+.notice-header h1 {
+    margin: 0;
+    font-size: 34px;
+    color: #111;
+}
+
+.notice-header button {
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+.notice-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    background: #d8c3a5;
+    border-radius: 50%;
+}
+
+.notice-item p {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.notice-item em {
+    font-style: normal;
+    font-size: 20px;
+    color: #666;
+    text-align: right;
+}
+
+.notice-text {
+    flex: 1;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    font-size: 22px;
+    font-weight: bold;
+    background: transparent;
+    font-family: Arial;
+    min-height: 35px;
+}
+
+.notice-date {
+    border: none;
+    outline: none;
+    background: transparent;
+    text-align: right;
+    font-size: 20px;
+    color: #666;
+}
+
+.add-notice-btn {
+    border: none;
+    background: #2c3e50;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.notice-delete {
+    border: none;
+    background: #f1f1f1;
+    color: #555;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* 오늘 스케줄 */
+.today-card {
+    width: min(1380px, calc(100vw - 140px));
+
+    margin: 34px auto 0;
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 38px 52px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.today-card h2 {
+    margin: 0 0 24px;
+    color: #2c3e50;
+}
+
+.today-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+}
+
+.today-list div {
+    background: #f4f6f8;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.today-list strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.today-list span {
+    font-weight: bold;
+}
+
+/* 대시보드 */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.top-menu,
+.bottom-menu {
+    display: flex;
+    justify-content: center;
+}
+
+.top-menu {
+    gap: 40px;
+}
+
+.bottom-menu {
+    align-items: center;
+    gap: 80px;
+    margin-top: 40px;
+}
+
+.square {
+    width: 180px;
+    height: 140px;
+    border-radius: 30px;
+}
+
+.circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 매뉴얼 */
+.manual-section {
+    margin-top: 35px;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.manual-header {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2f4858;
+    margin-bottom: 28px;
+}
+
+.manual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.manual-card {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 20px;
+    cursor: pointer;
+    transition: 0.15s;
+     position: relative;
+}
+
+.manual-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    background: white;
+}
+
+.manual-card h3 {
+    margin: 14px 0 10px;
+    font-size: 19px;
+    color: #2f4858;
+}
+
+.manual-card p {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.manual-tag,
+.manual-tag-input {
+    display: inline-block;
+    width: 80px;
+    border: none;
+    outline: none;
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: #dbeafe;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.manual-title-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    margin: 14px 0 10px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #2f4858;
+}
+
+.manual-desc-input {
+    width: 100%;
+    height: 38px;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-size: 14px;
+    color: #6b7280;
+    font-family: Arial;
+}
+
+.manual-title-input:focus,
+.manual-desc-input:focus {
+    background: #f1f5f9;
+    border-radius: 8px;
+}
+
+.manual-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.22s;
+}
+
+.manual-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.manual-modal-box {
+    width: 700px;
+    height: 500px;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: 0.22s;
+}
+
+.manual-modal.active .manual-modal-box {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-close {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    border: none;
+    background: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#modalTitle {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #2f4858;
+}
+
+#modalContent {
+    width: 100%;
+    height: 360px;
+    border: none;
+    outline: none;
+    resize: none;
+    background: #f4f6f8;
+    border-radius: 16px;
+    padding: 18px;
+    font-size: 16px;
+}
+
+/* 색상 태그 */
+.blue {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.pink {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+.gray {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.green {
+    background: #dcfce7;
+    color: #16a34a;
+}.sidebar {
+    align-self: stretch;
+    overflow: visible;
+}
+
+.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sidebar .nav:hover {
+    transform: translateX(4px);
+}.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.9;
+
+    margin-left: 2px;
+
+}
+
+.notice-url-row {
+    width: calc(100vw - 320px);
+
+    max-width: 1350px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+}
+
+.notice-card {
+    flex: 1;
+
+    min-width: 0;
+
+    margin: 0;
+}
+
+.url-board {
+    width: 260px;
+
+    flex-shrink: 0;
+
+    min-height: 420px;
+
+    background: white;
+    border: none;
+    border-radius: 24px;
+
+    padding: 28px;
+    box-sizing: border-box;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.url-board h3 {
+    margin: 0 0 22px;
+    color: #2f4858;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.url-input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.url-input-box input {
+    height: 42px;
+    border: none;
+    border-radius: 14px;
+    background: #f4f6f8;
+    padding: 0 14px;
+    font-size: 14px;
+    outline: none;
+}
+
+.url-input-box input:focus {
+    background: white;
+    box-shadow: 0 0 0 2px #dbeafe;
+}
+
+.url-input-box button {
+    height: 42px;
+    border: none;
+    border-radius: 14px;
+    background: #2f4858;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.url-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #f8fafc;
+    border-radius: 14px;
+
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.url-link-item::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #d8c3a5;
+    border-radius: 50%;
+}
+
+.url-link-item a {
+    flex: 1;
+    color: #2f4858;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.url-link-item button {
+    border: none;
+    background: #f1f1f1;
+    color: #555;
+    padding: 6px 9px;
+    border-radius: 9px;
+    cursor: pointer;
+}.url-board {
+    width: 300px;
+}
+
+#urlList {
+    display: grid;
+
+    grid-auto-flow: column;
+
+    grid-template-rows: repeat(3, auto);
+
+    gap: 10px;
+
+    overflow-x: auto;
+
+    padding-bottom: 6px;
+
+    margin-top: 14px;
+
+    scrollbar-width: thin;
+}
+
+.url-link-item {
+    width: 180px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    background: #f8fafc;
+
+    border-radius: 14px;
+
+    padding: 12px 14px;
+
+    box-sizing: border-box;
+}
+
+.url-link-item a {
+    flex: 1;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}.sidebar-clock {
+    margin: 10px 18px 24px;
+
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 18px;
+
+    padding: 16px 12px;
+
+    text-align: center;
+
+    backdrop-filter: blur(4px);
+}
+
+#clockDate {
+    color: rgba(255,255,255,0.72);
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+#clockTime {
+    color: white;
+
+    font-size: 34px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+/* =========================
+   로그아웃 버튼
+========================= */
+
+.logout-btn {
+    width: 190px;
+    height: 54px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: #dc2626;
+    color: white;
+
+    font-size: 18px;
+    font-weight: 900;
+
+    cursor: pointer;
+
+    margin-top: 26px;
+    margin-left: 24px;
+
+    transition: 0.15s;
+}
+
+.logout-btn:hover {
+    transform: scale(1.03);
+    background: #b91c1c;
+}.notice-add-btn,
+.notice-delete-btn {
+    appearance: none;
+
+    border: none;
+
+    outline: none;
+}
+
+.notice-add-btn:focus,
+.notice-add-btn:active,
+.notice-delete-btn:focus,
+.notice-delete-btn:active {
+    outline: none;
+
+    box-shadow: none;
+}.notice-add-btn,
+.notice-delete-btn {
+    transition: 0.12s ease;
+
+    cursor: pointer;
+}
+
+.notice-add-btn:hover,
+.notice-delete-btn:hover {
+    transform: translateY(-2px);
+}
+
+.notice-add-btn:active,
+.notice-delete-btn:active {
+    transform: scale(0.94);
+}.nav-img-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}.manual-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.45);
+
+    box-sizing: border-box;
+}
+
+.manual-modal.active {
+    display: flex;
+}
+
+.manual-modal-box {
+    position: relative;
+
+    width: 900px;
+    max-width: calc(100vw - 80px);
+
+    height: 650px;
+    max-height: calc(100vh - 80px);
+
+    background: #fff;
+    border-radius: 22px;
+
+    padding: 34px 30px 30px;
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+.manual-modal-box h2 {
+    margin: 0 50px 20px 0;
+
+    color: #1f2a44;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    background: transparent;
+
+    color: #000;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#modalContent {
+    display: block;
+
+    width: 100%;
+    height: calc(100% - 72px);
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    border: 1px solid #ddd;
+    border-radius: 14px;
+
+    background: #fff;
+    color: #000;
+
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.8;
+
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+}body.modal-open {
+    overflow: hidden;
+}body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+}.manual-add-btn {
+    height: 42px;
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #2f4858,
+        #48687d
+    );
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+    box-shadow:
+        0 4px 12px rgba(47,72,88,0.2);
+}
+
+.manual-add-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(47,72,88,0.25);
+}
+
+.manual-add-btn:active {
+    transform: translateY(0);
+}.manual-delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ef4444;
+    color: white;
+
+    padding: 4px 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+}
+
+.manual-delete-btn:hover {
+    background: #dc2626;
+}/* =========================
+   병원 선택 드롭다운 디자인
+========================= */
+
+.hospital-logo-menu {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    cursor: pointer;
+}
+
+.hospital-logo-menu .logo {
+    width: 100%;
+    height: 220px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.25s ease;
+}
+
+.hospital-logo-menu:hover .logo {
+    transform: translateY(-4px) scale(1.02);
+}
+
+.hospital-logo-menu .logo img {
+    width: 220px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* 드롭다운 박스 - 오른쪽으로 등장 */
+.hospital-dropdown {
+    position: absolute;
+    top: 72px;
+    left: 218px;
+
+    transform: translateX(-10px) scale(0.96);
+
+    width: 220px;
+    padding: 10px;
+
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+
+    border-radius: 18px;
+    box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    z-index: 99999;
+
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease,
+        visibility 0.22s ease;
+}
+
+/* hover 시 오른쪽에서 부드럽게 등장 */
+.hospital-logo-menu:hover .hospital-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
+}
+
+/* 왼쪽 작은 삼각형 */
+.hospital-dropdown::before {
+    content: "";
+    position: absolute;
+    top: 34px;
+    left: -7px;
+
+    width: 16px;
+    height: 16px;
+
+    background: rgba(255, 255, 255, 0.96);
+    transform: rotate(45deg);
+
+    border-radius: 3px;
+}
+
+/* 버튼 */
+.hospital-dropdown button {
+    width: 100% !important;
+    height: 46px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    border: none !important;
+    border-radius: 13px !important;
+
+    background: transparent !important;
+    color: #2f4858 !important;
+
+    font-size: 14px !important;
+    font-weight: 900 !important;
+
+    text-align: left !important;
+    padding: 0 12px !important;
+    margin: 0 0 4px 0 !important;
+
+    white-space: nowrap !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.hospital-dropdown button:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 버튼 앞 아이콘 느낌 점 */
+.hospital-dropdown button::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+
+    margin-right: 10px;
+
+    border-radius: 50%;
+    background: #c9a46a;
+
+    flex-shrink: 0;
+}
+
+/* hover 효과 */
+.hospital-dropdown button:hover {
+    background: #eef3f7 !important;
+    color: #102a3a !important;
+    transform: translateX(4px) !important;
+}
+
+/* 병원별 색상 */
+.hospital-dropdown button:nth-child(1)::before {
+    background: #c9a46a;
+}
+
+.hospital-dropdown button:nth-child(2)::before {
+    background: #4f9fd9;
+}
+
+.hospital-dropdown button:nth-child(3)::before {
+    background: #68b984;
+}

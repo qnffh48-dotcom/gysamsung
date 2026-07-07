@@ -1,0 +1,619 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: url("./marble-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* 메인 */
+.nurse-main {
+    flex: 1;
+    min-height: 100vh;
+    padding: 35px 40px 40px;
+    background: transparent;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+/* 방과처럼 전체 래퍼 */
+.nurse-layout {
+    width: 1050px;
+    margin: 0 auto;
+}
+
+/* 탭 버튼 */
+.nurse-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: 55px;
+    margin-bottom: -3px;
+    position: relative;
+    z-index: 100;
+}
+
+/* 탭 버튼 개별 */
+.nurse-tab {
+    width: 160px;
+    height: 54px;
+    border: none;
+    border-radius: 18px 18px 0 0;
+    background: #e5e7eb;
+    color: #2f4858;
+    font-size: 19px;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        background 0.22s ease,
+        transform 0.22s ease,
+        color 0.22s ease;
+}
+
+.nurse-tab:hover {
+    transform: translateY(-2px);
+}
+
+.nurse-tab.active {
+    background: white;
+    color: #111;
+    z-index: 200;
+}
+
+/* 큰 흰 박스 */
+.nurse-card {
+    width: 1050px;
+    min-height: 620px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 24px;
+    padding: 45px;
+    box-sizing: border-box;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.10),
+        inset 0 2px 8px rgba(255,255,255,0.75);
+}
+
+/* 날짜 */
+.nurse-date-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.nurse-date-btn {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: #2f4c64;
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.18s;
+}
+
+.nurse-date-btn:hover {
+    transform: translateY(-2px);
+    background: #3d6484;
+}
+
+.nurse-date-box {
+    display: flex;
+    gap: 12px;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.nurse-date-box select {
+    height: 44px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 12px;
+    background: #eef2f6;
+    font-size: 17px;
+    font-weight: 800;
+    color: #243b53;
+    cursor: pointer;
+}
+
+/* 제목 */
+.nurse-title {
+    text-align: center;
+    margin: 0 0 42px;
+    color: #2f4858;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.nurse-section {
+    margin-top: 0;
+}
+
+.nurse-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 22px;
+    color: #2f4858;
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.big-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #d0a45b;
+    display: inline-block;
+}
+
+/* 테이블 */
+.nurse-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #f8fafc;
+}
+
+.nurse-table th {
+    background: #dfe5eb;
+    color: #243b53;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 18px;
+    border: 1px solid #cfd8e3;
+    text-align: center;
+}
+
+.nurse-table td {
+    border: 1px solid #d7dee7;
+    padding: 14px;
+    text-align: center;
+    background: white;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1f2f3c;
+}
+
+.nurse-table td:first-child {
+    background: #f4f7fa;
+    font-weight: 900;
+}
+
+.nurse-table input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #c7d2df;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    box-sizing: border-box;
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+.nurse-table input:focus {
+    outline: none;
+    border-color: #7aa7d9;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(122,167,217,0.15);
+}
+
+.total-row td {
+    background: #f7f9fb;
+    font-weight: 900;
+}
+
+.total-row td:first-child {
+    background: #eef3f7;
+}
+
+/* 사이드바 스크롤 */
+.sidebar .nav {
+    position: absolute;
+    top: 220px;
+    left: 0;
+    width: 240px;
+    z-index: 999;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-img-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    margin-left: 2px;
+}.nurse-tab-page {
+    display: none;
+}
+
+.nurse-tab-page.active {
+    display: block;
+}
+
+.nurse-temp-page {
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #2f4858;
+    text-align: center;
+}
+
+.nurse-temp-page h1 {
+    font-size: 38px;
+    margin-bottom: 14px;
+}
+
+.nurse-temp-page p {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6b7d8b;
+}.work-schedule-page {
+    width: 100%;
+}
+
+.work-control-card,
+.work-view-card {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+.work-control-card {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.work-control-card label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #4b5563;
+}
+
+.work-control-card input {
+    width: 150px;
+    height: 40px;
+    padding: 0 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.work-control-card button {
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    color: #374151;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.work-primary-btn {
+    background: #2f3a4a !important;
+    border-color: #2f3a4a !important;
+    color: white !important;
+}
+
+.work-view-card {
+    padding: 22px;
+}
+
+.work-section-title {
+    margin-bottom: 18px;
+}
+
+.work-section-title h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.work-section-title p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.work-daily-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.work-daily-table th {
+    height: 48px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 14px;
+}
+
+.work-daily-table td {
+    height: 54px;
+    border-bottom: 1px solid #eef0f3;
+    text-align: center;
+}
+
+.work-daily-table tr:last-child td {
+    border-bottom: none;
+}
+
+.work-daily-table input[type="time"],
+.work-name-input {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.work-name-input {
+    width: 110px;
+    font-weight: 800;
+}
+
+.work-daily-table input[type="checkbox"] {
+    width: 19px;
+    height: 19px;
+}
+
+.work-ot-cell {
+    color: #b91c1c;
+    font-weight: 900;
+}
+
+.work-early-cell {
+    color: #1e3a8a;
+    font-weight: 900;
+}
+
+.work-month-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.work-month-total-box {
+    min-width: 340px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.work-month-total-box table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.work-month-total-box th,
+.work-month-total-box td {
+    border-bottom: 1px solid #eef0f3;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.work-month-total-box th {
+    background: #f8fafc;
+}
+
+.work-calendar-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-top: 8px;
+    border: 1px solid #e5e7eb;
+    border-bottom: none;
+    background: #f8fafc;
+    border-radius: 14px 14px 0 0;
+    overflow: hidden;
+}
+
+.work-calendar-week div {
+    padding: 12px 0;
+    text-align: center;
+    font-weight: 900;
+    color: #374151;
+    border-right: 1px solid #e5e7eb;
+}
+
+.work-calendar-week div:first-child {
+    color: #b91c1c;
+}
+
+.work-calendar-week div:last-child {
+    border-right: none;
+    color: #1e3a8a;
+}
+
+.work-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-left: 1px solid #e5e7eb;
+}
+
+.work-calendar-cell {
+    min-height: 180px;
+    padding: 9px;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.work-calendar-cell.empty {
+    background: #f9fafb;
+}
+
+.work-day-number {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.work-employee-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    margin-bottom: 5px;
+    padding: 5px 6px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    font-size: 12px;
+}
+
+.work-employee-line.normal {
+    color: #6b7280;
+}
+
+.work-employee-line.off {
+    background: #eeeeee;
+    color: #6b7280;
+}
+
+.work-employee-line span:first-child {
+    font-weight: 900;
+}.work-employee-line {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    align-items: center;
+}
+
+.work-employee-line span:first-child {
+    white-space: nowrap;
+    word-break: keep-all;
+}
+
+.work-employee-line span:last-child {
+    white-space: nowrap;
+}.work-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(130px, 1fr));
+    align-items: stretch;
+}
+
+.work-calendar-cell,
+.work-calendar-cell.empty {
+    min-height: 265px;
+    height: auto;
+}
+
+.work-calendar-cell.empty {
+    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}.work-employee-line {
+    display: grid;
+    grid-template-columns: 48px 36px;
+    column-gap: 6px;
+    align-items: center;
+    justify-content: start;
+    overflow: hidden;
+}
+
+.work-employee-line span:first-child {
+    white-space: nowrap;
+    word-break: keep-all;
+    font-size: 12px;
+}
+
+.work-employee-line span:last-child {
+    white-space: nowrap;
+    font-size: 11px;
+    color: #6b7280;
+    text-align: right;
+}.work-day-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.work-day-number{
+    flex:0 0 auto;
+}
+
+.work-day-total{
+    font-size:11px;
+    font-weight:700;
+    color:#6b7280;
+    letter-spacing:-0.2px;
+}.work-daily-table select {
+    width: 90px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: #fff;
+    text-align: center;
+    font-size: 14px;
+}.work-time-group {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    border: 1px solid #d1d5db;
+    border-radius: 11px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.work-time-group select {
+    width: 54px;
+    height: 100%;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent;
+    text-align: center;
+    font-size: 14px;
+    outline: none;
+}
+
+.work-time-group select:first-child {
+    border-right: 1px solid #eef0f3 !important;
+}
+
+.work-time-group:focus-within {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.15);
+}

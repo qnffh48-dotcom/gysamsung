@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마감일지</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="closing.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+            <span class="gold-dot"></span>
+            홈
+            <img src="house.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='schedule.html'">
+            <span class="gold-dot"></span>
+            스케줄
+            <img src="calendar-check.png" class="nav-img-icon">
+        </button>
+
+        <button onclick="location.href='stats.html'">
+            <span class="gold-dot"></span>
+            통계
+            <img src="chart-column-increasing.png" class="nav-img-icon">
+        </button>
+    </div>
+</div>
+
+<main class="closing-main">
+
+
+<button
+    class="closing-print-btn"
+    onclick="location.href='closing-report.html'">
+    마감 리포트 
+</button>
+    <div class="closing-date-bar">
+        <button class="closing-date-btn" id="prevDay">◀</button>
+
+        <div class="closing-date-box">
+            <select id="closingYear"></select>
+            <select id="closingMonth"></select>
+            <select id="closingDay"></select>
+        </div>
+
+        <button class="closing-date-btn" id="nextDay">▶</button>
+    </div>
+
+    <h1 class="closing-title">가양삼성정형외과 일일 마감일지</h1>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 내원 · 매출 요약</h2>
+
+    <div class="closing-card">
+        <table
+            class="closing-table"
+            id="closingSummaryTable">
+
+            <thead>
+                <tr>
+                    <th>초진</th>
+                    <th>재진</th>
+                    <th>90일초진</th>
+                    <th>물리치료내원</th>
+                    <th>산정X</th>
+                    <th>합계</th>
+                    <th>총매출</th>
+                    <th>건당진료비</th>
+                    <th>입금액</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0명</td>
+                    <td>0원</td>
+                    <td>0원</td>
+                    <td>0원</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</section>
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 수납 내역</h2>
+
+        <div class="closing-card">
+            <div id="deskClosingContent"></div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 비급여 건수 · 매출 · 상담</h2>
+
+        <div class="closing-tabs" id="therapyClosingTabs"></div>
+
+        <div class="closing-card">
+            <div id="therapyClosingContent"></div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 예약환자 내원 정보</h2>
+
+        <div class="closing-card">
+            <table class="closing-table" id="reservationClosingTable"></table>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 주사 환자 예약 현황</h2>
+
+        <div class="closing-card">
+            <table class="closing-table" id="injectionReserveClosingTable"></table>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 주사 현황</h2>
+
+        <div class="closing-card">
+            <div class="radiology-date-view" id="radiologyDateView"></div>
+
+            <table class="closing-table" id="radiologyClosingTable"></table>
+        </div>
+    </section>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 유형별 내원</h2>
+
+    <div class="closing-card">
+        <table
+            class="closing-table insurance-table"
+            id="closingInsuranceTypeTable">
+
+            <thead>
+                <tr>
+                    <th>국민건강보험</th>
+                    <th>보호1·2종</th>
+                    <th>자보-청구분</th>
+                    <th>일반</th>
+                    <th>국민건강보험(차상위1종)</th>
+                    <th>국민건강보험(차상위2종)</th>
+                    <th>합계</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</section>
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 시간대별 연령 분포</h2>
+
+        <div class="closing-card">
+            <canvas id="closingTimeChart"></canvas>
+        </div>
+    </section>
+<section class="closing-section">
+    <h2><span class="big-dot"></span> 내원 경로</h2>
+
+    <div class="closing-card">
+        <table class="closing-table" id="closingRouteSalesTable">
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>인원수</th>
+                    
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</section>
+    <section class="closing-section">
+        <h2><span class="big-dot"></span> 특이사항</h2>
+
+        <div class="closing-card">
+            <div class="closing-memo" id="memoClosingBox"></div>
+        </div>
+    </section>
+
+</main>
+
+<script type="module" src="./closing.js?v=10"></script>
+<script type="module" src="role-check.js"></script>
+
+</body>
+</html>

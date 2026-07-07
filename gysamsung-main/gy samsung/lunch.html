@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점심시간</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="lunch.css">
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <img src="logo.png" alt="가양삼성정형외과">
+        </div>
+
+        <div class="nav">
+
+            <button onclick="location.href='index.html'">
+                <span class="gold-dot"></span>
+                홈
+                <img src="house.png" class="nav-img-icon">
+            </button>
+
+            <button onclick="location.href='schedule.html'">
+                <span class="gold-dot"></span>
+                스케줄
+                <img src="calendar-check.png" class="nav-img-icon">
+            </button>
+
+            
+
+        </div>
+
+    </div>
+
+    <main class="lunch-main">
+
+        <div class="lunch-layout">
+
+            <div class="lunch-card">
+
+                <div class="lunch-top-bar">
+
+                    <button class="lunch-move-btn" type="button" onclick="changeLunchMonth(-1)">
+                        ◀
+                    </button>
+
+                    <div class="lunch-date-box">
+                        <select id="lunchYearSelect"></select>
+                        <select id="lunchMonthSelect"></select>
+                    </div>
+
+                    <button class="lunch-move-btn" type="button" onclick="changeLunchMonth(1)">
+                        ▶
+                    </button>
+
+                </div>
+
+                <h1 class="lunch-main-title">직원 점심시간</h1>
+
+                <div class="lunch-sub-header">
+
+                    <h2>
+                        <span class="big-dot"></span>
+                        월간 점심시간표
+                    </h2>
+
+                    
+
+                </div>
+
+                <div class="lunch-table-wrap">
+                    <table class="monthly-lunch-table" id="monthlyLunchTable"></table>
+                </div>
+
+                <p class="lunch-help">
+                    칸을 클릭하면 빈칸 → 12 → 13 → 14 → 1진 → 2,3진 빈칸 순서로 변경됩니다<br>
+                    <b>ESC</b>를 누르면 선택된 칸이 빈칸으로 초기화됩니다<br>
+                    드래그시 간편하게 여러 칸을 변경 가능합니다
+</p>
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script type="module" src="./lunch.js?v=1"></script>
+    <script type="module" src="./role-check.js"></script>
+
+</body>
+
+</html>

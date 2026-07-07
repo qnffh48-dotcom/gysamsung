@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>물품 구매 신청</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="purchase.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo">
+        <img src="logo.png" alt="가양삼성정형외과">
+    </div>
+
+    <div class="nav">
+        <button onclick="location.href='index.html'">
+            <span class="gold-dot"></span>
+            홈
+            <img src="house.png" class="nav-img-icon">
+        </button>
+
+    </div>
+</div>
+
+<main class="purchase-main">
+
+    <h1 class="purchase-title">물품 구매 신청</h1>
+
+    <div class="date-bar">
+        <select id="purchaseYear"></select>
+        <select id="purchaseMonth"></select>
+        <select id="purchaseRound">
+            <option value="1">1일 신청</option>
+            <option value="15">15일 신청</option>
+        </select>
+      
+    </div>
+
+    <section class="purchase-card">
+        <h2><span class="big-dot"></span>신청 물품 입력</h2>
+
+        <div class="purchase-form">
+            <input id="itemName" placeholder="품목명">
+            <input id="itemQty" type="number" placeholder="수량" value="1">
+            <input id="itemPrice" type="number" placeholder="금액">
+            <select id="itemDept">
+    <option value="방사선과">방사선과</option>
+    <option value="간호과">간호과</option>
+    <option value="물리치료과">물리치료과</option>
+    <option value="원무과">원무과</option>
+</select>
+
+            <select id="itemType">
+                <option value="물품">물품</option>
+                <option value="간식">간식</option>
+            </select>
+
+            <button id="addItemBtn">품목 추가</button>
+        </div>
+    </section>
+
+    <section class="purchase-card">
+        <h2><span class="big-dot"></span>물품 신청 목록</h2>
+
+        <table class="purchase-table">
+            <thead>
+                <tr>
+                    <th>사용부서</th>
+                    <th>품목명</th>
+                    <th>수량</th>
+                    <th>금액</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody id="supplyList"></tbody>
+        </table>
+
+        <div class="total-box">
+            물품 총합: <strong id="supplyTotal">0원</strong>
+        </div>
+    </section>
+
+    <section class="purchase-card">
+        <h2><span class="big-dot"></span>간식 신청 목록</h2>
+
+        <table class="purchase-table">
+            <thead>
+                <tr>
+                    <th>사용부서</th>
+                    <th>품목명</th>
+                    <th>수량</th>
+                    <th>금액</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody id="snackList"></tbody>
+        </table>
+
+        <div class="total-box">
+            간식 총합: <strong id="snackTotal">0원</strong>
+        </div>
+    </section>
+
+    <div class="save-box">
+        <button id="saveBtn">저장</button>
+        <button onclick="window.print()">출력</button>
+    </div>
+
+    <section class="purchase-card">
+        <h2><span class="big-dot"></span>구매 내역 검색</h2>
+
+        <div class="search-box">
+            <input id="searchInput" placeholder="품목명 또는 부서명 검색">
+            <button id="searchBtn">검색</button>
+        </div>
+
+        <table class="purchase-table">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>구분</th>
+                    <th>사용부서</th>
+                    <th>품목명</th>
+                    <th>수량</th>
+                    <th>금액</th>
+                </tr>
+            </thead>
+            <tbody id="searchResult"></tbody>
+        </table>
+    </section>
+
+</main>
+
+<script type="module" src="purchase.js"></script>
+<script type="module" src="role-check.js"></script>
+
+</body>
+</html>
