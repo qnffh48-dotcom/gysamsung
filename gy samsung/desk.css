@@ -592,4 +592,109 @@ body {
         0 4px 12px rgba(201,168,106,0.35);
 
     flex-shrink: 0;
+}/* 휴무 컬럼 */
+.work-daily-table th:nth-child(5),
+.work-daily-table td:nth-child(5){
+    width:60px;
+    text-align:center;
+}
+
+.work-daily-table td:nth-child(5){
+    padding:0;
+}
+
+.work-daily-table td:nth-child(5) input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    margin:0;
+    display:block;
+    margin:auto;
+    cursor:pointer;
+}/* 청소칸 글씨체 */
+.cleaning-table input,
+.cleaning-table textarea,
+.cleaning-cell,
+.cleaning-cell input {
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+/* 송희 포차코 표시 */
+.songhee-pochacco {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.songhee-pochacco::after {
+    content: "🐶";
+    font-size: 15px;
+}#tempCleaningTable .clean-cell {
+    width: 100%;
+    height: 72px;
+    border: 0;
+    padding: 8px;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 17px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    font-weight: 900;
+    color: #334155;
+    text-align: center;
+    line-height: 1.45;
+    background: #fff;
+    overflow: hidden;
+}
+
+#tempCleaningTable .clean-cell:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8;
+}
+
+.clean-name-songhee {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.pochacco-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}#tempReservationTable {
+    width: 100%;
+    table-layout: fixed;
+    font-size: 11px;
+}
+
+#tempReservationTable th,
+#tempReservationTable td {
+    padding: 2px 3px;
+    height: 24px;
+}
+
+#tempReservationTable input,
+#tempReservationTable select {
+    height: 22px;
+    font-size: 11px;
+    padding: 0 2px;
+}
+
+#tempReservationTable th:nth-child(1) { width: 42px; }
+#tempReservationTable th:nth-child(2) { width: 64px; }
+#tempReservationTable th:nth-child(3) { width: 58px; }
+#tempReservationTable th:nth-child(4) { width: 72px; }
+#tempReservationTable th:nth-child(5) { width: 58px; }
+#tempReservationTable th:nth-child(6) { width: 58px; }
+#tempReservationTable th:nth-child(7) { width: 70px; }
+#tempReservationTable th:nth-child(8) { width: 70px; }
+#tempReservationTable th:nth-child(9) { width: 78px; }
+#tempReservationTable th:nth-child(10) { width: 76px; }
+#tempReservationTable th:nth-child(11) { width: 82px; }
+#tempReservationTable th:nth-child(12) { width: 86px; }
+.temp-reservation-table-box,
+.temp-reservation-table-wrap {
+    overflow-x: hidden !important;
 }
