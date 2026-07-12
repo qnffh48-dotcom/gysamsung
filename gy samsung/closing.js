@@ -52,10 +52,12 @@ const deskFields = [
     "장애인기금/전액본인",
     "현금",
     "카드",
+      "계좌",
     "미수 발생건",
     "미수 발생금",
     "미수 입금건",
     "미수 입금"
+     
 ];
 
 const therapyItems = [
@@ -123,47 +125,51 @@ function renderDeskRoom(roomNum) {
     const target = document.getElementById("deskClosingContent");
     const room = deskData[`room${roomNum}`] || {};
 
-    target.innerHTML = `
-       
+   target.innerHTML = `
+    <table class="closing-table desk-closing-table">
+        <thead>
+            <tr>
+                <th>급여</th>
+                <th>비급여</th>
+                <th>조합청구액</th>
+                <th>100/100미만 총액</th>
+                <th>장애인기금/전액본인</th>
+                <th>현금</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${money(room["급여"])}</td>
+                <td>${money(room["비급여"])}</td>
+                <td>${money(room["조합청구액"])}</td>
+                <td>${money(room["100/100미만 총액"])}</td>
+                <td>${money(room["장애인기금/전액본인"])}</td>
+                <td>${money(room["현금"])}</td>
+            </tr>
+        </tbody>
+    </table>
 
-        <table class="closing-table">
-            <thead>
-                <tr>
-                    <th>급여</th>
-                    <th>비급여</th>
-                    <th>조합청구액</th>
-                    <th>100/100미만 총액</th>
-                    <th>장애인기금/전액본인</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td>${money(room["급여"])}</td>
-                    <td>${money(room["비급여"])}</td>
-                    <td>${money(room["조합청구액"])}</td>
-                    <td>${money(room["100/100미만 총액"])}</td>
-                    <td>${money(room["장애인기금/전액본인"])}</td>
-                </tr>
-
-                <tr>
-                    <th>현금</th>
-                    <th>카드</th>
-                    <th>미수 발생건</th>
-                    <th>미수 발생금</th>
-                    <th>미수 입금</th>
-                </tr>
-
-                <tr>
-                    <td>${money(room["현금"])}</td>
-                    <td>${money(room["카드"])}</td>
-                    <td>${count(room["미수 발생건"], "건")}</td>
-                    <td>${money(room["미수 발생금"])}</td>
-                    <td>${money(room["미수 입금"])}</td>
-                </tr>
-            </tbody>
-        </table>
-    `;
+    <table class="closing-table desk-closing-table desk-closing-table-5">
+        <thead>
+            <tr>
+                <th>카드</th>
+                <th>계좌</th>
+                <th>미수 발생건</th>
+                <th>미수 발생금</th>
+                <th>미수 입금</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${money(room["카드"])}</td>
+                <td>${money(room["계좌"])}</td>
+                <td>${count(room["미수 발생건"], "건")}</td>
+                <td>${money(room["미수 발생금"])}</td>
+                <td>${money(room["미수 입금"])}</td>
+            </tr>
+        </tbody>
+    </table>
+`;
 }
 
 function renderTherapyRoom(roomNum) {
@@ -807,7 +813,10 @@ closingDay.onchange = function () {
             totalSales += Number(room[field] || 0);
         });
 
-        cashTotal += Number(room["현금"] || 0);
+        cashTotal +=
+    Number(room["현금"] || 0) +
+    Number(room["카드"] || 0) +
+    Number(room["계좌"] || 0);
     });
 
     const totalPeople =

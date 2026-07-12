@@ -397,4 +397,18 @@ background-attachment: fixed;
     background: #edf7ee !important;
     color: #111 !important;
     font-weight: 900 !important;
+}.desk-closing-table {
+    width: 100%;
+    table-layout: fixed;
+    margin: 0;
+}
+
+.desk-closing-table th,
+.desk-closing-table td {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.desk-closing-table + .desk-closing-table {
+    margin-top: 0;
 }

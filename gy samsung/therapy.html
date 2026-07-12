@@ -6,6 +6,8 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="therapy.css">
+
+
 </head>
 
 <body>
@@ -59,43 +61,67 @@
         </button>
 
         <button class="therapy-top-tab" data-tab="therapy-temp1">
-            pt1
+            최주연
         </button>
 
         <button class="therapy-top-tab" data-tab="therapy-temp2">
-            pt2
+            하영진
         </button>
 
         <button class="therapy-top-tab" data-tab="therapy-temp3">
-            pt3
+            김민지
         </button>
 
         <button class="therapy-top-tab" data-tab="therapy-temp4">
-            pt4
+            박수진
         </button>
 
         <button class="therapy-top-tab" data-tab="therapy-temp5">
-            pt5
+            박영민
         </button>
 
+        <button class="therapy-top-tab" data-tab="therapy-temp6">
+            이혜영
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp7">
+            이나현
+        </button>
+
+        <button class="therapy-top-tab" data-tab="therapy-temp8">
+            정이제
+        </button>
+
+    </div>
+
+    <div class="therapy-toolbar" id="closingDateToolbar">
+        <div class="therapy-date-bar">
+            <button class="therapy-date-btn" id="prevDay">◀</button>
+            <div class="therapy-date-box">
+                <span class="toolbar-label">입력 날짜</span>
+                <select id="therapyYear"></select>
+                <select id="therapyMonth"></select>
+                <select id="therapyDay"></select>
+            </div>
+            <button class="therapy-date-btn" id="nextDay">▶</button>
+        </div>
+    </div>
+
+    <div class="therapy-toolbar" id="ptRangeToolbar" hidden>
+        <div class="pt-range-bar">
+            <span class="toolbar-label">기간별 현황</span>
+            <input type="date" id="ptRangeStart">
+            <span>~</span>
+            <input type="date" id="ptRangeEnd">
+            <button type="button" id="ptRangeSearchBtn">기간 조회</button>
+        </div>
     </div>
 
     <div class="therapy-top-page active" id="therapy-main-page">
 
         <section class="therapy-section">
 
-<div class="therapy-date-bar">
-        <button class="therapy-date-btn" id="prevDay">◀</button>
 
-        <div class="therapy-date-box">
-
-            <select id="therapyYear"></select>
-            <select id="therapyMonth"></select>
-            <select id="therapyDay"></select>
-        </div>
-
-        <button class="therapy-date-btn" id="nextDay">▶</button>
-    </div>
             <h1 class="therapy-title">
                 물리치료 마감일지
             </h1>
@@ -210,6 +236,9 @@
     <div class="therapy-top-page" id="therapy-temp3"></div>
     <div class="therapy-top-page" id="therapy-temp4"></div>
     <div class="therapy-top-page" id="therapy-temp5"></div>
+    <div class="therapy-top-page" id="therapy-temp6"></div>
+    <div class="therapy-top-page" id="therapy-temp7"></div>
+    <div class="therapy-top-page" id="therapy-temp8"></div>
 
 </main>
 

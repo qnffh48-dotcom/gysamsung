@@ -1,8 +1,7 @@
 import {
     auth,
     onAuthStateChanged
-}
-from "./firebase.js";
+} from "./firebase.js";
 
 /* 전체 관리자 */
 const fullAccessUsers = [
@@ -24,100 +23,161 @@ const pageMap = {
     "closing-report.html": "closingReport",
     "stats.html": "stats",
     "purchase.html": "purchase",
-    "schedule-maker.html": "schedule",
+    "schedule-maker.html": "schedule"
 };
+
+/* 공통 PT 권한 생성 */
+function createPtRule(tabId, therapyAdmin = false) {
+    return {
+        editPages: ["schedule", "therapy"],
+        viewPages: [
+            "main",
+            "closing",
+            "desk",
+            "radiology",
+            "nurse"
+        ],
+        blockedPages: [
+            "stats",
+            "closingReport"
+        ],
+        allowedPtTabs: [tabId],
+        therapyAdmin
+    };
+}
 
 /* 계정별 권한 */
 const roleRules = {
     "desk@gy.med": {
         editPages: ["schedule", "desk"],
-        viewPages: ["main", "closing", "radiology", "nurse", "therapy"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: []
+        viewPages: [
+            "main",
+            "closing",
+            "radiology",
+            "nurse",
+            "therapy"
+        ],
+        blockedPages: [
+            "stats",
+            "closingReport"
+        ],
+        allowedPtTabs: [],
+        therapyAdmin: false
     },
 
     "rad@gy.med": {
         editPages: ["schedule", "radiology"],
-        viewPages: ["main", "closing", "desk", "nurse", "therapy"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: []
+        viewPages: [
+            "main",
+            "closing",
+            "desk",
+            "nurse",
+            "therapy"
+        ],
+        blockedPages: [
+            "stats",
+            "closingReport"
+        ],
+        allowedPtTabs: [],
+        therapyAdmin: false
     },
 
     "nurse@gy.med": {
         editPages: ["schedule", "nurse"],
-        viewPages: ["main", "closing", "desk", "radiology", "therapy"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: []
+        viewPages: [
+            "main",
+            "closing",
+            "desk",
+            "radiology",
+            "therapy"
+        ],
+        blockedPages: [
+            "stats",
+            "closingReport"
+        ],
+        allowedPtTabs: [],
+        therapyAdmin: false
     },
 
     "doc@gy.med": {
         editPages: ["schedule"],
-        viewPages: ["main", "desk", "radiology", "nurse", "therapy"],
-        blockedPages: ["stats", "closing", "closingReport"],
-        allowedPtTabs: []
+        viewPages: [
+            "main",
+            "desk",
+            "radiology",
+            "nurse",
+            "therapy"
+        ],
+        blockedPages: [
+            "stats",
+            "closing",
+            "closingReport"
+        ],
+        allowedPtTabs: [],
+        therapyAdmin: false
     },
 
+    /* PT1: 관리자 - 마감일지 + PT1~PT8 전체 수정 가능 */
     "pt1@gy.med": {
         editPages: ["schedule", "therapy"],
-        viewPages: ["main", "closing", "desk", "radiology", "nurse"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: ["therapy-temp1"]
+        viewPages: [
+            "main",
+            "closing",
+            "desk",
+            "radiology",
+            "nurse"
+        ],
+        blockedPages: [
+            "stats",
+            "closingReport"
+        ],
+        allowedPtTabs: [
+            "therapy-temp1",
+            "therapy-temp2",
+            "therapy-temp3",
+            "therapy-temp4",
+            "therapy-temp5",
+            "therapy-temp6",
+            "therapy-temp7",
+            "therapy-temp8"
+        ],
+        therapyAdmin: true
     },
 
-    "pt2@gy.med": {
-        editPages: ["schedule", "therapy"],
-        viewPages: ["main", "closing", "desk", "radiology", "nurse"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: ["therapy-temp2"]
-    },
-
-    "pt3@gy.med": {
-        editPages: ["schedule", "therapy"],
-        viewPages: ["main", "closing", "desk", "radiology", "nurse"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: ["therapy-temp3"]
-    },
-
-    "pt4@gy.med": {
-        editPages: ["schedule", "therapy"],
-        viewPages: ["main", "closing", "desk", "radiology", "nurse"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: ["therapy-temp4"]
-    },
-
-    "pt5@gy.med": {
-        editPages: ["schedule", "therapy"],
-        viewPages: ["main", "closing", "desk", "radiology", "nurse"],
-        blockedPages: ["stats", "closingReport"],
-        allowedPtTabs: ["therapy-temp5"]
-    }
+    /* PT2~PT8: 마감일지 수정 가능 + 자기 탭만 표시/수정 가능 */
+    "pt2@gy.med": createPtRule("therapy-temp2"),
+    "pt3@gy.med": createPtRule("therapy-temp3"),
+    "pt4@gy.med": createPtRule("therapy-temp4"),
+    "pt5@gy.med": createPtRule("therapy-temp5"),
+    "pt6@gy.med": createPtRule("therapy-temp6"),
+    "pt7@gy.med": createPtRule("therapy-temp7"),
+    "pt8@gy.med": createPtRule("therapy-temp8")
 };
 
-onAuthStateChanged(auth, (user) => {
-
+onAuthStateChanged(auth, user => {
     if (!user) {
         location.href = "login.html";
         return;
     }
 
     const email = (user.email || "").toLowerCase();
+
     let path = location.pathname.split("/").pop();
 
-if (!path || path === "") {
-    path = "index.html";
-}
-else if (!path.includes(".")) {
-    path = path + ".html";
-}
+    if (!path) {
+        path = "index.html";
+    } else if (!path.includes(".")) {
+        path += ".html";
+    }
 
+    const page = pageMap[path];
 
-const page = pageMap[path];
+    /* 물품 신청 페이지는 기존 방식 유지 */
+    if (page === "purchase") {
+        return;
+    }
 
-if (page === "purchase") {
-    return;
-}
-
-
+    /* 전체 관리자 */
     if (fullAccessUsers.includes(email)) {
         return;
     }
@@ -153,16 +213,22 @@ if (page === "purchase") {
         return;
     }
 
-    /* 물리치료 PT 탭 제어 */
+    /* 물리치료 탭 제어 */
     if (page === "therapy") {
-        controlPtTabs(rule.allowedPtTabs || []);
+        controlPtTabs({
+            allowedPtTabs: rule.allowedPtTabs || [],
+            isTherapyAdmin: rule.therapyAdmin === true
+        });
     }
 
-    /* 보기만 가능한 페이지 */
+    /*
+     * 보기 전용 페이지 처리
+     * PT 계정은 therapy가 editPages에 있으므로
+     * 물리치료 마감일지와 자기 탭 모두 수정 가능
+     */
     if (rule.viewPages.includes(page)) {
         makeReadOnly(page);
     }
-
 });
 
 /* =========================
@@ -170,9 +236,7 @@ if (page === "purchase") {
 ========================= */
 
 function makeReadOnly(page) {
-
     function lock() {
-
         document
             .querySelectorAll("input, textarea")
             .forEach(el => {
@@ -183,7 +247,6 @@ function makeReadOnly(page) {
         document
             .querySelectorAll("button")
             .forEach(btn => {
-
                 if (btn.closest(".sidebar")) return;
 
                 const text = btn.textContent.trim();
@@ -200,7 +263,7 @@ function makeReadOnly(page) {
                     return;
                 }
 
-                /* 저장성 버튼만 숨김 */
+                /* 저장성 버튼 숨김 */
                 if (
                     text.includes("추가") ||
                     text.includes("삭제") ||
@@ -215,7 +278,6 @@ function makeReadOnly(page) {
                 }
             });
 
-        /* 파일 업로드 input 차단 */
         document
             .querySelectorAll('input[type="file"]')
             .forEach(input => {
@@ -235,44 +297,108 @@ function makeReadOnly(page) {
    물리치료 PT 탭 제어
 ========================= */
 
-function controlPtTabs(allowedPtTabs) {
+function controlPtTabs({
+    allowedPtTabs = [],
+    isTherapyAdmin = false
+}) {
+    const mainTabId = "therapy-main-page";
 
     const allPtTabs = [
         "therapy-temp1",
         "therapy-temp2",
         "therapy-temp3",
         "therapy-temp4",
-        "therapy-temp5"
+        "therapy-temp5",
+        "therapy-temp6",
+        "therapy-temp7",
+        "therapy-temp8"
     ];
 
-    function lock() {
+    let applying = false;
 
-        document
-            .querySelectorAll(".therapy-top-tab")
-            .forEach(tab => {
+    function applyTabPermissions() {
+        if (applying) return;
+        applying = true;
 
-                const target = tab.dataset.tab;
+        try {
+            /*
+             * PT1 관리자:
+             * 마감일지 + PT1~PT8 전체 표시
+             *
+             * PT2~PT8:
+             * 마감일지 + 자기 PT 탭만 표시
+             */
+            const visibleTabs = isTherapyAdmin
+                ? [mainTabId, ...allPtTabs]
+                : [mainTabId, ...allowedPtTabs];
 
-                if (
-                    allPtTabs.includes(target) &&
-                    !allowedPtTabs.includes(target)
-                ) {
-                    tab.style.display = "none";
-                }
-            });
+            document
+                .querySelectorAll(".therapy-top-tab")
+                .forEach(tab => {
+                    const target = tab.dataset.tab;
 
-        allPtTabs.forEach(id => {
-            if (!allowedPtTabs.includes(id)) {
-                const page = document.getElementById(id);
-                if (page) page.remove();
+                    if (visibleTabs.includes(target)) {
+                        tab.style.display = "";
+                    } else {
+                        tab.style.display = "none";
+                        tab.classList.remove("active");
+                    }
+                });
+
+            document
+                .querySelectorAll(".therapy-top-page")
+                .forEach(page => {
+                    if (visibleTabs.includes(page.id)) {
+                        page.style.display = "";
+                    } else {
+                        page.style.display = "none";
+                        page.classList.remove("active");
+                    }
+                });
+
+            /*
+             * 현재 활성 탭이 숨겨졌다면 마감일지로 이동
+             */
+            const activeTab = document.querySelector(
+                ".therapy-top-tab.active"
+            );
+
+            const activeTarget = activeTab?.dataset.tab;
+
+            if (
+                !activeTarget ||
+                !visibleTabs.includes(activeTarget)
+            ) {
+                document
+                    .querySelectorAll(".therapy-top-tab")
+                    .forEach(tab => {
+                        tab.classList.toggle(
+                            "active",
+                            tab.dataset.tab === mainTabId
+                        );
+                    });
+
+                document
+                    .querySelectorAll(".therapy-top-page")
+                    .forEach(page => {
+                        page.classList.toggle(
+                            "active",
+                            page.id === mainTabId
+                        );
+                    });
             }
-        });
+        } finally {
+            applying = false;
+        }
     }
 
-    lock();
+    applyTabPermissions();
 
-    new MutationObserver(lock).observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    new MutationObserver(applyTabPermissions).observe(
+        document.body,
+        {
+            childList: true,
+            subtree: true
+        }
+    );
 }

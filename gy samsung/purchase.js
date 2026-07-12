@@ -87,8 +87,14 @@ function renderLists() {
     supplyList.innerHTML = supplies.map(item => renderRow(item)).join("");
     snackList.innerHTML = snacks.map(item => renderRow(item)).join("");
 
-    const supplySum = supplies.reduce((sum, item) => sum + item.qty * item.price, 0);
-    const snackSum = snacks.reduce((sum, item) => sum + item.qty * item.price, 0);
+    const supplySum = supplies.reduce(
+    (sum, item) => sum + item.price,
+    0
+);
+    const snackSum = snacks.reduce(
+    (sum, item) => sum + item.price,
+    0
+);
 
     supplyTotal.textContent = money(supplySum);
     snackTotal.textContent = money(snackSum);
@@ -102,7 +108,7 @@ function renderRow(item) {
             <td>${item.dept}</td>
             <td>${item.name}</td>
             <td>${item.qty}개</td>
-            <td>${money(item.qty * item.price)}</td>
+            <<td>${money(item.price)}</td>
             <td>
                 <button class="delete-btn" onclick="deletePurchaseItem(${index})">
                     삭제
@@ -193,7 +199,7 @@ async function searchPurchase() {
             <td>${item.dept}</td>
             <td>${item.name}</td>
             <td>${item.qty}개</td>
-            <td>${money(item.qty * item.price)}</td>
+            <td>${money(item.price)}</td>
         </tr>
     `).join("");
 

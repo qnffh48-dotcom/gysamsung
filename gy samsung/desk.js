@@ -9,6 +9,7 @@ const roomFields = [
     "장애인기금/전액본인",
     "현금",
     "카드",
+     "계좌",
 ];
 
 let deskData = {};
