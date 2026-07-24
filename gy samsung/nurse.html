@@ -7,6 +7,73 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="nurse.css">
+
+    <style>
+        .fluid-page { padding: 20px; }
+        .fluid-control-card { display:flex; flex-wrap:wrap; gap:10px; align-items:end; padding:16px; margin-bottom:18px; border:1px solid #e2d6ea; border-radius:14px; background:#faf7fc; }
+        .fluid-control-card label { display:flex; flex-direction:column; gap:6px; font-weight:700; color:#51345f; }
+        .fluid-control-card input, .fluid-control-card select { height:38px; padding:0 10px; border:1px solid #cdbbd5; border-radius:8px; background:#fff; }
+        .fluid-control-card button { height:38px; padding:0 16px; border:0; border-radius:8px; cursor:pointer; font-weight:700; background:#eee6f2; color:#3e2948; }
+        .fluid-control-card .fluid-primary-btn { background:#6f4b7d; color:#fff; }
+        .fluid-view-card { border:1px solid #ded2e4; border-radius:14px; background:#fff; overflow:hidden; }
+        .fluid-section-title { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid #eadff0; background:#fbf8fc; }
+        .fluid-section-title h2 { margin:0; }
+        .fluid-section-title p { margin:4px 0 0; color:#777; font-size:13px; }
+        .fluid-table-wrap { width:100%; overflow:hidden; }
+        .fluid-day-table, .fluid-summary-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+        .fluid-day-table th, .fluid-day-table td, .fluid-summary-table th, .fluid-summary-table td { border:1px solid #bbb; text-align:center; vertical-align:top; }
+        .fluid-day-table th { background:#dac0e5; padding:5px 3px; }
+        .fluid-worker-name { width:100%; min-width:0; height:34px; padding:0 5px; box-sizing:border-box; border:1px solid transparent; border-radius:6px; background:transparent; text-align:center; font:inherit; font-weight:800; }
+        .fluid-worker-name:focus { background:#fff; border-color:#8f6aa1; outline:none; }
+        .fluid-month-wrap { overflow:hidden; padding:12px; }
+        .fluid-month-table { border-collapse:collapse; width:100%; table-layout:fixed; }
+        .fluid-month-table th, .fluid-month-table td { border:1px solid #999; padding:3px; vertical-align:top; overflow-wrap:anywhere; }
+        .fluid-month-table th { background:#dac0e5; text-align:center; font-size:12px; }
+        .fluid-month-table .date-head { width:58px; background:#c8a5d6; font-weight:800; }
+        .fluid-summary-wrap { overflow:auto; padding:14px; }
+        .fluid-summary-table { min-width:650px; }
+        .fluid-summary-table th { background:#f1e8f5; padding:7px; }
+        .fluid-summary-table td { padding:6px; }
+        .fluid-summary-table .total-row { font-weight:800; background:#f7f2f9; }
+        @media (max-width: 900px) { .fluid-page { padding:10px; } .fluid-section-title { padding:12px; } }
+    
+        .fluid-entry-row { position:relative; display:flex; flex-direction:column; gap:4px; padding:6px 4px 27px; border-bottom:1px dashed #d7c7df; }
+        .fluid-entry-top { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px; align-items:center; }
+        .fluid-entry-row input, .fluid-entry-row select { width:100%; min-width:0; height:30px; padding:0 5px; box-sizing:border-box; border:1px solid #cdbbd5; border-radius:6px; background:#fff; font-size:12px; }
+        .fluid-visit-badge { display:inline-flex; align-items:center; justify-content:center; min-width:34px; height:25px; padding:0 4px; border-radius:999px; background:#eee; color:#666; font-size:10px; font-weight:800; }
+        .fluid-visit-badge.new { background:#e8f5ec; color:#24743c; }
+        .fluid-visit-badge.revisit { background:#fff0dc; color:#a45d00; }
+        .fluid-remove-btn { position:absolute; right:4px; bottom:4px; width:24px; height:22px; border:0; border-radius:5px; background:#f3e7e7; cursor:pointer; }
+        .fluid-month-entry small { display:block; margin-top:2px; color:#777; font-size:9px; line-height:1.2; }
+    </style>
+
+    <style>
+    .fluid-worker-list{min-width:0;display:flex;flex-direction:column;gap:7px;padding:5px}
+    .fluid-entry-row{display:grid;grid-template-columns:minmax(0,1fr) 26px;gap:4px;align-items:center;padding-bottom:4px;border-bottom:1px solid #eee}
+    .fluid-entry-row input{grid-column:1 / 3}
+    .fluid-entry-row select{grid-column:1}
+    .fluid-entry-row input,.fluid-entry-row select{width:100%;min-width:0;box-sizing:border-box;height:32px;border:1px solid #cfc8d8;border-radius:6px;background:#fff;padding:3px 5px;font-size:12px}
+    .fluid-remove-btn{grid-column:2;height:30px;border:0;border-radius:6px;background:#f7e8e8;color:#a33;font-size:17px;cursor:pointer}
+    .fluid-add-btn{width:100%;border:1px dashed #a98eb8;background:#faf7fc;border-radius:7px;padding:7px 2px;cursor:pointer;font-size:12px}
+    .fluid-month-entry{display:flex;flex-direction:column;gap:1px;border-bottom:1px solid #eee;padding:3px 1px;font-size:11px;line-height:1.25}
+    .fluid-month-entry span{overflow-wrap:anywhere}
+    .fluid-month-entry b{white-space:nowrap;color:#6d4383}
+    .fluid-price-summary{max-width:650px;margin:0 auto}
+    .fluid-price-summary td,.fluid-price-summary th{text-align:center}
+    .fluid-free-row{background:#f5f8ff}
+    .fluid-summary-cards{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
+    .fluid-summary-cards>div{min-width:180px;padding:14px 18px;background:#fff;border:1px solid #ddd2e4;border-radius:10px;display:flex;flex-direction:column;gap:5px}
+    .fluid-summary-cards span{font-size:13px;color:#666}.fluid-summary-cards b{font-size:17px}
+    
+        .fluid-entry-row { position:relative; display:flex; flex-direction:column; gap:4px; padding:6px 4px 27px; border-bottom:1px dashed #d7c7df; }
+        .fluid-entry-top { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px; align-items:center; }
+        .fluid-entry-row input, .fluid-entry-row select { width:100%; min-width:0; height:30px; padding:0 5px; box-sizing:border-box; border:1px solid #cdbbd5; border-radius:6px; background:#fff; font-size:12px; }
+        .fluid-visit-badge { display:inline-flex; align-items:center; justify-content:center; min-width:34px; height:25px; padding:0 4px; border-radius:999px; background:#eee; color:#666; font-size:10px; font-weight:800; }
+        .fluid-visit-badge.new { background:#e8f5ec; color:#24743c; }
+        .fluid-visit-badge.revisit { background:#fff0dc; color:#a45d00; }
+        .fluid-remove-btn { position:absolute; right:4px; bottom:4px; width:24px; height:22px; border:0; border-radius:5px; background:#f3e7e7; cursor:pointer; }
+        .fluid-month-entry small { display:block; margin-top:2px; color:#777; font-size:9px; line-height:1.2; }
+    </style>
 </head>
 
 <body>
@@ -52,11 +119,12 @@
         <div class="nurse-layout">
 
             <div class="nurse-tabs">
-    <button class="nurse-tab active">마감일지</button>
-    <button class="nurse-tab">OT</button>
-    <button class="nurse-tab">임시2</button>
-    <button class="nurse-tab">임시3</button>
-</div>
+                <button class="nurse-tab active">마감일지</button>
+                <button class="nurse-tab">수액</button>
+                <button class="nurse-tab">OT</button>
+                <button class="nurse-tab">임시2</button>
+                <button class="nurse-tab">임시3</button>
+            </div>
 
             <div class="nurse-card">
 
@@ -93,7 +161,7 @@
 
     </main>
 
-    <script type="module" src="./nurse.js?v=20260707-1"></script>
+    <script type="module" src="./nurse.js?v=20260724-fluid-4"></script>
     <script type="module" src="./role-check.js"></script>
 
 </body>

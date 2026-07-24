@@ -23,10 +23,6 @@ if (floatingNav) {
 const nurseCard = document.querySelector(".nurse-card");
 const nurseTabs = document.querySelectorAll(".nurse-tab");
 
-if (nurseCard && nurseTabs.length > 0) {
-    setupNurseTabs();
-}
-
 function setupNurseTabs() {
     const originalContent = document.createElement("div");
     originalContent.className = "nurse-tab-page active";
@@ -38,8 +34,8 @@ function setupNurseTabs() {
 
     nurseCard.appendChild(originalContent);
 
+    nurseCard.appendChild(makeFluidPage());
     nurseCard.appendChild(makeSchedulePage());
-
 
     nurseCard.appendChild(makeTempPage(
         "temp2",
@@ -54,7 +50,7 @@ function setupNurseTabs() {
     ));
 
     nurseTabs.forEach((tab, index) => {
-        const pageKey = ["closing", "schedule", "temp2", "temp3"][index];
+        const pageKey = ["closing", "fluid", "schedule", "temp2", "temp3"][index];
 
         tab.dataset.page = pageKey;
 
@@ -78,6 +74,405 @@ function makeTempPage(pageKey, title, text) {
 
     return page;
 }
+
+let fluidWorkers = JSON.parse(localStorage.getItem("fluidWorkers")) || ["민숙희", "박윤아", "황수현", "김다운", "김유진", "이은정", "알바(월)", "N2"];
+let fluidReady = false;
+
+// fluidWorkers 초기화 이후 탭을 구성해야 수액 페이지 생성 중 오류가 나지 않습니다.
+if (nurseCard && nurseTabs.length > 0) {
+    setupNurseTabs();
+}
+
+const fluidPayOptions = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1];
+
+function makeFluidPage() {
+    const page = document.createElement("div");
+    page.className = "nurse-tab-page";
+    page.dataset.page = "fluid";
+
+    page.innerHTML = `
+        <div class="fluid-page">
+            <div class="fluid-control-card">
+                <label>날짜 <input type="date" id="fluidDate"></label>
+                <button type="button" id="fluidSaveBtn" class="fluid-primary-btn">저장</button>
+                <button type="button" id="fluidDayBtn">하루치</button>
+                <button type="button" id="fluidMonthBtn">한달치</button>
+                <button type="button" id="fluidSummaryBtn">합계</button>
+            </div>
+
+            <section id="fluidDayView" class="fluid-view-card">
+                <div class="fluid-section-title">
+                    <div>
+                        <h2 id="fluidDayTitle">수액 하루치</h2>
+                        <p>환자 입력 후 수액 종류를 선택하세요. F는 프리, 숫자+B는 비급여 금액(만원)입니다.</p>
+                    </div>
+                </div>
+                <div class="fluid-table-wrap">
+                    <table class="fluid-day-table">
+                        <thead><tr>${fluidWorkers.map((name, index) => `<th><input class="fluid-worker-name" data-worker-index="${index}" value="${escapeFluidText(name)}" aria-label="직원 이름"></th>`).join("")}</tr></thead>
+                        <tbody><tr id="fluidDayRow"></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="fluidMonthView" class="fluid-view-card" style="display:none;">
+                <div class="fluid-section-title"><div><h2 id="fluidMonthTitle">수액 한달치</h2><p>날짜별 환자와 수액 종류를 확인합니다.</p></div></div>
+                <div id="fluidMonthWrap" class="fluid-month-wrap"></div>
+            </section>
+
+            <section id="fluidSummaryView" class="fluid-view-card" style="display:none;">
+                <div class="fluid-section-title">
+                    <div><h2 id="fluidSummaryTitle">수액 합계</h2><p>비급여는 금액의 5%, 프리는 건당 1,200원으로 계산합니다.</p></div>
+                </div>
+                <div id="fluidSummaryWrap" class="fluid-summary-wrap"></div>
+            </section>
+        </div>
+    `;
+    return page;
+}
+
+function getFluidStorageKey(date) {
+    return `fluidLog_${date}`;
+}
+
+function loadFluidDayData(date) {
+    const raw = JSON.parse(localStorage.getItem(getFluidStorageKey(date))) || {};
+    const normalized = {};
+    fluidWorkers.forEach(name => {
+        const value = raw[name];
+        if (Array.isArray(value)) {
+            normalized[name] = value.map(item => ({
+                chartNo: String(item.chartNo || ""),
+                patientName: String(item.patientName || item.patient || ""),
+                room: String(item.room || "room1"),
+                type: String(item.type || "F")
+            }));
+        } else if (typeof value === "string") {
+            normalized[name] = value.split("\n").map(v => v.trim()).filter(Boolean).map(patientName => ({ chartNo: "", patientName, room: "room1", type: "F" }));
+        } else {
+            normalized[name] = [];
+        }
+    });
+    return normalized;
+}
+
+function saveFluidDayData(date, data) {
+    localStorage.setItem(getFluidStorageKey(date), JSON.stringify(data));
+}
+
+function fluidTypeOptions(selected = "F") {
+    return [`<option value="F" ${selected === "F" ? "selected" : ""}>F (프리)</option>`]
+        .concat(fluidPayOptions.map(amount => {
+            const code = `${amount}B`;
+            return `<option value="${code}" ${selected === code ? "selected" : ""}>${code}</option>`;
+        })).join("");
+}
+
+function escapeFluidText(value = "") {
+    return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', '&quot;');
+}
+
+function initFluidPage() {
+    const fluidDate = document.getElementById("fluidDate");
+    if (!fluidDate || fluidReady) return;
+    fluidReady = true;
+    fluidDate.value = new Date().toISOString().slice(0, 10);
+    document.getElementById("fluidSaveBtn").addEventListener("click", () => saveFluidDay(true));
+    document.getElementById("fluidDayBtn").addEventListener("click", showFluidDay);
+    document.getElementById("fluidMonthBtn").addEventListener("click", showFluidMonth);
+    document.getElementById("fluidSummaryBtn").addEventListener("click", showFluidSummary);
+    fluidDate.addEventListener("change", renderFluidDay);
+    renderFluidDay();
+}
+
+function fluidRoomOptions(selected = "room1") {
+    return nurseRooms.map(room => `<option value="${room.key}" ${selected === room.key ? "selected" : ""}>${room.name}</option>`).join("");
+}
+
+function makeFluidEntryRow(worker, item = {}) {
+    const chartNo = item.chartNo || "";
+    const patientName = item.patientName || item.patient || "";
+    const visitType = chartNo ? getFluidVisitType(document.getElementById("fluidDate")?.value || "", chartNo) : "";
+    return `
+        <div class="fluid-entry-row" data-fluid-entry data-worker="${escapeFluidText(worker)}">
+            <div class="fluid-entry-top">
+                <select class="fluid-room-select" aria-label="진료실">${fluidRoomOptions(item.room || "room1")}</select>
+                <span class="fluid-visit-badge ${visitType === "재진" ? "revisit" : "new"}">${visitType || "구분"}</span>
+            </div>
+            <input type="text" class="fluid-chart-input" inputmode="numeric" value="${escapeFluidText(chartNo)}" placeholder="차트번호">
+            <input type="text" class="fluid-name-input" value="${escapeFluidText(patientName)}" placeholder="환자이름">
+            <select class="fluid-type-select">${fluidTypeOptions(item.type || "F")}</select>
+            <button type="button" class="fluid-remove-btn" title="삭제">×</button>
+        </div>`;
+}
+
+function bindFluidWorkerNameEvents() {
+    document.querySelectorAll(".fluid-worker-name").forEach(input => {
+        input.addEventListener("change", () => renameFluidWorker(Number(input.dataset.workerIndex), input.value));
+        input.addEventListener("keydown", e => {
+            if (e.key === "Enter") input.blur();
+        });
+    });
+}
+
+function renameFluidWorker(index, value) {
+    const oldName = fluidWorkers[index];
+    const newName = value.trim();
+    if (!newName) {
+        alert("이름은 비워둘 수 없음");
+        renderFluidDay();
+        return;
+    }
+    if (newName !== oldName && fluidWorkers.includes(newName)) {
+        alert("이미 있는 이름임");
+        renderFluidDay();
+        return;
+    }
+    if (newName === oldName) return;
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith("fluidLog_")) continue;
+        try {
+            const data = JSON.parse(localStorage.getItem(key)) || {};
+            data[newName] = Array.isArray(data[oldName]) ? data[oldName] : [];
+            delete data[oldName];
+            localStorage.setItem(key, JSON.stringify(data));
+        } catch (error) {
+            console.warn("수액 이름 변경 중 데이터 변환 실패", key, error);
+        }
+    }
+
+    fluidWorkers[index] = newName;
+    localStorage.setItem("fluidWorkers", JSON.stringify(fluidWorkers));
+    renderFluidDay();
+}
+
+function renderFluidDay() {
+    const date = document.getElementById("fluidDate").value;
+    const saved = loadFluidDayData(date);
+    const row = document.getElementById("fluidDayRow");
+    document.getElementById("fluidDayTitle").innerText = `${date} 수액 하루치`;
+
+    row.innerHTML = fluidWorkers.map(name => {
+        const entries = saved[name].length ? saved[name] : [{ chartNo: "", patientName: "", room: "room1", type: "F" }];
+        return `<td><div class="fluid-worker-list" data-fluid-worker-list="${escapeFluidText(name)}">
+            ${entries.map(item => makeFluidEntryRow(name, item)).join("")}
+            <button type="button" class="fluid-add-btn" data-add-worker="${escapeFluidText(name)}">+ 환자 추가</button>
+        </div></td>`;
+    }).join("");
+
+    bindFluidWorkerNameEvents();
+    row.querySelectorAll("[data-add-worker]").forEach(btn => btn.addEventListener("click", () => {
+        btn.insertAdjacentHTML("beforebegin", makeFluidEntryRow(btn.dataset.addWorker, { room: "room1", type: "F" }));
+        bindFluidEntryEvents();
+    }));
+    bindFluidEntryEvents();
+}
+
+function bindFluidEntryEvents() {
+    document.querySelectorAll("#fluidDayRow .fluid-remove-btn").forEach(btn => {
+        if (btn.dataset.ready) return;
+        btn.dataset.ready = "1";
+        btn.addEventListener("click", () => {
+            btn.closest(".fluid-entry-row")?.remove();
+            saveFluidDay(false);
+        });
+    });
+    document.querySelectorAll("#fluidDayRow input, #fluidDayRow select").forEach(el => {
+        if (el.dataset.ready) return;
+        el.dataset.ready = "1";
+        el.addEventListener("input", () => {
+            if (el.classList.contains("fluid-chart-input")) updateFluidVisitBadges(document.getElementById("fluidDate").value);
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => saveFluidDay(false), 400);
+        });
+        el.addEventListener("change", () => saveFluidDay(false));
+    });
+}
+
+async function saveFluidDay(showAlert = true) {
+    const date = document.getElementById("fluidDate").value;
+    const data = Object.fromEntries(fluidWorkers.map(name => [name, []]));
+    document.querySelectorAll("#fluidDayRow [data-fluid-entry]").forEach(row => {
+        const chartNo = row.querySelector(".fluid-chart-input")?.value.trim() || "";
+        const patientName = row.querySelector(".fluid-name-input")?.value.trim() || "";
+        const room = row.querySelector(".fluid-room-select")?.value || "room1";
+        const type = row.querySelector(".fluid-type-select")?.value || "F";
+        if (chartNo || patientName) data[row.dataset.worker].push({ chartNo, patientName, room, type });
+    });
+    saveFluidDayData(date, data);
+    updateFluidVisitBadges(date);
+    try {
+        await syncFluidToNurseClosing(date, data);
+        if (showAlert) alert("수액 기록 저장 및 마감일지 연동 완료");
+    } catch (error) {
+        console.error("수액 마감일지 연동 실패", error);
+        if (showAlert) alert("수액 기록은 저장됐지만 마감일지 연동에 실패함");
+    }
+}
+
+function normalizeChartNo(value) {
+    return String(value || "").replace(/\s/g, "").toUpperCase();
+}
+
+function getFluidVisitType(date, chartNo) {
+    const target = normalizeChartNo(chartNo);
+    if (!target || !date) return "";
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key || !key.startsWith("fluidLog_")) continue;
+        const savedDate = key.replace("fluidLog_", "");
+        if (savedDate >= date) continue;
+        try {
+            const data = JSON.parse(localStorage.getItem(key)) || {};
+            const found = Object.values(data).some(entries => Array.isArray(entries) && entries.some(item => normalizeChartNo(item.chartNo) === target));
+            if (found) return "재진";
+        } catch (_) {}
+    }
+    return "신환";
+}
+
+function updateFluidVisitBadges(date) {
+    document.querySelectorAll("#fluidDayRow [data-fluid-entry]").forEach(row => {
+        const chartNo = row.querySelector(".fluid-chart-input")?.value || "";
+        const badge = row.querySelector(".fluid-visit-badge");
+        const visitType = getFluidVisitType(date, chartNo);
+        if (!badge) return;
+        badge.textContent = visitType || "구분";
+        badge.classList.toggle("revisit", visitType === "재진");
+        badge.classList.toggle("new", visitType === "신환");
+    });
+}
+
+function toClosingDateKey(date) {
+    const [year, month, day] = String(date || "").split("-").map(Number);
+    if (!year || !month || !day) return String(date || "");
+    return `${year}-${month}-${day}`;
+}
+
+async function syncFluidToNurseClosing(date, data) {
+    const counts = Object.fromEntries(nurseRooms.map(room => [room.key, { fluidNew: 0, fluidRevisit: 0 }]));
+    const seenToday = new Set();
+
+    fluidWorkers.forEach(worker => {
+        (data[worker] || []).forEach(item => {
+            const chartNo = normalizeChartNo(item.chartNo);
+            if (!chartNo || !counts[item.room]) return;
+            const previous = getFluidVisitType(date, chartNo) === "재진" || seenToday.has(chartNo);
+            counts[item.room][previous ? "fluidRevisit" : "fluidNew"] += 1;
+            seenToday.add(chartNo);
+        });
+    });
+
+    const closingDateKey = toClosingDateKey(date);
+    const ref = doc(db, "closings", closingDateKey);
+    const snap = await getDoc(ref);
+    const existing = snap.exists() ? snap.data() : {};
+    const linkedNurseData = { ...(existing.nurseData || {}) };
+
+    nurseRooms.forEach(room => {
+        linkedNurseData[room.key] = {
+            ...(linkedNurseData[room.key] || {}),
+            fluidNew: counts[room.key].fluidNew,
+            fluidRevisit: counts[room.key].fluidRevisit
+        };
+    });
+
+    await setDoc(ref, { nurseData: linkedNurseData }, { merge: true });
+
+    if (typeof getDateKey === "function" && getDateKey() === closingDateKey) {
+        nurseData = linkedNurseData;
+        renderNurseTable();
+    }
+}
+
+function setFluidView(view) {
+    document.getElementById("fluidDayView").style.display = view === "day" ? "block" : "none";
+    document.getElementById("fluidMonthView").style.display = view === "month" ? "block" : "none";
+    document.getElementById("fluidSummaryView").style.display = view === "summary" ? "block" : "none";
+}
+function showFluidDay() { setFluidView("day"); renderFluidDay(); }
+function showFluidMonth() { saveFluidDay(false); setFluidView("month"); renderFluidMonth(); }
+function showFluidSummary() { saveFluidDay(false); setFluidView("summary"); renderFluidSummary(); }
+
+function getFluidMonthInfo() {
+    const [year, month] = document.getElementById("fluidDate").value.split("-").map(Number);
+    return { year, month, lastDate: new Date(year, month, 0).getDate() };
+}
+
+function renderFluidEntries(entries = [], date = "") {
+    return entries.map(item => {
+        const visitType = item.chartNo ? getFluidVisitType(date, item.chartNo) : "";
+        const roomName = nurseRooms.find(room => room.key === item.room)?.name || "1진료";
+        return `<div class="fluid-month-entry"><span>${escapeFluidText(item.chartNo)} ${escapeFluidText(item.patientName)}</span><small>${roomName} · ${visitType || "미구분"}</small><b>${escapeFluidText(item.type)}</b></div>`;
+    }).join("");
+}
+
+function renderFluidMonth() {
+    const { year, month, lastDate } = getFluidMonthInfo();
+    const wrap = document.getElementById("fluidMonthWrap");
+    document.getElementById("fluidMonthTitle").innerText = `${year}년 ${month}월 수액 한달치`;
+    let html = `<table class="fluid-month-table"><colgroup><col style="width:58px">${fluidWorkers.map(() => `<col>`).join("")}</colgroup><thead><tr><th>날짜</th>${fluidWorkers.map(name => `<th>${escapeFluidText(name)}</th>`).join("")}</tr></thead><tbody>`;
+    for (let day = 1; day <= lastDate; day++) {
+        const date = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const saved = loadFluidDayData(date);
+        const weekday = ["일", "월", "화", "수", "목", "금", "토"][new Date(year, month - 1, day).getDay()];
+        html += `<tr><th class="date-head">${month}/${day}<br>(${weekday})</th>${fluidWorkers.map(name => `<td>${renderFluidEntries(saved[name], date)}</td>`).join("")}</tr>`;
+    }
+    wrap.innerHTML = html + `</tbody></table>`;
+}
+
+function renderFluidSummary() {
+    const { year, month, lastDate } = getFluidMonthInfo();
+    const wrap = document.getElementById("fluidSummaryWrap");
+    document.getElementById("fluidSummaryTitle").innerText = `${year}년 ${month}월 수액 합계`;
+
+    const quantity = Object.fromEntries(fluidPayOptions.map(v => [String(v), 0]));
+    let freeQty = 0;
+    for (let day = 1; day <= lastDate; day++) {
+        const date = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const saved = loadFluidDayData(date);
+        fluidWorkers.forEach(name => saved[name].forEach(item => {
+            if (item.type === "F") freeQty++;
+            else if (item.type.endsWith("B")) {
+                const amount = item.type.slice(0, -1);
+                if (Object.hasOwn(quantity, amount)) quantity[amount]++;
+            }
+        }));
+    }
+
+    let bCount = 0;
+    let bAmountManwon = 0;
+    let bIncentiveWon = 0;
+    const rows = fluidPayOptions.map(amount => {
+        const qty = quantity[String(amount)] || 0;
+        const totalManwon = amount * qty;
+        const incentive = Math.round(totalManwon * 10000 * 0.05);
+        bCount += qty;
+        bAmountManwon += totalManwon;
+        bIncentiveWon += incentive;
+        return `<tr><td>${amount}</td><td>${qty}</td><td>${totalManwon || 0}</td><td>${incentive.toLocaleString("ko-KR")}원</td></tr>`;
+    }).join("");
+    const freeIncentive = freeQty * 1200;
+    const totalIncentive = bIncentiveWon + freeIncentive;
+
+    wrap.innerHTML = `
+        <table class="fluid-summary-table fluid-price-summary">
+            <thead><tr><th>구분(만원)</th><th>수량</th><th>합계(만원)</th><th>인센티브</th></tr></thead>
+            <tbody>
+                ${rows}
+                <tr class="fluid-free-row"><td>F (프리)</td><td>${freeQty}</td><td>-</td><td>${freeIncentive.toLocaleString("ko-KR")}원</td></tr>
+                <tr class="total-row"><td>계</td><td>${bCount + freeQty}</td><td>${bAmountManwon.toLocaleString("ko-KR")}</td><td>${totalIncentive.toLocaleString("ko-KR")}원</td></tr>
+            </tbody>
+        </table>
+        <div class="fluid-summary-cards">
+            <div><span>비급여 수액</span><b>${bCount}건 / ${bAmountManwon.toLocaleString("ko-KR")}만원</b></div>
+            <div><span>프리 수액</span><b>${freeQty}건</b></div>
+            <div><span>총 인센티브</span><b>${totalIncentive.toLocaleString("ko-KR")}원</b></div>
+        </div>`;
+}
+
 function makeSchedulePage() {
     const page = document.createElement("div");
     page.className = "nurse-tab-page";
@@ -176,9 +571,13 @@ function activateNurseTab(pageKey) {
         page.classList.toggle("active", page.dataset.page === pageKey);
     });
 
+    if (pageKey === "fluid") {
+        initFluidPage();
+    }
+
     if (pageKey === "schedule") {
-    initWorkSchedule();
-}
+        initWorkSchedule();
+    }
 }
 
 /* =========================
