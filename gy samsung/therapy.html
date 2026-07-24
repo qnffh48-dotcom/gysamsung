@@ -60,6 +60,10 @@
             마감일지
         </button>
 
+        <button class="therapy-top-tab" data-tab="therapy-nonpay-page">
+            비급여
+        </button>
+
         <button class="therapy-top-tab" data-tab="therapy-temp1">
             최주연
         </button>
@@ -187,21 +191,7 @@
 
                         <tbody>
 
-                            <tr>
-                                <td>도수</td>
-                                <td>
-                                    <input type="number" id="therapyReserve" value="0"
-                                        oninput="saveReservationInput('도수', '예약', this.value)">
-                                </td>
-                                <td>
-                                    <input type="number" id="therapyChange" value="0"
-                                        oninput="saveReservationInput('도수', '변경', this.value)">
-                                </td>
-                                <td>
-                                    <input type="number" id="therapyCancel" value="0"
-                                        oninput="saveReservationInput('도수', '취소', this.value)">
-                                </td>
-                            </tr>
+
 
                             <tr>
                                 <td>충격파</td>
@@ -231,6 +221,8 @@
 
     </div>
 
+    <div class="therapy-top-page" id="therapy-nonpay-page"></div>
+
     <div class="therapy-top-page" id="therapy-temp1"></div>
     <div class="therapy-top-page" id="therapy-temp2"></div>
     <div class="therapy-top-page" id="therapy-temp3"></div>
@@ -241,6 +233,66 @@
     <div class="therapy-top-page" id="therapy-temp8"></div>
 
 </main>
+
+
+<div class="nonpay-modal" id="nonpayModal" hidden>
+    <div class="nonpay-modal-backdrop" onclick="closeNonpayModal()"></div>
+    <div class="nonpay-modal-card" role="dialog" aria-modal="true" aria-labelledby="nonpayModalTitle">
+        <div class="nonpay-modal-header">
+            <div>
+                <h2 id="nonpayModalTitle">비급여치료 입력</h2>
+                <p>물리치료사: <strong id="nonpayTherapistLabel"></strong></p>
+            </div>
+            <button type="button" class="nonpay-close-btn" onclick="closeNonpayModal()">×</button>
+        </div>
+        <form id="nonpayForm" onsubmit="saveNonpayRecord(event)">
+            <div class="nonpay-form-grid">
+                <label class="nonpay-field full"><span>치료 날짜</span><input type="date" id="nonpayTreatmentDate" required></label>
+                <label class="nonpay-field"><span>차트번호</span><input type="text" id="nonpayChartNumber" required placeholder="차트번호 입력" autocomplete="off"></label>
+                <label class="nonpay-field"><span>환자 이름</span><input type="text" id="nonpayPatientName" required placeholder="환자 이름 입력" autocomplete="off"></label>
+                <label class="nonpay-field full"><span>환자 구분</span><div class="nonpay-radio-row">
+                    <label><input type="radio" name="nonpayPatientType" value="신환" required> 신환</label>
+                    <label><input type="radio" name="nonpayPatientType" value="재진" required> 재진</label>
+                </div></label>
+                <label class="nonpay-field"><span>진료실</span><select id="nonpayRoom" required>
+                    <option value="">선택</option><option value="1">1진료실</option><option value="2">2진료실</option><option value="3">3진료실</option><option value="4">4진료실</option><option value="5">5진료실</option>
+                </select></label>
+                <label class="nonpay-field"><span>치료 항목</span><select id="nonpayItem" required>
+                    <option value="">선택</option>
+                    <option class="nonpay-category-option" value="페인스크램블러">페인스크램블러</option>
+                    <optgroup label="페인스크램블러 세부 항목"><option>PS33</option><option>PS55</option></optgroup>
+                    <option class="nonpay-category-option" value="신장분사">신장분사</option>
+                    <optgroup label="신장분사 세부 항목"><option>CRYO2</option><option>CRYO3</option><option>CRYO4</option><option>CRYO5</option><option>CRYO6</option><option>CRYO9</option><option>CRYO15</option></optgroup>
+                    <option class="nonpay-category-option" value="충격파">충격파</option>
+                    <optgroup label="충격파 세부 항목"><option>충격파F</option><option>충격파2</option><option>충격파4</option><option>충격파6</option><option>충격파7</option><option>충격파10</option><option>충격파11</option><option>충격파15</option><option>충격파16</option></optgroup>
+                    <option class="nonpay-category-option" value="리푸스">리푸스</option>
+                </select></label>
+                <label class="nonpay-field"><span>매출 금액</span><input type="number" id="nonpayAmount" min="0" step="100" placeholder="금액 입력"></label>
+                <label class="nonpay-field"><span>인센티브율 (%)</span><input type="number" id="nonpayIncentiveRate" value="7" readonly aria-readonly="true" title="인센티브율은 7%로 고정됩니다."></label>
+                <label class="nonpay-check"><input type="checkbox" id="nonpayConsultation"> 상담</label>
+                <label class="nonpay-check"><input type="checkbox" id="nonpayReservation"> 예약</label>
+            </div>
+            <div class="nonpay-modal-actions"><button type="button" class="nonpay-cancel-btn" onclick="closeNonpayModal()">취소</button><button type="submit" class="nonpay-save-btn">저장</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="nonpay-modal" id="nonpayDetailModal" hidden>
+    <div class="nonpay-modal-backdrop" onclick="closeNonpayDetailModal()"></div>
+    <div class="nonpay-modal-card nonpay-detail-card" role="dialog" aria-modal="true" aria-labelledby="nonpayDetailTitle">
+        <div class="nonpay-modal-header">
+            <div><h2 id="nonpayDetailTitle">치료 환자 내역</h2><p id="nonpayDetailSummary"></p></div>
+            <button type="button" class="nonpay-close-btn" onclick="closeNonpayDetailModal()">×</button>
+        </div>
+        <div id="nonpayDetailBody"></div>
+        <div class="nonpay-modal-actions"><button type="button" class="nonpay-cancel-btn" onclick="closeNonpayDetailModal()">닫기</button></div>
+    </div>
+</div>
+
+<style>
+.nonpay-modal[hidden]{display:none}.nonpay-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center}.nonpay-modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.42)}.nonpay-modal-card{position:relative;width:min(620px,calc(100vw - 40px));background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.25);padding:26px}.nonpay-modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}.nonpay-modal-header h2{margin:0 0 6px;font-size:24px}.nonpay-modal-header p{margin:0;color:#64748b}.nonpay-close-btn{border:0;background:#f1f5f9;width:38px;height:38px;border-radius:10px;font-size:26px;cursor:pointer}.nonpay-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.nonpay-field{display:flex;flex-direction:column;gap:8px}.nonpay-field.full{grid-column:1/-1}.nonpay-field>span{font-weight:700;color:#475569}.nonpay-field select,.nonpay-field input[type=number],.nonpay-field input[type=text],.nonpay-field input[type=date]{height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;font-size:16px}.nonpay-category-option{font-weight:800}.nonpay-radio-row{display:flex;gap:22px;padding:12px;border:1px solid #cbd5e1;border-radius:10px}.nonpay-check{display:flex;align-items:center;gap:9px;padding:13px 15px;background:#eff6ff;border-radius:10px;font-weight:700}.nonpay-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}.nonpay-modal-actions button,.nonpay-open-btn,.nonpay-delete-btn{border:0;border-radius:9px;cursor:pointer}.nonpay-cancel-btn{padding:11px 18px;background:#f1f5f9}.nonpay-save-btn{padding:11px 22px;background:#06b6d4;color:#fff;font-weight:700}.nonpay-action-row{display:flex;justify-content:flex-end;margin:16px 0}.nonpay-open-btn{padding:11px 17px;background:#06b6d4;color:#fff;font-weight:700}.nonpay-record-list{margin:0 0 22px}.nonpay-empty{margin:0 0 20px;padding:18px;text-align:center;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;color:#94a3b8}.nonpay-delete-btn{padding:7px 10px;background:#fee2e2;color:#b91c1c}.nonpay-record-table th,.nonpay-record-table td{text-align:center}.nonpay-group-row{cursor:pointer}.nonpay-group-row:hover{background:#f0f9ff}.nonpay-group-row td:first-child{font-weight:800;color:#0369a1}.nonpay-detail-card{width:min(760px,calc(100vw - 40px))}.nonpay-detail-table{width:100%;border-collapse:collapse}.nonpay-detail-table th,.nonpay-detail-table td{border:1px solid #e2e8f0;padding:11px 9px;text-align:center}.nonpay-detail-table th{background:#f1f5f9}.nonpay-incentive-input{width:76px;height:34px;border:1px solid #cbd5e1;border-radius:7px;text-align:center;font-size:14px}.nonpay-detail-delete{white-space:nowrap}@media(max-width:700px){.nonpay-form-grid{grid-template-columns:1fr}.nonpay-field.full{grid-column:auto}}
+.pt-patient-table tbody td.pt-patient-value{background:#fff!important;font-weight:400!important;color:#111!important}.therapy-auto-value{background:#fff;font-weight:400;text-align:center}.nonpay-record-table{table-layout:fixed}.nonpay-record-table th,.nonpay-record-table td{white-space:nowrap}
+</style>
 
 <script type="module" src="therapy.js"></script>
 <script type="module" src="role-check.js"></script>

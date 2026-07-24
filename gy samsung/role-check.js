@@ -302,6 +302,7 @@ function controlPtTabs({
     isTherapyAdmin = false
 }) {
     const mainTabId = "therapy-main-page";
+    const nonpayTabId = "therapy-nonpay-page";
 
     const allPtTabs = [
         "therapy-temp1",
@@ -329,7 +330,7 @@ function controlPtTabs({
              * 마감일지 + 자기 PT 탭만 표시
              */
             const visibleTabs = isTherapyAdmin
-                ? [mainTabId, ...allPtTabs]
+                ? [mainTabId, nonpayTabId, ...allPtTabs]
                 : [mainTabId, ...allowedPtTabs];
 
             document
